@@ -1,1 +1,14 @@
-*.o
+# Ignore everything
+*
+
+# But don't ignore folders
+!*/
+
+# Also don't ignore makefile
+!makefile
+
+# Also don't ignore c files
+!.gitignore
+!README.md
+!*.c
+!*.h
