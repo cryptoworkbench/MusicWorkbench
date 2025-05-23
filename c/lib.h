@@ -22,4 +22,6 @@ const char *print_INTERVAL(enum INTERVAL input);    // <<<-- Function to print I
 struct NOTE_sequence *initialize_CHROMATIC_SCALE(); // <<<-- Creates a cyclical linked list to represent the chromatic scale
 struct INTERVAL_sequence *initialize_MAJOR_SCALE(); // <<<-- Creates a cyclical linked list to represent the major scale
 void initialize_ALL(struct NOTE_sequence **register0, struct INTERVAL_sequence **register1);
+void test_NOTE_sequence(struct NOTE_sequence *N_sequence, int amount);
+void test_INTERVAL_sequence(struct INTERVAL_sequence *I_sequence, int amount);
 #endif
