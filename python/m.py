@@ -38,21 +38,17 @@ def apply_interval(root_note, INTERVAL):
         return_value = return_value.next;
     return return_value;
 
+def print_interval(root_note, INTERVAL):
+    print(apply_interval(root_note, INTERVAL).note.value);
+
 def mode(head):
     visited = set(); current = head;
     while current and current not in visited: print(current.interval.interval_name); visited.add(current); current = current.next;
 
-half_step = INTERVAL.half_step;
-whole_step = INTERVAL.whole_step;
-minor_third = INTERVAL.minor_third;
-major_third = INTERVAL.major_third;
-perfect_fourth = INTERVAL.perfect_fourth;
-perfect_fifth = INTERVAL.perfect_fifth;
-tritone = INTERVAL.tritone;
-minor_sixth = INTERVAL.minor_sixth;
-major_sixth = INTERVAL.major_sixth;
-minor_seventh = INTERVAL.minor_seventh;
-major_seventh = INTERVAL.major_seventh;
+half_step = INTERVAL.half_step; whole_step = INTERVAL.whole_step; minor_third = INTERVAL.minor_third; major_third = INTERVAL.major_third;
+perfect_fourth = INTERVAL.perfect_fourth; perfect_fifth = INTERVAL.perfect_fifth; tritone = INTERVAL.tritone; minor_sixth = INTERVAL.minor_sixth;
+major_sixth = INTERVAL.major_sixth; minor_seventh = INTERVAL.minor_seventh; major_seventh = INTERVAL.major_seventh;
+# ^^^ Make all the intervals more easily accessible
 
 print(apply_interval(C, minor_third).note.value);
 print(apply_interval(C, major_third).note.value);
