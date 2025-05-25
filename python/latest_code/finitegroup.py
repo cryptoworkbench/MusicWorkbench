@@ -61,11 +61,11 @@ class ring:
         for element in self:
             print(element);
 
-    def reduce_to_set(self):
-        set_of_elements = set()
+    def list_of_elements(self):
+        ret_val = [];
         for element in self:
-            set_of_elements.add(element);
-        return set_of_elements;
+            ret_val.append(element);
+        return ret_val;
 
     def extend_with(self, value):
         """Add a new node with the given value at the end of the circular list."""
@@ -128,8 +128,8 @@ def help():
     print("## traverse_ring(ring, N)");
     print("##    Returns the Nth chain of the link.");
     print("##");
-    print("## reduce_to_set(ring)");
-    print("##    Returns a set containing all the elements that are in the ring.");
+    print("## list_of_elements(ring)");
+    print("##    Returns a list containing all the elements that are in the ring (with intact order).");
     print("##");
     print("## ring.content()");
     print("##    Prints all elements in finite ring as list.");
