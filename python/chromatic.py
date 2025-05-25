@@ -1,18 +1,18 @@
 from enum import Enum
 
-class NOTE(Enum): C = "C"; C_sharp = "C#"; D = "D"; D_sharp = "D#"; E = "E"; F = "F"; F_sharp = "F#"; G = "G"; G_sharp = "G#"; A = "A"; A_sharp = "A#"; B = "B";
+class NOTE(Enum): c = "C"; c_sharp = "C#"; d = "D"; d_sharp = "D#"; e = "E"; f = "F"; f_sharp = "F#"; g = "G"; g_sharp = "G#"; a = "A"; a_sharp = "A#"; b = "B";
 class NOTE_sequence:
     def __init__(self, note: NOTE, next_node=None):
         self.note = note;
         self.next = next_node;
-B = NOTE_sequence(NOTE.B); A_sharp = NOTE_sequence(NOTE.A_sharp, B); A = NOTE_sequence(NOTE.A, A_sharp); G_sharp = NOTE_sequence(NOTE.G_sharp, A);
-G = NOTE_sequence(NOTE.G, G_sharp); F_sharp = NOTE_sequence(NOTE.F_sharp, G); F = NOTE_sequence(NOTE.F, F_sharp); E = NOTE_sequence(NOTE.E, F);
-D_sharp = NOTE_sequence(NOTE.D_sharp, E); D = NOTE_sequence(NOTE.D, D_sharp); C_sharp = NOTE_sequence(NOTE.C_sharp, D); C = NOTE_sequence(NOTE.C, C_sharp);
-B.next = C;
+b = NOTE_sequence(NOTE.b); a_sharp = NOTE_sequence(NOTE.a_sharp, b); a = NOTE_sequence(NOTE.a, a_sharp); g_sharp = NOTE_sequence(NOTE.g_sharp, a);
+g = NOTE_sequence(NOTE.g, g_sharp); f_sharp = NOTE_sequence(NOTE.f_sharp, g); f = NOTE_sequence(NOTE.f, f_sharp); e = NOTE_sequence(NOTE.e, f);
+d_sharp = NOTE_sequence(NOTE.d_sharp, e); d = NOTE_sequence(NOTE.d, d_sharp); c_sharp = NOTE_sequence(NOTE.c_sharp, d); c = NOTE_sequence(NOTE.c, c_sharp);
+b.next = c;
 # ALL CODE FOR CREATING THE FINITE GROUP OF CHROMATIC NOTes ^^^
 
-def notes_from(head):
+def chromatic_scale(head):
     visited = set(); current = head;
     while current and current not in visited: print(current.note.value); visited.add(current); current = current.next;
 
-__all__ = [ "C", "C_sharp", "D", "D_sharp", "E", "F", "F_sharp", "G", "G_sharp", "A", "A_sharp", "B", "notes_from" ]
+__all__ = [ "c", "c_sharp", "d", "d_sharp", "e", "f", "f_sharp", "g", "g_sharp", "a", "a_sharp", "b", "chromatic_scale" ]

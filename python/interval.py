@@ -29,8 +29,19 @@ def apply_interval(root_note, INTERVAL):
 def print_interval(root_note, INTERVAL):
     print(apply_interval(root_note, INTERVAL).note.value);
 
+def interval_in_mode(mode, scale_degree):
+    for _ in range(scale_degree):
+        mode = mode.next;
+    return mode;
+
 def mode(head):
     visited = set(); current = head;
     while current and current not in visited: print(current.interval.interval_name); visited.add(current); current = current.next;
 
-__all__ = [ "half_step", "whole_step", "minor_third", "major_third", "perfect_fourth", "tritone", "perfect_fifth", "minor_sixth", "major_sixth", "minor_seventh", "major_seventh", "locrian", "aeolian", "mixolydian", "lydian", "phrygian", "dorian", "ionian", "apply_interval", "print_interval" ]
+def scale(root_note, mode):
+    print(root_note.note.value);
+    for _ in range(interval_in_mode(mode, 0).interval.half_steps):
+        root_note = root_note.next;
+    print(root_note.note.value)
+
+__all__ = [ "half_step", "whole_step", "minor_third", "major_third", "perfect_fourth", "tritone", "perfect_fifth", "minor_sixth", "major_sixth", "minor_seventh", "major_seventh", "locrian", "aeolian", "mixolydian", "lydian", "phrygian", "dorian", "ionian", "apply_interval", "print_interval", "interval_in_mode", "scale"]

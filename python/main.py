@@ -4,5 +4,7 @@ from chromatic import *
 from interval import *
 
 
-print(apply_interval(C, minor_third).note.value);
-print(apply_interval(C, major_third).note.value);
+print(apply_interval(c, minor_third).note.value);
+print(apply_interval(c, major_third).note.value);
+print(c.note.value);
+print("Current interval: ", interval_in_mode(ionian, 0).interval.interval_name);
