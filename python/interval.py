@@ -42,7 +42,7 @@ def scale(root_note, mode):
     print(root_note.note.value);
     visited = set();
     mode_looper = mode;
-    scale_degree = 1;
+    scale_degree = 0;
     note_looper = root_note;
     while mode_looper and mode_looper not in visited:
         for _ in range(interval_in_mode(mode, scale_degree - 1).interval.half_steps): note_looper = note_looper.next;
