@@ -40,8 +40,15 @@ def mode(head):
 
 def scale(root_note, mode):
     print(root_note.note.value);
-    for _ in range(interval_in_mode(mode, 0).interval.half_steps):
-        root_note = root_note.next;
-    print(root_note.note.value)
+    visited = set();
+    mode_looper = mode;
+    scale_degree = 1;
+    note_looper = root_note;
+    while mode_looper and mode_looper not in visited:
+        for _ in range(interval_in_mode(mode, scale_degree - 1).interval.half_steps): note_looper = note_looper.next;
+        print(note_looper.note.value)
+        scale_degree = scale_degree + 1;
+        visited.add(mode_looper);
+        mode_looper = mode_looper.next;
 
 __all__ = [ "half_step", "whole_step", "minor_third", "major_third", "perfect_fourth", "tritone", "perfect_fifth", "minor_sixth", "major_sixth", "minor_seventh", "major_seventh", "locrian", "aeolian", "mixolydian", "lydian", "phrygian", "dorian", "ionian", "apply_interval", "print_interval", "interval_in_mode", "scale"]
