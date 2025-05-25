@@ -14,3 +14,5 @@ B.next = C;
 def notes_from(head):
     visited = set(); current = head;
     while current and current not in visited: print(current.note.value); visited.add(current); current = current.next;
+
+__all__ = [ "C", "C_sharp", "D", "D_sharp", "E", "F", "F_sharp", "G", "G_sharp", "A", "A_sharp", "B", "notes_from" ]

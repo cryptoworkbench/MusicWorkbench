@@ -7,21 +7,18 @@ class INTERVAL(Enum):
     def __init__(self, half_steps, interval_name):
         self.half_steps = half_steps;
         self.interval_name = interval_name;
+half_step = INTERVAL.half_step; whole_step = INTERVAL.whole_step; minor_third = INTERVAL.minor_third; major_third = INTERVAL.major_third;
+perfect_fourth = INTERVAL.perfect_fourth; perfect_fifth = INTERVAL.perfect_fifth; tritone = INTERVAL.tritone; minor_sixth = INTERVAL.minor_sixth;
+major_sixth = INTERVAL.major_sixth; minor_seventh = INTERVAL.minor_seventh; major_seventh = INTERVAL.major_seventh;
 class INTERVAL_sequence:
     def __init__(self, interval = INTERVAL, next_node=None):
         self.interval = interval;
         self.next = next_node;
-locrian = INTERVAL_sequence(INTERVAL.half_step); aeolian = INTERVAL_sequence(INTERVAL.whole_step, locrian);
-mixolydian = INTERVAL_sequence(INTERVAL.whole_step, aeolian); lydian = INTERVAL_sequence(INTERVAL.whole_step, mixolydian);
-phrygian = INTERVAL_sequence(INTERVAL.half_step, lydian); dorian = INTERVAL_sequence(INTERVAL.whole_step, phrygian);
-ionian = INTERVAL_sequence(INTERVAL.whole_step, dorian); locrian.next = ionian;
+locrian = INTERVAL_sequence(half_step); aeolian = INTERVAL_sequence(whole_step, locrian);
+mixolydian = INTERVAL_sequence(whole_step, aeolian); lydian = INTERVAL_sequence(whole_step, mixolydian);
+phrygian = INTERVAL_sequence(half_step, lydian); dorian = INTERVAL_sequence(whole_step, phrygian);
+ionian = INTERVAL_sequence(whole_step, dorian); locrian.next = ionian;
 # ALL CODE FOR CREATING THE FINITE GROUP REPRESENTING ALL THE MODES ^^^
-
-
-half_step = INTERVAL.half_step; whole_step = INTERVAL.whole_step; minor_third = INTERVAL.minor_third; major_third = INTERVAL.major_third;
-perfect_fourth = INTERVAL.perfect_fourth; perfect_fifth = INTERVAL.perfect_fifth; tritone = INTERVAL.tritone; minor_sixth = INTERVAL.minor_sixth;
-major_sixth = INTERVAL.major_sixth; minor_seventh = INTERVAL.minor_seventh; major_seventh = INTERVAL.major_seventh;
-# ^^^ Make all the intervals more easily accessible
 
 def apply_interval(root_note, INTERVAL):
     return_value = root_note;
@@ -29,6 +26,11 @@ def apply_interval(root_note, INTERVAL):
         return_value = return_value.next;
     return return_value;
 
+def print_interval(root_note, INTERVAL):
+    print(apply_interval(root_note, INTERVAL).note.value);
+
 def mode(head):
     visited = set(); current = head;
     while current and current not in visited: print(current.interval.interval_name); visited.add(current); current = current.next;
+
+__all__ = [ "half_step", "whole_step", "minor_third", "major_third", "perfect_fourth", "tritone", "perfect_fifth", "minor_sixth", "major_sixth", "minor_seventh", "major_seventh", "locrian", "aeolian", "mixolydian", "lydian", "phrygian", "dorian", "ionian", "apply_interval", "print_interval" ]
