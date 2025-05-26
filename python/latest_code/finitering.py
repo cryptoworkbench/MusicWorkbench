@@ -93,12 +93,12 @@ def traverse_ring(group, distance):
        traversed_ring = traversed_ring.next;
     return traversed_ring;
 
-def list_set(set):
+def echo_set(set):
     for val in set:
         print(val);
     print("\n####################====>", len(set), "in total");
 
-def list_set_of_notes(set):
+def echo_set_of_notes(set):
     for val in set:
         print(val.value);
     print("\n####################====>", len(set), "in total");
@@ -106,17 +106,23 @@ def list_set_of_notes(set):
 def read_note(note_to_read): print(note_to_read.content.value);
 def read_interval(interval_to_read): return interval_to_read.value[0];
 def apply_interval(starting_note, interval): return traverse_ring(starting_note, read_interval(interval));
-def derive_scale(root_note, interval_node):
-    ret_val = [root_note];
-    note_cursor = root_note;
-    interval_cursor = interval_node;
-    for _ in range(6): # <<<-- All modes have a cardinality of eight intervals
-        new = apply_interval(note_cursor, interval_cursor.content);
+        
+def derive_scale(root_note, mode):
+    ret_val = [root_note]; note_cursor = root_note;
+    old_head = interval_scale.head;
+    interval_scale.head = mode;
+    for i, CURRENT_INTERVAL in enumerate(interval_scale):
+        if i == interval_scale.cardinality - 1: break;
+        new = apply_interval(note_cursor, CURRENT_INTERVAL);
         ret_val.append(new);
         note_cursor = new;
-        interval_cursor = interval_cursor.next;
+    interval_scale.head = old_head;
     return ret_val;
-        
+
+def read_list(list_to_read):
+    for list_member in list_to_read:
+        print(list_member);
+
 def help():
     print("### Help menu ( help() ):");
     print("## ring([])");
@@ -128,18 +134,13 @@ def help():
     print("## traverse_ring(ring, N)");
     print("##    Returns the Nth chain of the link.");
     print("##");
-    print("## list_of_elements(ring)");
+    print("## ring.list_of_elements(ring)");
     print("##    Returns a list containing all the elements that are in the ring (with intact order).");
     print("##");
     print("## ring.content()");
     print("##    Prints all elements in finite ring as list.");
     print("##    This is a method to achieve the same functionality as 'echo_ring()'.");
     print("##");
-    '''
-    print("## ring.list_from(start_value, steps)");
-    print("##    Look for element 'start_value' and print as list the following 'steps' elements.");
-    print("##");
-    '''
     print("## loop(off-set value)");
     print("##    Loops through the entire ring, starting at the offset value.");
     print("##");
