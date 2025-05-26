@@ -59,18 +59,6 @@ class ring:
         for i in range(self.cardinality):
             print(cursor.content); cursor = cursor.next;
 
-
-    def loop(self, off_set):
-        cursor = self.head;
-        for i in range(off_set):
-            cursor = cursor.next;
-        for i in range(self.cardinality):
-            print(cursor.content); cursor = cursor.next;
-
-    def content(self):
-        for element in self:
-            print(element);
-
     def list_of_elements(self):
         ret_val = [];
         for element in self:
@@ -93,25 +81,11 @@ class ring:
         new_node.next = self.head
         self.cardinality += 1
 
-def echo_ring(group):
-    for val in group:
-        print(val)
-
-def traverse_ring(group, distance):
-    traversed_ring = group;
+def traverse_ring(starting_position, distance):
+    traversed_ring = starting_position;
     for i in range(distance):
        traversed_ring = traversed_ring.next;
     return traversed_ring;
-
-def echo_set(set):
-    for val in set:
-        print(val);
-    print("\n####################====>", len(set), "in total");
-
-def echo_set_of_notes(set):
-    for val in set:
-        print(val.value);
-    print("\n####################====>", len(set), "in total");
 
 def read_note(note_to_read): print(note_to_read.content.value);
 def read_interval(interval_to_read): return interval_to_read.value[0];
@@ -138,21 +112,15 @@ def help():
     print("## ring([])");
     print("##    Creates a finite ring (cyclical linked list) whose members are the set '[]'");
     print("##");
-    print("## echo_ring(ring)");
-    print("##    List all members of the ring.");
-    print("##");
-    print("## traverse_ring(ring, N)");
+    print("## traverse_ring(starting_position, N)");
     print("##    Returns the Nth chain of the link.");
     print("##");
     print("## ring.list_of_elements(ring)");
     print("##    Returns a list containing all the elements that are in the ring (with intact order).");
     print("##");
-    print("## ring.content()");
-    print("##    Prints all elements in finite ring as list.");
-    print("##    This is a method to achieve the same functionality as 'echo_ring()'.");
-    print("##");
-    print("## loop(off-set value)");
-    print("##    Loops through the entire ring, starting at the offset value.");
+    print("## ring.loop_from(object_in_ring)");
+    print("##    Loops through the entire ring, starting at object within the ring that is provided as argument.");
+    print("##    Throws an error when the object is not in the ring.");
     print("##");
     print("## ring.extend_with(member)");
     print("##    Add an element to a (finite) ring.\n");

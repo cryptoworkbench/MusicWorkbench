@@ -1,3 +1,4 @@
+    print("\n####################====>", len(set), "in total");
 def derive_scale(root_note, interval_node):
     ret_val = [root_note];
     note_cursor = root_note;
