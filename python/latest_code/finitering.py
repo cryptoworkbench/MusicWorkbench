@@ -24,7 +24,7 @@ def add_to_linked_list(LL_element_already_in_LL, element_to_add):
     LL_element_already_in_LL.next = old_next;
     return LL_element_already_in_LL;
 
-def circular_LL_from_list(list_to_convert):
+def make_cLL(list_to_convert):
     if not list_to_convert: raise ValueError("Must provide at least one value.");
     # ^---> check if there is at least one value in the list
 
@@ -38,7 +38,7 @@ def circular_LL_from_list(list_to_convert):
         head = add_to_linked_list(head, list_to_convert[i]);
     return head.next;
 
-class ring:
+class ring_from_cLL:
     def __init__(self, circular_LL):
         if circular_LL == None: raise ValueError("LL must be provided.");
         self.access = circular_LL; # LL must have at least one element
@@ -151,8 +151,10 @@ def read_list(list_to_read):
     for list_member in list_to_read:
         print(list_member);
 
+def ring_from_list(list_to_put_in_ring):
+    return ring_from_cLL(make_cLL(list_to_put_in_ring));
 
-chromatic_scale = ring(circular_LL_from_list([_c, _c_sharp, _d, _d_sharp, _e, _f, _f_sharp, _g, _g_sharp, _a, _a_sharp, _b])); # --> CREATE THE CHROMATIC SCALE
+chromatic_scale = ring_from_list([_c, _c_sharp, _d, _d_sharp, _e, _f, _f_sharp, _g, _g_sharp, _a, _a_sharp, _b]); # --> CREATE THE CHROMATIC SCALE
 looper = chromatic_scale.access;
 c       = looper; looper = looper.next; c_sharp = looper; looper = looper.next;
 d       = looper; looper = looper.next; d_sharp = looper; looper = looper.next; e       = looper; looper = looper.next;
@@ -164,7 +166,8 @@ a       = looper; looper = looper.next; a_sharp = looper; looper = looper.next; 
 half_step = INTERVAL.half_step; whole_step = INTERVAL.whole_step; minor_third = INTERVAL.minor_third; major_third = INTERVAL.major_third;
 perfect_fourth = INTERVAL.perfect_fourth; perfect_fifth = INTERVAL.perfect_fifth; tritone = INTERVAL.tritone; minor_sixth = INTERVAL.minor_sixth;
 major_sixth = INTERVAL.major_sixth; minor_seventh = INTERVAL.minor_seventh; major_seventh = INTERVAL.major_seventh; # <<<^^^ DEFINE ALL THE INTERVALS
-interval_scale = ring(circular_LL_from_list([whole_step, whole_step, half_step, whole_step, whole_step, whole_step, half_step])); # --> CREATE THE INTERVAL SCALE
+
+interval_scale = ring_from_list([whole_step, whole_step, half_step, whole_step, whole_step, whole_step, half_step]); # --> CREATE THE INTERVAL SCALE
 looper = interval_scale.access;
 ionian     = looper; looper = looper.next; dorian     = looper; looper = looper.next;
 phrygian   = looper; looper = looper.next; lydian     = looper; looper = looper.next;
