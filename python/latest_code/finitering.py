@@ -48,7 +48,17 @@ class ring:
         if index < 0: raise IndexError("Index out of bounds.");
         ret_val = self.head;
         for _ in range(index): ret_val = ret_val.next;
-        return ret_val
+        return ret_val;
+
+    def loop_from(self, starting_position):
+        cursor = self.head;
+        iterator = 0;
+        while cursor != starting_position and iterator < self.cardinality:
+            cursor = cursor.next; iterator += 1;
+        if (iterator == self.cardinality): print("Error, object  '", starting_position.content, "'  is not in this ring !"); return;
+        for i in range(self.cardinality):
+            print(cursor.content); cursor = cursor.next;
+
 
     def loop(self, off_set):
         cursor = self.head;
