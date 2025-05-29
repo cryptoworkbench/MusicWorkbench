@@ -10,14 +10,14 @@ def help():
     print("##    Inserts the element 'element_to_be_inserted' into the linked list 'linked_list_to_insert_into'.");
     print("##    Works as well for cyclical linked lists.");
     print("##");
-    print("## make_cLL(list_to_convert)");
+    print("## cll_from_list(list_to_convert)");
     print("##    Makes a circular linked list from the list 'list_to_convert', while conserving the order.");
     print("##    Returns the circular linked at the position which corresponds to 'list_to_convert[0]'.");
     print("##");
     print("## traverse_LL(starting_position, N)");
     print("##    Returns the Nth chain of the link.");
     print("##");
-    print("## ring_from_cLL(cyclical_linked_list)");
+    print("## ring_from_cll(cyclical_linked_list)");
     print("##    Turns a the cyclical linked list 'cyclical_linked_list' into a 'ring'.");
     print("##    Cyclical linked lists are turned into rings in order to give them methods.");
     print("##");

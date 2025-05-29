@@ -4,31 +4,28 @@ from help import *
 class NOTE(Enum): c = "C"; c_sharp = "C#"; d = "D"; d_sharp = "D#"; e = "E"; f = "F"; f_sharp = "F#"; g = "G"; g_sharp = "G#"; a = "A"; a_sharp = "A#"; b = "B";
 _c = NOTE.c; _c_sharp = NOTE.c_sharp; _d = NOTE.d; _d_sharp = NOTE.d_sharp; _e = NOTE.e; _f = NOTE.f; _f_sharp = NOTE.f_sharp;
 _g = NOTE.g; _g_sharp = NOTE.g_sharp; _a = NOTE.a; _a_sharp = NOTE.a_sharp; _b = NOTE.b;
+def return_NOTE_str(NOTE): return NOTE.value;
+def read_note(NOTE): print(return_NOTE_str(NOTE));
 # ^^^--> NECESSARY DATAYPES TO DEAL WITH NOTES ^^^
 
 class INTERVAL(Enum):
     half_step = (1, "half step"); whole_step = (2, "whole step"); minor_third = (3, "minor third"); major_third = (4, "major third");
     perfect_fourth = (5, "perfect fourth"); tritone = (6, "tritone"); perfect_fifth = (7, "perfect fifth"); minor_sixth = (8, "minor sixth");
     major_sixth = (9, "major sixth"); minor_seventh = (10, "minor seventh"); major_seventh = (11, "major seventh");
+def return_INTERVAL_str(INTERVAL): return INTERVAL.value[1];
+def read_interval(INTERVAL): print(return_INTERVAL_str(INTERVAL));
 # ^^^--> NECESSARY DATAYPES TO DEAL WITH INTERVALS ^^^
 
-def return_NOTE_str(NOTE): return NOTE.value;
-
-def read_note(NOTE): print(return_NOTE_str(NOTE));
 
 class LL_node:
     def __init__(self, content: NOTE, next_node=None):
-        self.content = content;
-        self.next = next_node;
+        self.content = content; self.next = next_node;
 
-def add_to_linked_list(LL_element_already_in_LL, element_to_add):
-    old_next = LL_element_already_in_LL.next;
-    LL_element_already_in_LL.next = LL_node(element_to_add);
-    LL_element_already_in_LL = LL_element_already_in_LL.next;
-    LL_element_already_in_LL.next = old_next;
-    return LL_element_already_in_LL;
+def add_to_linked_list(LL_element_already_in_LL, element_to_add): # a function for inserting into a (circular) linked list
+    old_next = LL_element_already_in_LL.next; LL_element_already_in_LL.next = LL_node(element_to_add); LL_element_already_in_LL = LL_element_already_in_LL.next;
+    LL_element_already_in_LL.next = old_next; return LL_element_already_in_LL;
 
-def make_cLL(list_to_convert):
+def cll_from_list(list_to_convert):
     if not list_to_convert: raise ValueError("Must provide at least one value.");
     # ^---> check if there is at least one value in the list
 
@@ -43,7 +40,7 @@ def make_cLL(list_to_convert):
 
     return head.next;
 
-class ring_from_cLL:
+class ring_from_cll:
     def __init__(self, circular_LL):
         if circular_LL == None: raise ValueError("LL must be provided.");
         self.access = circular_LL; # LL must have at least one element
@@ -64,37 +61,31 @@ class ring_from_cLL:
 
     def print_LL_node_content(self, LL_node):
         if isinstance(LL_node.content, NOTE): read_note(LL_node.content);
-        elif isinstance(LL_node.content, INTERVAL): print("INTERVAL:", LL_node.content.value[1]);
-
-    def member_at_index(self, index):
-        """Get node at a given index in the circular list (no modulo used)."""
-        if index < 0: raise IndexError("Index out of bounds.");
-        ret_val = self.access;
-        for _ in range(index): ret_val = ret_val.next;
-        return ret_val;
+        elif isinstance(LL_node.content, INTERVAL): read_interval(LL_node.content);
 
     def _loop(self, found_element):
         for i in range(self.cardinality):
             self.print_LL_node_content(found_element); found_element = found_element.next;
 
-    def loop(self, starting_position):
+    def _object_and_content_search(self, starting_position):
         cursor = self.access; iterator = 0;
 
         while iterator < self.cardinality and cursor != starting_position:
             cursor = cursor.next; iterator += 1;
         # ^---> we check to make sure the element is not literally included
-        if cursor == starting_position: # loop everything because we found the element we were looking for:
-            self._loop(cursor);
-            return;
+        if cursor == starting_position: return starting_position;
 
         # if code execution reached here, we didn't find the element literally, so let's look inside (search like the following:)
         cursor = self.access; iterator = 0; # resets for searching again
         while cursor.content != starting_position.content and iterator < self.cardinality:
             cursor = cursor.next; iterator += 1;
-        if (iterator == self.cardinality): print("Error, object  '", starting_position, "'  is not in this ring ! (and neither is a different object containing the same exact value!)"); return;
+        if (iterator == self.cardinality): raise ValueError("Error, object  '", starting_position, "'  is not in this ring ! (and neither is a different object containing the same exact value!)");
 
-        # if code exection reaches here, then we did find the element using this slightly different searching method
-        self._loop(cursor);
+        # if code reached here then secundary search was successful, so return the corresponding LL_node
+        return cursor;
+
+    def loop(self, starting_position):
+        self._loop(self._object_and_content_search(starting_position));
 
     def list_of_loop(self, starting_position):
         ret_val = [];
@@ -165,7 +156,7 @@ def read_list(list_to_read):
         print(list_member);
 
 def ring_from_list(list_to_put_in_ring):
-    return ring_from_cLL(make_cLL(list_to_put_in_ring));
+    return ring_from_cll(cll_from_list(list_to_put_in_ring));
 
 chromatic_scale = ring_from_list([_c, _c_sharp, _d, _d_sharp, _e, _f, _f_sharp, _g, _g_sharp, _a, _a_sharp, _b]); # --> CREATE THE CHROMATIC SCALE
 looper = chromatic_scale.access;
