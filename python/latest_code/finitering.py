@@ -36,6 +36,7 @@ def make_cLL(list_to_convert):
     # Build circular list
     for i in range(1, len(list_to_convert)):
         head = add_to_linked_list(head, list_to_convert[i]);
+
     return head.next;
 
 class ring_from_cLL:
@@ -57,6 +58,11 @@ class ring_from_cLL:
             current = current.next
             count += 1
 
+    def print_LL_node_content(self, LL_node):
+        # print("arrived in print_LL_node_content() function.", LL_nodLL_node);
+        if isinstance(LL_node.content, NOTE): print("note:", LL_node.content.value);
+        elif isinstance(LL_node.content, INTERVAL): print("INTERVAL:", LL_node.content.value[1]);
+
     def member_at_index(self, index):
         """Get node at a given index in the circular list (no modulo used)."""
         if index < 0: raise IndexError("Index out of bounds.");
@@ -64,24 +70,28 @@ class ring_from_cLL:
         for _ in range(index): ret_val = ret_val.next;
         return ret_val;
 
+    def _loop(self, found_element):
+        for i in range(self.cardinality):
+            self.print_LL_node_content(found_element); found_element = found_element.next;
+
     def loop(self, starting_position):
         cursor = self.access; iterator = 0;
 
         while iterator < self.cardinality and cursor != starting_position:
             cursor = cursor.next; iterator += 1;
         # ^---> we check to make sure the element is not literally included
-        if cursor == starting_position: # loop everything because we could the element we were looking for:
-            for i in range(self.cardinality):
-                print(cursor.content); cursor = cursor.next;
+        if cursor == starting_position: # loop everything because we found the element we were looking for:
+            self._loop(cursor);
             return;
 
         # if code execution reached here, we didn't find the element literally, so let's look inside (search like the following:)
         cursor = self.access; iterator = 0; # resets for searching again
         while cursor.content != starting_position.content and iterator < self.cardinality:
             cursor = cursor.next; iterator += 1;
-        if (iterator == self.cardinality): print("Error, object  '", starting_position.content, "'  is not in this ring !"); return;
-        for i in range(self.cardinality):
-            print(cursor.content); cursor = cursor.next;
+        if (iterator == self.cardinality): print("Error, object  '", starting_position, "'  is not in this ring ! (and neither is a different object containing the same exact value!)"); return;
+
+        # if code exection reaches here, then we did find the element using this slightly different searching method
+        self._loop(cursor);
 
     def list_of_loop(self, starting_position):
         ret_val = [];
