@@ -12,6 +12,10 @@ class INTERVAL(Enum):
     major_sixth = (9, "major sixth"); minor_seventh = (10, "minor seventh"); major_seventh = (11, "major seventh");
 # ^^^--> NECESSARY DATAYPES TO DEAL WITH INTERVALS ^^^
 
+def return_NOTE_str(NOTE): return NOTE.value;
+
+def read_note(NOTE): print(return_NOTE_str(NOTE));
+
 class LL_node:
     def __init__(self, content: NOTE, next_node=None):
         self.content = content;
@@ -59,8 +63,7 @@ class ring_from_cLL:
             count += 1
 
     def print_LL_node_content(self, LL_node):
-        # print("arrived in print_LL_node_content() function.", LL_nodLL_node);
-        if isinstance(LL_node.content, NOTE): print("note:", LL_node.content.value);
+        if isinstance(LL_node.content, NOTE): read_note(LL_node.content);
         elif isinstance(LL_node.content, INTERVAL): print("INTERVAL:", LL_node.content.value[1]);
 
     def member_at_index(self, index):
@@ -129,12 +132,12 @@ class ring_from_cLL:
         self.cardinality += 1
 
 def loop_scale(starting_note):
-    read_note(starting_note);
+    read_note(starting_note.content);
     looper = starting_note.next;
     while 1:
         if looper == starting_note:
             break;
-        read_note(looper);
+        read_note(looper.content);
         looper = looper.next;
         
 def traverse_LL(starting_position, distance):
@@ -143,9 +146,9 @@ def traverse_LL(starting_position, distance):
        traversed_ring = traversed_ring.next;
     return traversed_ring;
 
-def read_note(note_to_read): print(note_to_read.content.value);
-def read_interval(interval_to_read): return interval_to_read.value[0];
-def apply_interval(starting_note, interval): return traverse_LL(starting_note, read_interval(interval));
+# def read_note(note_to_read): print(note_to_read.content.value);
+def interpret_interval(interval_to_read): return interval_to_read.value[0];
+def apply_interval(starting_note, interval): return traverse_LL(starting_note, interpret_interval(interval));
         
 def derive_scale(root_note, mode):
     ret_val = [root_note.content]; note_cursor = root_note;
