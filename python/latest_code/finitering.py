@@ -6,28 +6,39 @@ _c = NOTE.c; _c_sharp = NOTE.c_sharp; _d = NOTE.d; _d_sharp = NOTE.d_sharp; _e =
 _g = NOTE.g; _g_sharp = NOTE.g_sharp; _a = NOTE.a; _a_sharp = NOTE.a_sharp; _b = NOTE.b;
 def return_NOTE_str(note): return note.value;
 def read_note(note): print(return_NOTE_str(note));
-# ^^^--> ALL NOTE STUFF ^^^
+# ^^^--> ALL NOTE STUFF        ^^^
 
 class INTERVAL(Enum):
-    half_step = (1, "half step"); whole_step = (2, "whole step"); minor_third = (3, "minor third"); major_third = (4, "major third");
-    perfect_fourth = (5, "perfect fourth"); tritone = (6, "tritone"); perfect_fifth = (7, "perfect fifth"); minor_sixth = (8, "minor sixth");
-    major_sixth = (9, "major sixth"); minor_seventh = (10, "minor seventh"); major_seventh = (11, "major seventh");
-def return_INTERVAL_str(INTERVAL): return INTERVAL.value[1];
-def read_interval(INTERVAL): print(return_INTERVAL_str(INTERVAL));
-# ^^^--> ALL INTERVAL STUFF ^^^
+    half_step = (1, "half step", "H");
+    whole_step = (2, "whole step", "W");
+    minor_third = (3, "minor third", "m3");
+    major_third = (4, "major third", "M3");
+    perfect_fourth = (5, "perfect fourth", "P4");
+    tritone = (6, "tritone", "A4");
+    perfect_fifth = (7, "perfect fifth", "P5");
+    minor_sixth = (8, "minor sixth", "m6");
+    major_sixth = (9, "major sixth", "M6");
+    minor_seventh = (10, "minor seventh", "m7");
+    major_seventh = (11, "major seventh", "M7");
+def return_INTERVAL_name(interval): return interval.value[1];
+def return_INTERVAL_abbreviation(interval): return interval.value[2];
+def read_interval(interval): print(return_INTERVAL_name(interval));
+# ^^^--> ALL INTERVAL STUFF    ^^^
 
 class LL_node:
     def __init__(self, content, next_node=None):
         self.content = content; self.next = next_node;
-def return_LL_node_str(ll_node):
+def return_LL_node_str(ll_node, orientation=None):
     if isinstance(ll_node.content, NOTE): return return_NOTE_str(ll_node.content);
-    elif isinstance(ll_node.content, INTERVAL): return return_INTERVAL_str(ll_node.content);
+    elif isinstance(ll_node.content, INTERVAL):
+        if orientation == "horizontal": return return_INTERVAL_abbreviation(ll_node.content);
+        elif orientation == "vertical": return return_INTERVAL_name(ll_node.content);
 def print_LL_node_content(ll_node):
     print(return_LL_node_str(ll_node));
 def add_to_linked_list(LL_element_already_in_LL, element_to_add): # a function for inserting into a (circular) linked list
     old_next = LL_element_already_in_LL.next; LL_element_already_in_LL.next = LL_node(element_to_add); LL_element_already_in_LL = LL_element_already_in_LL.next;
     LL_element_already_in_LL.next = old_next; return LL_element_already_in_LL;
-# ^^^--> ALL LINKED LIST STUFF
+# ^^^--> ALL LINKED LIST STUFF ^^^
 
 def cll_from_list(list_to_convert):
     if not list_to_convert: raise ValueError("Cannot create a cyclical linked list (or any linked list for that matter), from a list with no items inside of it");
@@ -48,10 +59,10 @@ class ring_from_cll:
         while count < self.cardinality: yield current.content; current = current.next; count += 1;
 
     def _loop(self, found_element, orientation=None):
-        to_print = "";
+        to_print = str();
         single_string = "<"; multi_line = "";
         for i in range(self.cardinality):
-            piece = return_LL_node_str(found_element);
+            piece = return_LL_node_str(found_element, orientation);
             if orientation == "vertical":
                 to_print += piece + "\n"; # print(piece);
             elif orientation == "horizontal":
@@ -75,7 +86,7 @@ class ring_from_cll:
         if (iterator == self.cardinality): raise ValueError("Error, object  '", starting_position, "'  is not in this ring ! (and neither is a different object containing the same exact value!)");
         return cursor;
 
-    def loop(self, starting_position=None, orientation=None):
+    def loop(self, starting_position=None, orientation="horizontal"):
         if starting_position == None: starting_position = self.access;
         self._loop(self._object_and_content_search(starting_position), orientation);
 
