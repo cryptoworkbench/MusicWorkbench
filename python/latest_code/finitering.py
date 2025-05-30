@@ -59,7 +59,9 @@ class ring_from_cll:
         if (iterator == self.cardinality): raise ValueError("Error, object  '", starting_position, "'  is not in this ring ! (and neither is a different object containing the same exact value!)");
         return cursor;
 
-    def loop(self, starting_position):
+    def loop(self, starting_position=None):
+        if starting_position == None:
+            starting_position = self.access;
         self._loop(self._object_and_content_search(starting_position));
 
     def list_of_elements(self):
@@ -84,15 +86,6 @@ class ring_from_cll:
         new_node.next = self.access
         self.cardinality += 1
 
-def loop_scale(starting_note):
-    read_note(starting_note.content);
-    looper = starting_note.next;
-    while 1:
-        if looper == starting_note:
-            break;
-        read_note(looper.content);
-        looper = looper.next;
-        
 def traverse_LL(starting_position, distance):
     traversed_ring = starting_position;
     for i in range(distance):
@@ -100,8 +93,8 @@ def traverse_LL(starting_position, distance):
     return traversed_ring;
 
 # def read_note(note_to_read): print(note_to_read.content.value);
-def interpret_interval(interval_to_read): return interval_to_read.value[0];
-def apply_interval(starting_note, interval): return traverse_LL(starting_note, interpret_interval(interval));
+def half_step_multiple_from(interval_to_read): return interval_to_read.value[0];
+def apply_interval(starting_note, interval): return traverse_LL(starting_note, half_step_multiple_from(interval));
         
 def list_of_notes(root_note, mode):
     ret_val = [root_note.content]; note_cursor = root_note;
