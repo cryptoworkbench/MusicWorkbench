@@ -140,6 +140,6 @@ phrygian   = looper; looper = looper.next; lydian     = looper; looper = looper.
 mixolydian = looper; looper = looper.next; aeolian    = looper; looper = looper.next; locrian    = looper;
 # ^^^--> CREATE REFERENCES TO ALL THE MODES
 
-help()
 print("Created the ring \"chromatic_scale\", which represents the notes within an octave (C, C#, D, etc).")
 print("Created the ring \"interval_scale\", which represents all modes (ionian, dorian, etc).")
+print("\nExecute 'help()' to learn about functions available.");
