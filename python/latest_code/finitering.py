@@ -1,6 +1,10 @@
 from enum import Enum
 from help import *
 
+h = H = hor  = horizontal = "horizontal";
+v = V = vert = vertical   = "vertical";
+# ^^^--> Some shortcuts to make the user's live a bit easier ^^^
+
 class NOTE(Enum): c = "C"; c_sharp = "C#"; d = "D"; d_sharp = "D#"; e = "E"; f = "F"; f_sharp = "F#"; g = "G"; g_sharp = "G#"; a = "A"; a_sharp = "A#"; b = "B";
 _c = NOTE.c; _c_sharp = NOTE.c_sharp; _d = NOTE.d; _d_sharp = NOTE.d_sharp; _e = NOTE.e; _f = NOTE.f; _f_sharp = NOTE.f_sharp;
 _g = NOTE.g; _g_sharp = NOTE.g_sharp; _a = NOTE.a; _a_sharp = NOTE.a_sharp; _b = NOTE.b;
@@ -8,18 +12,7 @@ def return_NOTE_str(note): return note.value;
 def read_note(note): print(return_NOTE_str(note));
 # ^^^--> ALL NOTE STUFF        ^^^
 
-class INTERVAL(Enum):
-    half_step = (1, "half step", "H");
-    whole_step = (2, "whole step", "W");
-    minor_third = (3, "minor third", "m3");
-    major_third = (4, "major third", "M3");
-    perfect_fourth = (5, "perfect fourth", "P4");
-    tritone = (6, "tritone", "A4");
-    perfect_fifth = (7, "perfect fifth", "P5");
-    minor_sixth = (8, "minor sixth", "m6");
-    major_sixth = (9, "major sixth", "M6");
-    minor_seventh = (10, "minor seventh", "m7");
-    major_seventh = (11, "major seventh", "M7");
+class INTERVAL(Enum): half_step = (1, "half step", "H"); whole_step = (2, "whole step", "W"); minor_third = (3, "minor third", "m3"); major_third = (4, "major third", "M3"); perfect_fourth = (5, "perfect fourth", "P4"); tritone = (6, "tritone", "A4"); perfect_fifth = (7, "perfect fifth", "P5"); minor_sixth = (8, "minor sixth", "m6"); major_sixth = (9, "major sixth", "M6"); minor_seventh = (10, "minor seventh", "m7"); major_seventh = (11, "major seventh", "M7");
 def return_INTERVAL_halfsteps(interval_to_read): return interval_to_read.value[0];
 def return_INTERVAL_name(interval): return interval.value[1];
 def return_INTERVAL_abbreviation(interval): return interval.value[2];
@@ -40,7 +33,7 @@ def traverse_LL(starting_position, distance):
     traversed_ring = starting_position;
     for i in range(distance): traversed_ring = traversed_ring.next;
     return traversed_ring;
-def add_to_linked_list(LL_element_already_in_LL, element_to_add): # a function for inserting into a (circular) linked list
+def add_to_LL(LL_element_already_in_LL, element_to_add): # a function for inserting into a (circular) linked list
     old_next = LL_element_already_in_LL.next; LL_element_already_in_LL.next = LL_node(element_to_add); LL_element_already_in_LL = LL_element_already_in_LL.next;
     LL_element_already_in_LL.next = old_next; return LL_element_already_in_LL;
 # ^^^--> ALL LINKED LIST STUFF ^^^
@@ -49,7 +42,7 @@ def cll_from_list(list_to_convert):
     if not list_to_convert: raise ValueError("Cannot create a cyclical linked list (or any linked list for that matter), from a list with no items inside of it");
     head = LL_node(list_to_convert[0]); head.next = head;
     if len(list_to_convert) == 1: return head;
-    for i in range(1, len(list_to_convert)): head = add_to_linked_list(head, list_to_convert[i]);
+    for i in range(1, len(list_to_convert)): head = add_to_LL(head, list_to_convert[i]);
     return head.next;
 
 class ring_from_cll:
@@ -159,6 +152,9 @@ phrygian   = looper; looper = looper.next; lydian     = looper; looper = looper.
 mixolydian = looper; looper = looper.next; aeolian    = looper; looper = looper.next; locrian    = looper;
 # ^^^--> CREATE REFERENCES TO ALL THE MODES
 
+print("Start this program as 'python3 -i music_theory.py' if you want to get anything useful out of it.");
+print("\nOnce in interactive mode, you can use 'help()' to learn about available functions.");
+print("\n\nDiagnostic data:");
 print("Created the ring \"chromatic_scale\", which represents the notes within an octave (C, C#, D, etc).")
 print("Created the ring \"interval_scale\", which represents all modes (ionian, dorian, etc).")
-print("\nExecute 'help()' to learn about functions available.");
+print("\nSetup complete!");
