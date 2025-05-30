@@ -20,6 +20,7 @@ class INTERVAL(Enum):
     major_sixth = (9, "major sixth", "M6");
     minor_seventh = (10, "minor seventh", "m7");
     major_seventh = (11, "major seventh", "M7");
+def return_INTERVAL_halfsteps(interval_to_read): return interval_to_read.value[0];
 def return_INTERVAL_name(interval): return interval.value[1];
 def return_INTERVAL_abbreviation(interval): return interval.value[2];
 def read_interval(interval): print(return_INTERVAL_name(interval));
@@ -35,6 +36,10 @@ def return_LL_node_str(ll_node, orientation=None):
         elif orientation == "vertical": return return_INTERVAL_name(ll_node.content);
 def print_LL_node_content(ll_node):
     print(return_LL_node_str(ll_node));
+def traverse_LL(starting_position, distance):
+    traversed_ring = starting_position;
+    for i in range(distance): traversed_ring = traversed_ring.next;
+    return traversed_ring;
 def add_to_linked_list(LL_element_already_in_LL, element_to_add): # a function for inserting into a (circular) linked list
     old_next = LL_element_already_in_LL.next; LL_element_already_in_LL.next = LL_node(element_to_add); LL_element_already_in_LL = LL_element_already_in_LL.next;
     LL_element_already_in_LL.next = old_next; return LL_element_already_in_LL;
@@ -112,15 +117,10 @@ class ring_from_cll:
         new_node.next = self.access
         self.cardinality += 1
 
-def traverse_LL(starting_position, distance):
-    traversed_ring = starting_position;
-    for i in range(distance):
-       traversed_ring = traversed_ring.next;
-    return traversed_ring;
+def ring_from_list(list_to_make_into_ring):
+    return ring_from_cll(cll_from_list(list_to_make_into_ring));
 
-# def read_note(note_to_read): print(note_to_read.content.value);
-def half_step_multiple_from(interval_to_read): return interval_to_read.value[0];
-def apply_interval(starting_note, interval): return traverse_LL(starting_note, half_step_multiple_from(interval));
+def apply_interval(starting_note, interval): return traverse_LL(starting_note, return_INTERVAL_halfsteps(interval));
         
 def list_of_notes(root_note, mode):
     ret_val = [root_note.content]; note_cursor = root_note;
