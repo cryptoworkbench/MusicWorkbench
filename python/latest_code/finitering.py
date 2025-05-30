@@ -48,18 +48,23 @@ class ring_from_cll:
         while count < self.cardinality: yield current.content; current = current.next; count += 1;
 
     def _loop(self, found_element, orientation=None):
-        single_string = "<";
+        to_print = "";
+        single_string = "<"; multi_line = "";
         for i in range(self.cardinality):
             piece = return_LL_node_str(found_element);
-            if orientation == "horizontal":
-                single_string += piece + ", ";
-            elif orientation != "horizontal":
-                print(piece);
+            if orientation == "vertical":
+                to_print += piece + "\n"; # print(piece);
+            elif orientation == "horizontal":
+                to_print += piece + ", ";
             found_element = found_element.next;
         if orientation == "horizontal":
-            single_string = single_string[:-2];
-            single_string += ">";
-            print(single_string);
+            to_print = to_print[:-2];
+            to_print = "<" + to_print;
+            to_print += ">";
+        else:
+            to_print = to_print[:-1];
+            # print(multi_line[:-1]);
+        print(to_print);
 
     def _object_and_content_search(self, starting_position):
         cursor = self.access; iterator = 0; # set variables needed for object search
