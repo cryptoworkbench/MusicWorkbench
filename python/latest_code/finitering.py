@@ -21,6 +21,13 @@ class LL_node:
     def __init__(self, content: NOTE, next_node=None):
         self.content = content; self.next = next_node;
 
+def return_LL_node_str(LL_node):
+    if isinstance(LL_node.content, NOTE): return return_NOTE_str(LL_node.content);
+    elif isinstance(LL_node.content, INTERVAL): return return_INTERVAL_str(LL_node.content);
+
+def print_LL_node_content(LL_node):
+    print(return_LL_node_str(LL_node));
+
 def add_to_linked_list(LL_element_already_in_LL, element_to_add): # a function for inserting into a (circular) linked list
     old_next = LL_element_already_in_LL.next; LL_element_already_in_LL.next = LL_node(element_to_add); LL_element_already_in_LL = LL_element_already_in_LL.next;
     LL_element_already_in_LL.next = old_next; return LL_element_already_in_LL;
@@ -43,12 +50,11 @@ class ring_from_cll:
         current = self.access; count = 0;
         while count < self.cardinality: yield current.content; current = current.next; count += 1;
 
-    def print_LL_node_content(self, LL_node):
-        if isinstance(LL_node.content, NOTE): read_note(LL_node.content);
-        elif isinstance(LL_node.content, INTERVAL): read_interval(LL_node.content);
-
     def _loop(self, found_element):
-        for i in range(self.cardinality): self.print_LL_node_content(found_element); found_element = found_element.next;
+        horizontal = "<";
+        for i in range(self.cardinality):
+            print_LL_node_content(found_element);
+            found_element = found_element.next;
 
     def _object_and_content_search(self, starting_position):
         cursor = self.access; iterator = 0; # set variables needed for object search
@@ -60,8 +66,7 @@ class ring_from_cll:
         return cursor;
 
     def loop(self, starting_position=None):
-        if starting_position == None:
-            starting_position = self.access;
+        if starting_position == None: starting_position = self.access;
         self._loop(self._object_and_content_search(starting_position));
 
     def list_of_elements(self):
