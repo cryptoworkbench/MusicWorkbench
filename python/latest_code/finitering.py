@@ -4,9 +4,9 @@ from help import *
 class NOTE(Enum): c = "C"; c_sharp = "C#"; d = "D"; d_sharp = "D#"; e = "E"; f = "F"; f_sharp = "F#"; g = "G"; g_sharp = "G#"; a = "A"; a_sharp = "A#"; b = "B";
 _c = NOTE.c; _c_sharp = NOTE.c_sharp; _d = NOTE.d; _d_sharp = NOTE.d_sharp; _e = NOTE.e; _f = NOTE.f; _f_sharp = NOTE.f_sharp;
 _g = NOTE.g; _g_sharp = NOTE.g_sharp; _a = NOTE.a; _a_sharp = NOTE.a_sharp; _b = NOTE.b;
-def return_NOTE_str(NOTE): return NOTE.value;
-def read_note(NOTE): print(return_NOTE_str(NOTE));
-# ^^^--> NECESSARY DATAYPES TO DEAL WITH NOTES ^^^
+def return_NOTE_str(note): return note.value;
+def read_note(note): print(return_NOTE_str(note));
+# ^^^--> ALL NOTE STUFF ^^^
 
 class INTERVAL(Enum):
     half_step = (1, "half step"); whole_step = (2, "whole step"); minor_third = (3, "minor third"); major_third = (4, "major third");
@@ -14,26 +14,23 @@ class INTERVAL(Enum):
     major_sixth = (9, "major sixth"); minor_seventh = (10, "minor seventh"); major_seventh = (11, "major seventh");
 def return_INTERVAL_str(INTERVAL): return INTERVAL.value[1];
 def read_interval(INTERVAL): print(return_INTERVAL_str(INTERVAL));
-# ^^^--> NECESSARY DATAYPES TO DEAL WITH INTERVALS ^^^
-
+# ^^^--> ALL INTERVAL STUFF ^^^
 
 class LL_node:
-    def __init__(self, content: NOTE, next_node=None):
+    def __init__(self, content, next_node=None):
         self.content = content; self.next = next_node;
-
-def return_LL_node_str(LL_node):
-    if isinstance(LL_node.content, NOTE): return return_NOTE_str(LL_node.content);
-    elif isinstance(LL_node.content, INTERVAL): return return_INTERVAL_str(LL_node.content);
-
-def print_LL_node_content(LL_node):
-    print(return_LL_node_str(LL_node));
-
+def return_LL_node_str(ll_node):
+    if isinstance(ll_node.content, NOTE): return return_NOTE_str(ll_node.content);
+    elif isinstance(ll_node.content, INTERVAL): return return_INTERVAL_str(ll_node.content);
+def print_LL_node_content(ll_node):
+    print(return_LL_node_str(ll_node));
 def add_to_linked_list(LL_element_already_in_LL, element_to_add): # a function for inserting into a (circular) linked list
     old_next = LL_element_already_in_LL.next; LL_element_already_in_LL.next = LL_node(element_to_add); LL_element_already_in_LL = LL_element_already_in_LL.next;
     LL_element_already_in_LL.next = old_next; return LL_element_already_in_LL;
+# ^^^--> ALL LINKED LIST STUFF
 
 def cll_from_list(list_to_convert):
-    if not list_to_convert: raise ValueError("Must provide at least one value.");
+    if not list_to_convert: raise ValueError("Cannot create a cyclical linked list (or any linked list for that matter), from a list with no items inside of it");
     head = LL_node(list_to_convert[0]); head.next = head;
     if len(list_to_convert) == 1: return head;
     for i in range(1, len(list_to_convert)): head = add_to_linked_list(head, list_to_convert[i]);
@@ -50,11 +47,19 @@ class ring_from_cll:
         current = self.access; count = 0;
         while count < self.cardinality: yield current.content; current = current.next; count += 1;
 
-    def _loop(self, found_element):
-        horizontal = "<";
+    def _loop(self, found_element, orientation=None):
+        single_string = "<";
         for i in range(self.cardinality):
-            print_LL_node_content(found_element);
+            piece = return_LL_node_str(found_element);
+            if orientation == "horizontal":
+                single_string += piece + ", ";
+            elif orientation != "horizontal":
+                print(piece);
             found_element = found_element.next;
+        if orientation == "horizontal":
+            single_string = single_string[:-2];
+            single_string += ">";
+            print(single_string);
 
     def _object_and_content_search(self, starting_position):
         cursor = self.access; iterator = 0; # set variables needed for object search
@@ -65,9 +70,9 @@ class ring_from_cll:
         if (iterator == self.cardinality): raise ValueError("Error, object  '", starting_position, "'  is not in this ring ! (and neither is a different object containing the same exact value!)");
         return cursor;
 
-    def loop(self, starting_position=None):
+    def loop(self, starting_position=None, orientation=None):
         if starting_position == None: starting_position = self.access;
-        self._loop(self._object_and_content_search(starting_position));
+        self._loop(self._object_and_content_search(starting_position), orientation);
 
     def list_of_elements(self):
         ret_val = [];
