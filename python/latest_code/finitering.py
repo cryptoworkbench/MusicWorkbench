@@ -27,78 +27,40 @@ def add_to_linked_list(LL_element_already_in_LL, element_to_add): # a function f
 
 def cll_from_list(list_to_convert):
     if not list_to_convert: raise ValueError("Must provide at least one value.");
-    # ^---> check if there is at least one value in the list
-
     head = LL_node(list_to_convert[0]); head.next = head;
-    # ^---> ifso we create a circular linked list
-
     if len(list_to_convert) == 1: return head;
-    # ^---> if that was all we terminate here remaining_values_to_process = len(values) - 1;
-    # Build circular list
-    for i in range(1, len(list_to_convert)):
-        head = add_to_linked_list(head, list_to_convert[i]);
-
+    for i in range(1, len(list_to_convert)): head = add_to_linked_list(head, list_to_convert[i]);
     return head.next;
 
 class ring_from_cll:
     def __init__(self, circular_LL):
         if circular_LL == None: raise ValueError("LL must be provided.");
-        self.access = circular_LL; # LL must have at least one element
-        self.cardinality = 1;
-
+        self.access = circular_LL; self.cardinality = 1;
         cursor = circular_LL; cursor = cursor.next;
-        while cursor != circular_LL:
-            cursor = cursor.next;
-            self.cardinality += 1;
+        while cursor != circular_LL: cursor = cursor.next; self.cardinality += 1;
 
     def __iter__(self):
-        current = self.access
-        count = 0
-        while count < self.cardinality:
-            yield current.content
-            current = current.next
-            count += 1
+        current = self.access; count = 0;
+        while count < self.cardinality: yield current.content; current = current.next; count += 1;
 
     def print_LL_node_content(self, LL_node):
         if isinstance(LL_node.content, NOTE): read_note(LL_node.content);
         elif isinstance(LL_node.content, INTERVAL): read_interval(LL_node.content);
 
     def _loop(self, found_element):
-        for i in range(self.cardinality):
-            self.print_LL_node_content(found_element); found_element = found_element.next;
+        for i in range(self.cardinality): self.print_LL_node_content(found_element); found_element = found_element.next;
 
     def _object_and_content_search(self, starting_position):
-        cursor = self.access; iterator = 0;
-
-        while iterator < self.cardinality and cursor != starting_position:
-            cursor = cursor.next; iterator += 1;
-        # ^---> we check to make sure the element is not literally included
+        cursor = self.access; iterator = 0; # set variables needed for object search
+        while iterator < self.cardinality and cursor != starting_position: cursor = cursor.next; iterator += 1;
         if cursor == starting_position: return starting_position;
-
-        # if code execution reached here, we didn't find the element literally, so let's look inside (search like the following:)
-        cursor = self.access; iterator = 0; # resets for searching again
-        while cursor.content != starting_position.content and iterator < self.cardinality:
-            cursor = cursor.next; iterator += 1;
+        cursor = self.access; iterator = 0; # set variables needed for content search
+        while cursor.content != starting_position.content and iterator < self.cardinality: cursor = cursor.next; iterator += 1;
         if (iterator == self.cardinality): raise ValueError("Error, object  '", starting_position, "'  is not in this ring ! (and neither is a different object containing the same exact value!)");
-
-        # if code reached here then secundary search was successful, so return the corresponding LL_node
         return cursor;
 
     def loop(self, starting_position):
         self._loop(self._object_and_content_search(starting_position));
-
-    def list_of_loop(self, starting_position):
-        ret_val = [];
-        cursor = self.access;
-        iterator = 0;
-        while cursor != starting_position and iterator < self.cardinality:
-            cursor = cursor.next; iterator += 1;
-        if (iterator == self.cardinality): print("Error, object  '", starting_position.content, "'  is not in this ring !"); return;
-        for i in range(self.cardinality):
-            print("cursor.content:", cursor.content);
-            print("cursor.content.content:", cursor.content.content, "\n");
-            ret_val.append(cursor.content.content); cursor = cursor.next;
-        return ret_val;
 
     def list_of_elements(self):
         ret_val = [];
@@ -141,7 +103,7 @@ def traverse_LL(starting_position, distance):
 def interpret_interval(interval_to_read): return interval_to_read.value[0];
 def apply_interval(starting_note, interval): return traverse_LL(starting_note, interpret_interval(interval));
         
-def derive_scale(root_note, mode):
+def list_of_notes(root_note, mode):
     ret_val = [root_note.content]; note_cursor = root_note;
     interval_scale.access = mode;
     for i, CURRENT_INTERVAL in enumerate(interval_scale):
