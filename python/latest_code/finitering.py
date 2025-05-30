@@ -152,9 +152,8 @@ phrygian   = looper; looper = looper.next; lydian     = looper; looper = looper.
 mixolydian = looper; looper = looper.next; aeolian    = looper; looper = looper.next; locrian    = looper;
 # ^^^--> CREATE REFERENCES TO ALL THE MODES
 
-print("Start this program as 'python3 -i music_theory.py' if you want to get anything useful out of it.");
-print("\nOnce in interactive mode, you can use 'help()' to learn about available functions.");
-print("\n\nDiagnostic data:");
-print("Created the ring \"chromatic_scale\", which represents the notes within an octave (C, C#, D, etc).")
-print("Created the ring \"interval_scale\", which represents all modes (ionian, dorian, etc).")
-print("\nSetup complete!");
+print("Start this program as 'python3 -i music_theory.py' if you want to get anything useful out of it.\nOnce in interactive mode, you can use 'help()' to learn about available functions.");
+print("\nDiagnostic data:");
+print("--> created the ring 'chromatic_scale', which represents the notes within an octave (C, C#, D, etc).")
+print("--> created the ring 'interval_scale', which represents all modes (ionian, dorian, etc).")
+print("--> setup complete!");
