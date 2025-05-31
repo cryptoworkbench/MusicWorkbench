@@ -5,17 +5,6 @@ v = V = vert = vertical   = "vertical";
 # ^^^--> Some shortcuts to make the user's live a bit easier ^^^
 
 class NOTE(Enum): c = "C"; c_sharp = "C#"; d = "D"; d_sharp = "D#"; e = "E"; f = "F"; f_sharp = "F#"; g = "G"; g_sharp = "G#"; a = "A"; a_sharp = "A#"; b = "B";
-__c = NOTE.c; __c_sharp = NOTE.c_sharp;
-__d = NOTE.d;
-__d_sharp = NOTE.d_sharp;
-__e = NOTE.e;
-__f = NOTE.f;
-__f_sharp = NOTE.f_sharp;
-__g = NOTE.g;
-__g_sharp = NOTE.g_sharp;
-__a = NOTE.a;
-__a_sharp = NOTE.a_sharp;
-__b = NOTE.b;
 def return_NOTE_str(note): return note.value;
 def read_note(note): print(return_NOTE_str(note));
 # ^^^--> ALL NOTE STUFF        ^^^
@@ -31,11 +20,12 @@ class LL_node:
     def __init__(self, content, next_node=None):
         self.content = content; self.next = next_node;
 
-def return_LL_node_str(ll_node, orientation=None):
-    if isinstance(ll_node.content, NOTE): return return_NOTE_str(ll_node.content);
-    elif isinstance(ll_node.content, INTERVAL):
-        if orientation == "horizontal": return return_INTERVAL_abbreviation(ll_node.content);
-        elif orientation == "vertical": return return_INTERVAL_name(ll_node.content);
+def return_layer_ZERO_str(layer_ONE_node, orientation=None):
+    layer_ZERO_node = layer_ONE_node.content;
+    if isinstance(layer_ZERO_node.content, NOTE): return return_NOTE_str(layer_ZERO_node.content);
+    elif isinstance(layer_ZERO_node.content, INTERVAL):
+        if orientation == "horizontal": return return_INTERVAL_abbreviation(layer_ZERO_node.content);
+        elif orientation == "vertical": return return_INTERVAL_name(layer_ZERO_node.content);
 
 class ring_from_cll:
     def __init__(self, circular_LL):
@@ -51,7 +41,7 @@ class ring_from_cll:
     def _loop(self, found_element, orientation=None):
         output_str = str();
         for i in range(self.cardinality):
-            piece = return_LL_node_str(found_element.content, orientation);
+            piece = return_layer_ZERO_str(found_element, orientation);
             if orientation == "vertical":
                 output_str += piece + "\n"; # print(piece);
             elif orientation == "horizontal":
@@ -59,10 +49,8 @@ class ring_from_cll:
             found_element = found_element.next;
         if orientation == "horizontal":
             output_str = output_str[:-2];
-            output_str = "<" + output_str;
-            output_str += ">";
-        else:
-            output_str = output_str[:-1];
+            output_str = "<" + output_str + ">";
+        else: output_str = output_str[:-1];
         print(output_str);
 
     def _object_and_content_search(self, starting_position):
