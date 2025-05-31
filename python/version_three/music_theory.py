@@ -158,79 +158,26 @@ def read_list(list_to_read):
 def ring_from_list(list_to_put_in_ring):
     return ring_from_cll(cll_from_list(list_to_put_in_ring));
 
-_c       = LL_node(__c);
-_c_sharp = LL_node(__c_sharp);
-_d       = LL_node(__d);
-_d_sharp = LL_node(__d_sharp);
-_e       = LL_node(__e);
-_f       = LL_node(__f);
-_f_sharp = LL_node(__f_sharp);
-_g       = LL_node(__g);
-_g_sharp = LL_node(__g_sharp);
-_a       = LL_node(__a);
-_a_sharp = LL_node(__a_sharp);
-_b       = LL_node(__b);
-_c.next = _c_sharp;
-_c_sharp.next = _d;
-_d.next = _d_sharp;
-_d_sharp.next = _e;
-_e.next = _f;
-_f.next = _f_sharp;
-_f_sharp.next = _g;
-_g.next = _g_sharp;
-_g_sharp.next = _a;
-_a.next = _a_sharp;
-_a_sharp.next = _b;
-_b.next = _c;
-# ^^^ Here we create the inner layer
+_c       = LL_node(      __c); _c_sharp = LL_node(__c_sharp); _d       = LL_node(      __d); _d_sharp = LL_node(__d_sharp); _e       = LL_node(      __e);
+_f       = LL_node(      __f); _f_sharp = LL_node(__f_sharp); _g       = LL_node(      __g); _g_sharp = LL_node(__g_sharp); _a       = LL_node(      __a);
+_a_sharp = LL_node(__a_sharp); _b       = LL_node(      __b);
+_c.next = _c_sharp; _c_sharp.next = _d; _d.next = _d_sharp; _d_sharp.next = _e; _e.next =       _f; _f.next = _f_sharp;
+_f_sharp.next = _g; _g.next = _g_sharp; _g_sharp.next = _a; _a.next = _a_sharp; _a_sharp.next = _b; _b.next =       _c;
+# ^^^ HERE WE CREATE THE INNER LAYER FOR THE CHROMATIC PERMUTATION
 
-c       = LL_node(_c);
-c_sharp = LL_node(_c_sharp);
-d       = LL_node(_d);
-d_sharp = LL_node(_d_sharp);
-e       = LL_node(_e);
-f       = LL_node(_f);
-f_sharp = LL_node(_f_sharp);
-g       = LL_node(_g);
-g_sharp = LL_node(_g_sharp);
-a       = LL_node(_a);
-a_sharp = LL_node(_a_sharp);
-b       = LL_node(_b);
-c.next = c_sharp;
-c_sharp.next = d;
-d.next = d_sharp;
-d_sharp.next = e;
-e.next = f;
-f.next = f_sharp;
-f_sharp.next = g;
-g.next = g_sharp;
-g_sharp.next = a;
-a.next = a_sharp;
-a_sharp.next = b;
-b.next = c;
-chromatic_scale = ring_from_cll(c);
-# ^^^ ALL CODE TO CREATE THE UNIVERSAL CHROMATIC PATTERN THAT WE ARE GOING TO USE ALL THE TIME ^^^
+c       = LL_node(      _c); c_sharp = LL_node(_c_sharp); d       = LL_node(      _d); d_sharp = LL_node(_d_sharp); e       = LL_node(      _e);
+f       = LL_node(      _f); f_sharp = LL_node(_f_sharp); g       = LL_node(      _g); g_sharp = LL_node(_g_sharp); a       = LL_node(      _a);
+a_sharp = LL_node(_a_sharp); b       = LL_node(      _b);
+c.next = c_sharp; c_sharp.next = d; d.next = d_sharp; d_sharp.next = e; e.next =       f; f.next = f_sharp; f_sharp.next = g;
+g.next = g_sharp; g_sharp.next = a; a.next = a_sharp; a_sharp.next = b; b.next =       c; chromatic_scale = ring_from_cll(c);
+# ^^^ HERE WE CREATE THE OUTER LAYER FOR THE CHROMATIC PERMUTATION
 
-
-_half_step  = LL_node(__half_step);  # <<< Inner layer dealings
-_whole_step = LL_node(__whole_step); # <<< Inner layer dealings
-ionian      = LL_node(_whole_step);
-dorian      = LL_node(_whole_step);
-phrygian    = LL_node(_half_step);
-lydian      = LL_node(_whole_step);
-mixolydian  = LL_node(_whole_step);
-aeolian     = LL_node(_whole_step);
-locrian     = LL_node(_half_step);
-ionian    .next = dorian;
-dorian    .next = phrygian;
-phrygian  .next = lydian;
-lydian    .next = mixolydian;
-mixolydian.next = aeolian;
-aeolian   .next = locrian;
-locrian   .next = ionian;
-interval_scale = ring_from_cll(ionian);
+_half_step      = LL_node( __half_step); _whole_step     = LL_node(__whole_step); # <<< Inner layer dealings
+ionian          = LL_node(_whole_step); dorian          = LL_node(_whole_step); phrygian        = LL_node( _half_step); lydian          = LL_node(_whole_step);
+mixolydian      = LL_node(_whole_step); aeolian         = LL_node(_whole_step); locrian         = LL_node( _half_step);
+ionian    .next =     dorian; dorian    .next =   phrygian; phrygian  .next =     lydian; lydian    .next = mixolydian; mixolydian.next =    aeolian;
+aeolian   .next =    locrian; locrian   .next =     ionian; interval_scale = ring_from_cll(ionian);
 # ^^^ ALL CODE TO CREATE THE UNIVERSAL INTERVAL PATTERN THAT WE ARE GOING TO USE ALL THE TIME ^^^
-
 
 pre_liminary_help_info = "Start this program as \"python3 -i ";
 pre_liminary_help_info += os.path.basename(__file__);
