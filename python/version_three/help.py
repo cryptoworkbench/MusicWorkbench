@@ -4,9 +4,9 @@
     nothing else allowed.
 '''
 
-def help():
+def show_help():
     print("### Help menu ( help() ):");
-    print("## cll_from_list(list_to_convert)");
+    print("## new_permutation(list_to_convert)");
     print("##    Makes a circular linked list from the list 'list_to_convert', while conserving the order.");
     print("##    Returns the circular linked at the position which corresponds to 'list_to_convert[0]'.");
     print("##");
@@ -37,4 +37,4 @@ def help():
     print("##    Extends the cyclical linked list the 'ring' class points to with 'element', insertion happens before ring.access, so;");
     print("##    new_member.next == ring.access");
 
-__all__ = ["help"]
+__all__ = ["show_help"]

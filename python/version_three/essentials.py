@@ -24,7 +24,7 @@ def link_LL_nodes(LL_nodes):
     for i in range(len(LL_nodes)):
         LL_nodes[i].next = LL_nodes[(i + 1) % len(LL_nodes)]
 
-def return_layer_ZERO_str(node, orientation=None):
+def return_layer_ONE_str(node, orientation=None):
     if isinstance(node.content, LL_node): node = node.content;
     if isinstance(node.content, NOTE):
         return return_NOTE_str(node.content);
@@ -43,33 +43,27 @@ class ring_from_cll:
         current = self.access; count = 0;
         while count < self.cardinality: yield current.content; current = current.next; count += 1;
 
-    def _object_and_content_search(self, starting_position):
+    def _search(self, starting_position):
         cursor = self.access; iterator = 0; # set variables needed for object search
         while iterator < self.cardinality and cursor.content != starting_position: cursor = cursor.next; iterator += 1;
-        if cursor == starting_position: return cursor;
+        if cursor.content == starting_position: return cursor;
         raise ValueError("Error, object  '  ", starting_position, "  ' is not in this ring ! (and neither is a different object containing the same exact value!)");
 
     def loop(self, starting_position=None, orientation="horizontal"):
         if starting_position == None: starting_position = self.access;
-        output_str = str();
+        else: starting_position = self._search(starting_position);
+        # ^^^--> These two lines translate between the two permutation layers
+        output_str = "";
         for i in range(self.cardinality):
-            piece = return_layer_ZERO_str(starting_position, orientation);
-            if orientation == "vertical":
-                output_str += piece + "\n"; # print(piece);
-            elif orientation == "horizontal":
-                output_str += piece + ", ";
+            piece = return_layer_ONE_str(starting_position, orientation);
+            output_str += piece;
+            if orientation == "vertical": output_str += "\n";
+            elif orientation == "horizontal": output_str += ", ";
             starting_position = starting_position.next;
         if orientation == "horizontal":
-            output_str = output_str[:-2];
-            output_str = "<" + output_str + ">";
+            output_str = "<" + output_str[:-2] + ">";
         else: output_str = output_str[:-1];
         print(output_str);
-
-    def list_of_elements(self):
-        ret_val = [];
-        for element in self:
-            ret_val.append(element);
-        return ret_val;
 
     def extend_with(self, value):
         """Add a new node with the given value at the end of the circular list."""
@@ -87,9 +81,19 @@ class ring_from_cll:
 
 notes = [NOTE.c, NOTE.c_sharp, NOTE.d, NOTE.d_sharp, NOTE.e, NOTE.f, NOTE.f_sharp, NOTE.g, NOTE.g_sharp, NOTE.a, NOTE.a_sharp, NOTE.b];
 inner_nodes = [LL_node(note) for note in notes]; link_LL_nodes(inner_nodes);           # << inner layer
-c       = inner_nodes[ 0]; c_sharp = inner_nodes[ 1]; d       = inner_nodes[ 2]; d_sharp = inner_nodes[ 3]; e       = inner_nodes[ 4]; f       = inner_nodes[ 5];
-f_sharp = inner_nodes[ 6]; g       = inner_nodes[ 7]; g_sharp = inner_nodes[ 8]; a       = inner_nodes[ 9]; a_sharp = inner_nodes[10]; b       = inner_nodes[11];
-outer_nodes = [LL_node(node) for node in inner_nodes]; link_LL_nodes(outer_nodes); chromatic_scale = ring_from_cll(outer_nodes[0]);
+
+b       = LL_node(inner_nodes[11]);
+a_sharp = LL_node(inner_nodes[10], b      ); a       = LL_node(inner_nodes[ 9], a_sharp); g_sharp = LL_node(inner_nodes[ 8], a      );
+g       = LL_node(inner_nodes[ 7], g_sharp); f_sharp = LL_node(inner_nodes[ 6], g      ); f       = LL_node(inner_nodes[ 5], f_sharp);
+e       = LL_node(inner_nodes[ 4], f      ); d_sharp = LL_node(inner_nodes[ 3], e      ); d       = LL_node(inner_nodes[ 2], d_sharp);
+c_sharp = LL_node(inner_nodes[ 1], d      ); c       = LL_node(inner_nodes[ 0], c_sharp); b.next = c;
+chromatic_scale = ring_from_cll(c);
+
+b       = inner_nodes[11];
+a_sharp = inner_nodes[10]; a       = inner_nodes[ 9]; g_sharp = inner_nodes[ 8];
+g       = inner_nodes[ 7]; f_sharp = inner_nodes[ 6]; f       = inner_nodes[ 5];
+e       = inner_nodes[ 4]; d_sharp = inner_nodes[ 3]; d       = inner_nodes[ 2];
+c_sharp = inner_nodes[ 1]; c       = inner_nodes[ 0];
 # ^^^--> Creation procedure for the ring 'chromatic_scale'
 
 half_step   = LL_node(INTERVAL. half_step); whole_step  = LL_node(INTERVAL.whole_step); # << inner layer
@@ -104,7 +108,7 @@ __all__ = [
     "NOTE", "INTERVAL",
 
     # Functions
-    "return_NOTE_str", "read_note", "return_INTERVAL_halfsteps", "return_INTERVAL_name", "return_INTERVAL_abbreviation", "read_interval", "LL_node", "ring_from_cll",
+    "return_NOTE_str", "read_note", "return_INTERVAL_halfsteps", "return_INTERVAL_name", "return_INTERVAL_abbreviation", "read_interval", "LL_node", "ring_from_cll", "return_layer_ONE_str",
 
     # Abbreviations
     "h", "H", "hor", "horizontal", "v", "V", "vert", "vertical",
