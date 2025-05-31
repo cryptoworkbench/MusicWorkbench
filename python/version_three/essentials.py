@@ -124,18 +124,20 @@ interval_scale = ring_from_cll(ionian);
 # ^^^ ALL CODE TO CREATE THE UNIVERSAL INTERVAL PATTERN THAT WE ARE GOING TO USE ALL THE TIME ^^^
 
 __all__ = [
-    "NOTE", "return_NOTE_str", "read_note", "INTERVAL", "return_INTERVAL_halfsteps", "return_INTERVAL_name", "return_INTERVAL_abbreviation", "read_interval", "LL_node", "ring_from_cll", "h", "H", "hor", "horizontal", "v", "V", "vert", "vertical",
+    # Data types
+    "NOTE", "INTERVAL",
 
-    # Inner layer chromatic LL_nodes
-    # "_c", "_c_sharp", "_d", "_d_sharp", "_e",
-    # "_f", "_f_sharp", "_g", "_g_sharp", "_a", "_a_sharp", "_b",
+    # Functions
+    "return_NOTE_str", "read_note", "return_INTERVAL_halfsteps", "return_INTERVAL_name", "return_INTERVAL_abbreviation", "read_interval", "LL_node", "ring_from_cll",
 
-    # Outer layer chromatic LL_nodes
+    # Abbreviations
+    "h", "H", "hor", "horizontal", "v", "V", "vert", "vertical",
+
+    # Notes
     "c", "c_sharp", "d", "d_sharp", "e",
     "f", "f_sharp", "g", "g_sharp", "a", "a_sharp", "b",
 
-    # Interval LL_nodes
-    "half_step", "whole_step",
+    # Modes
     "ionian", "dorian", "phrygian", "lydian",
     "mixolydian", "aeolian", "locrian",
 
