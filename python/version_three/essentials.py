@@ -20,6 +20,10 @@ class LL_node:
     def __init__(self, content, next_node=None):
         self.content = content; self.next = next_node;
 
+def link_LL_nodes(LL_nodes):
+    for i in range(len(LL_nodes)):
+        LL_nodes[i].next = LL_nodes[(i + 1) % len(LL_nodes)]
+
 def return_layer_ZERO_str(layer_ONE_node, orientation=None):
     layer_ZERO_node = layer_ONE_node.content;
     if isinstance(layer_ZERO_node.content, NOTE): return return_NOTE_str(layer_ZERO_node.content);
@@ -80,48 +84,25 @@ class ring_from_cll:
             new_node.next = self.access
             self.cardinality = 1
             return
-
         current = self.access;
         while current.next != self.access: current = current.next;
-
         current.next = new_node
         new_node.next = self.access
         self.cardinality += 1
 
-### First, we need to create the inner layer
 notes = [NOTE.c, NOTE.c_sharp, NOTE.d, NOTE.d_sharp, NOTE.e, NOTE.f, NOTE.f_sharp, NOTE.g, NOTE.g_sharp, NOTE.a, NOTE.a_sharp, NOTE.b];
-inner_nodes = [LL_node(note) for note in notes];
-for i in range(len(inner_nodes)):
-    inner_nodes[i].next = inner_nodes[(i + 1) % len(inner_nodes)];
-
-### Now, we create the outer layer
+inner_nodes = [LL_node(note) for note in notes]; link_LL_nodes(inner_nodes);           # << inner layer
 c       = inner_nodes[ 0]; c_sharp = inner_nodes[ 1]; d       = inner_nodes[ 2]; d_sharp = inner_nodes[ 3]; e       = inner_nodes[ 4]; f       = inner_nodes[ 5];
 f_sharp = inner_nodes[ 6]; g       = inner_nodes[ 7]; g_sharp = inner_nodes[ 8]; a       = inner_nodes[ 9]; a_sharp = inner_nodes[10]; b       = inner_nodes[11];
-outer_nodes = [LL_node(node) for node in inner_nodes];
-for i in range(len(outer_nodes)):
-    outer_nodes[i].next = outer_nodes[(i + 1) % len(outer_nodes)]
+outer_nodes = [LL_node(node) for node in inner_nodes]; link_LL_nodes(outer_nodes); chromatic_scale = ring_from_cll(outer_nodes[0]);
+# ^^^--> Creation procedure for the ring 'chromatic_scale'
 
-chromatic_scale = ring_from_cll(outer_nodes[0]);
-# ^^^ ALL CODE TO CREATE THE UNIVERSAL CHROMATIC PATTERN THAT WE ARE GOING TO USE ALL THE TIME ^^^
-
-half_step  = LL_node(INTERVAL. half_step);  # <<< Inner layer dealings
-whole_step = LL_node(INTERVAL.whole_step); # <<< Inner layer dealings
-ionian      = LL_node(whole_step);
-dorian      = LL_node(whole_step);
-phrygian    = LL_node(half_step);
-lydian      = LL_node(whole_step);
-mixolydian  = LL_node(whole_step);
-aeolian     = LL_node(whole_step);
-locrian     = LL_node(half_step);
-ionian    .next = dorian;
-dorian    .next = phrygian;
-phrygian  .next = lydian;
-lydian    .next = mixolydian;
-mixolydian.next = aeolian;
-aeolian   .next = locrian;
-locrian   .next = ionian;
-interval_scale = ring_from_cll(ionian);
-# ^^^ ALL CODE TO CREATE THE UNIVERSAL INTERVAL PATTERN THAT WE ARE GOING TO USE ALL THE TIME ^^^
+half_step   = LL_node(INTERVAL. half_step); whole_step  = LL_node(INTERVAL.whole_step); # << inner layer
+ionian      = LL_node(whole_step); dorian      = LL_node(whole_step); phrygian    = LL_node( half_step); lydian      = LL_node(whole_step);
+mixolydian  = LL_node(whole_step); aeolian     = LL_node(whole_step); locrian     = LL_node( half_step);
+ionian    .next =     dorian; dorian    .next =   phrygian; phrygian  .next =     lydian; lydian    .next = mixolydian;
+mixolydian.next =    aeolian; aeolian   .next =    locrian; locrian   .next =     ionian; interval_scale = ring_from_cll(ionian);
+# ^^^--> Creation procedure for the ring 'interval_scale'
 
 __all__ = [
     # Data types
