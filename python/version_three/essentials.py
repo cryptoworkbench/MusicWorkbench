@@ -1,5 +1,9 @@
 from enum import Enum
 
+h = H = hor  = horizontal = "horizontal";
+v = V = vert = vertical   = "vertical";
+# ^^^--> Some shortcuts to make the user's live a bit easier ^^^
+
 class NOTE(Enum): c = "C"; c_sharp = "C#"; d = "D"; d_sharp = "D#"; e = "E"; f = "F"; f_sharp = "F#"; g = "G"; g_sharp = "G#"; a = "A"; a_sharp = "A#"; b = "B";
 __c = NOTE.c; __c_sharp = NOTE.c_sharp;
 __d = NOTE.d;
@@ -177,7 +181,7 @@ interval_scale = ring_from_cll(ionian);
  #   return locals()
 
 __all__ = [
-    "NOTE", "return_NOTE_str", "read_note", "INTERVAL", "return_INTERVAL_halfsteps", "return_INTERVAL_name", "return_INTERVAL_abbreviation", "read_interval", "__whole_step", "__half_step", "LL_node", "ring_from_cll",
+    "NOTE", "return_NOTE_str", "read_note", "INTERVAL", "return_INTERVAL_halfsteps", "return_INTERVAL_name", "return_INTERVAL_abbreviation", "read_interval", "__whole_step", "__half_step", "LL_node", "ring_from_cll", "h", "H", "hor", "horizontal", "v", "V", "vert", "vertical",
 
     # Inner layer chromatic LL_nodes
     "_c", "_c_sharp", "_d", "_d_sharp", "_e",

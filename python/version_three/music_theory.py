@@ -2,14 +2,6 @@ import os
 from essentials import *
 from help import *
 
-h = H = hor  = horizontal = "horizontal";
-v = V = vert = vertical   = "vertical";
-# ^^^--> Some shortcuts to make the user's live a bit easier ^^^
-
-class LL_node_wrapper:
-    def __init__(self, inner, next_node=None):
-        self.inner = inner; self.next = next_node;
-
 def print_LL_node_content(ll_node):
     print(return_LL_node_str(ll_node));
 def traverse_LL(starting_position, distance):
@@ -27,17 +19,6 @@ def cll_from_list(list_to_convert):
     if len(list_to_convert) == 1: return head;
     for i in range(1, len(list_to_convert)): head = add_to_LL(head, list_to_convert[i]);
     return head.next;
-
-class layer_ONE: # for storing patterns produced by applying interval patterns to the chromatic scale
-    def __init__(self, layer_ZERO_ring_to_wrap):
-        self.access = layer_ZERO_ring_to_wrap.access; self.cardinality = 1;
-        cursor = self.access.next;
-        while cursor != self.access:
-            print(cursor.content);
-            cursor.next; self.cardinality += 1;
-    def __iter__(self):
-        current = self.access; count = 0;
-        while count < self.cardinality: yield current.content; current = current.next; count += 1;
 
 def ring_from_list(list_to_make_into_ring):
     return ring_from_cll(cll_from_list(list_to_make_into_ring));
