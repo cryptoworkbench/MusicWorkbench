@@ -25,8 +25,6 @@ def return_INTERVAL_halfsteps(interval_to_read): return interval_to_read.value[0
 def return_INTERVAL_name(interval): return interval.value[1];
 def return_INTERVAL_abbreviation(interval): return interval.value[2];
 def read_interval(interval): print(return_INTERVAL_name(interval));
-__whole_step = INTERVAL.whole_step; __half_step = INTERVAL.half_step;
-# ^^^ Type definitions
 # ^^^--> ALL INTERVAL STUFF    ^^^
 
 class LL_node:
@@ -103,7 +101,6 @@ class ring_from_cll:
         new_node.next = self.access
         self.cardinality += 1
 
-# def initialize_chromatic_scale():
 _c       = LL_node(__c);
 _c_sharp = LL_node(__c_sharp);
 _d       = LL_node(__d);
@@ -156,19 +153,16 @@ a_sharp.next = b;
 b.next = c;
 chromatic_scale = ring_from_cll(c);
 # ^^^ ALL CODE TO CREATE THE UNIVERSAL CHROMATIC PATTERN THAT WE ARE GOING TO USE ALL THE TIME ^^^
-#    return locals()
 
-
-# def initialize_interval_scale():
-_half_step  = LL_node(__half_step);  # <<< Inner layer dealings
-_whole_step = LL_node(__whole_step); # <<< Inner layer dealings
-ionian      = LL_node(_whole_step);
-dorian      = LL_node(_whole_step);
-phrygian    = LL_node(_half_step);
-lydian      = LL_node(_whole_step);
-mixolydian  = LL_node(_whole_step);
-aeolian     = LL_node(_whole_step);
-locrian     = LL_node(_half_step);
+half_step  = LL_node(INTERVAL. half_step);  # <<< Inner layer dealings
+whole_step = LL_node(INTERVAL.whole_step); # <<< Inner layer dealings
+ionian      = LL_node(whole_step);
+dorian      = LL_node(whole_step);
+phrygian    = LL_node(half_step);
+lydian      = LL_node(whole_step);
+mixolydian  = LL_node(whole_step);
+aeolian     = LL_node(whole_step);
+locrian     = LL_node(half_step);
 ionian    .next = dorian;
 dorian    .next = phrygian;
 phrygian  .next = lydian;
@@ -178,10 +172,9 @@ aeolian   .next = locrian;
 locrian   .next = ionian;
 interval_scale = ring_from_cll(ionian);
 # ^^^ ALL CODE TO CREATE THE UNIVERSAL INTERVAL PATTERN THAT WE ARE GOING TO USE ALL THE TIME ^^^
- #   return locals()
 
 __all__ = [
-    "NOTE", "return_NOTE_str", "read_note", "INTERVAL", "return_INTERVAL_halfsteps", "return_INTERVAL_name", "return_INTERVAL_abbreviation", "read_interval", "__whole_step", "__half_step", "LL_node", "ring_from_cll", "h", "H", "hor", "horizontal", "v", "V", "vert", "vertical",
+    "NOTE", "return_NOTE_str", "read_note", "INTERVAL", "return_INTERVAL_halfsteps", "return_INTERVAL_name", "return_INTERVAL_abbreviation", "read_interval", "LL_node", "ring_from_cll", "h", "H", "hor", "horizontal", "v", "V", "vert", "vertical",
 
     # Inner layer chromatic LL_nodes
     "_c", "_c_sharp", "_d", "_d_sharp", "_e",
@@ -192,7 +185,7 @@ __all__ = [
     "f", "f_sharp", "g", "g_sharp", "a", "a_sharp", "b",
 
     # Interval LL_nodes
-    "_half_step", "_whole_step",
+    "half_step", "whole_step",
     "ionian", "dorian", "phrygian", "lydian",
     "mixolydian", "aeolian", "locrian",
 
