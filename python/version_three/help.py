@@ -36,5 +36,8 @@ def show_help():
     print("## ring.extend_with(element)");
     print("##    Extends the cyclical linked list the 'ring' class points to with 'element', insertion happens before ring.access, so;");
     print("##    new_member.next == ring.access");
+    print("##");
+    print("## Tip;  try:");
+    print("## c_major = ring_from_cll(new_permutation(list_of_notes(c, ionian)))");
 
 __all__ = ["show_help"]
