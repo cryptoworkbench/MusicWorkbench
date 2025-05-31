@@ -50,7 +50,6 @@ class ring_from_cll:
 
     def _loop(self, found_element, orientation=None):
         output_str = str();
-        single_string = "<"; multi_line = "";
         for i in range(self.cardinality):
             piece = return_LL_node_str(found_element.content, orientation);
             if orientation == "vertical":
@@ -101,57 +100,20 @@ class ring_from_cll:
         new_node.next = self.access
         self.cardinality += 1
 
-_c       = LL_node(__c);
-_c_sharp = LL_node(__c_sharp);
-_d       = LL_node(__d);
-_d_sharp = LL_node(__d_sharp);
-_e       = LL_node(__e);
-_f       = LL_node(__f);
-_f_sharp = LL_node(__f_sharp);
-_g       = LL_node(__g);
-_g_sharp = LL_node(__g_sharp);
-_a       = LL_node(__a);
-_a_sharp = LL_node(__a_sharp);
-_b       = LL_node(__b);
-_c.next = _c_sharp;
-_c_sharp.next = _d;
-_d.next = _d_sharp;
-_d_sharp.next = _e;
-_e.next = _f;
-_f.next = _f_sharp;
-_f_sharp.next = _g;
-_g.next = _g_sharp;
-_g_sharp.next = _a;
-_a.next = _a_sharp;
-_a_sharp.next = _b;
-_b.next = _c;
-# ^^^ Here we create the inner layer
+### First, we need to create the inner layer
+notes = [NOTE.c, NOTE.c_sharp, NOTE.d, NOTE.d_sharp, NOTE.e, NOTE.f, NOTE.f_sharp, NOTE.g, NOTE.g_sharp, NOTE.a, NOTE.a_sharp, NOTE.b];
+inner_nodes = [LL_node(note) for note in notes];
+for i in range(len(inner_nodes)):
+    inner_nodes[i].next = inner_nodes[(i + 1) % len(inner_nodes)];
 
-c       = LL_node(_c);
-c_sharp = LL_node(_c_sharp);
-d       = LL_node(_d);
-d_sharp = LL_node(_d_sharp);
-e       = LL_node(_e);
-f       = LL_node(_f);
-f_sharp = LL_node(_f_sharp);
-g       = LL_node(_g);
-g_sharp = LL_node(_g_sharp);
-a       = LL_node(_a);
-a_sharp = LL_node(_a_sharp);
-b       = LL_node(_b);
-c.next = c_sharp;
-c_sharp.next = d;
-d.next = d_sharp;
-d_sharp.next = e;
-e.next = f;
-f.next = f_sharp;
-f_sharp.next = g;
-g.next = g_sharp;
-g_sharp.next = a;
-a.next = a_sharp;
-a_sharp.next = b;
-b.next = c;
-chromatic_scale = ring_from_cll(c);
+### Now, we create the outer layer
+c       = inner_nodes[ 0]; c_sharp = inner_nodes[ 1]; d       = inner_nodes[ 2]; d_sharp = inner_nodes[ 3]; e       = inner_nodes[ 4]; f       = inner_nodes[ 5];
+f_sharp = inner_nodes[ 6]; g       = inner_nodes[ 7]; g_sharp = inner_nodes[ 8]; a       = inner_nodes[ 9]; a_sharp = inner_nodes[10]; b       = inner_nodes[11];
+outer_nodes = [LL_node(node) for node in inner_nodes];
+for i in range(len(outer_nodes)):
+    outer_nodes[i].next = outer_nodes[(i + 1) % len(outer_nodes)]
+
+chromatic_scale = ring_from_cll(outer_nodes[0]);
 # ^^^ ALL CODE TO CREATE THE UNIVERSAL CHROMATIC PATTERN THAT WE ARE GOING TO USE ALL THE TIME ^^^
 
 half_step  = LL_node(INTERVAL. half_step);  # <<< Inner layer dealings
@@ -177,8 +139,8 @@ __all__ = [
     "NOTE", "return_NOTE_str", "read_note", "INTERVAL", "return_INTERVAL_halfsteps", "return_INTERVAL_name", "return_INTERVAL_abbreviation", "read_interval", "LL_node", "ring_from_cll", "h", "H", "hor", "horizontal", "v", "V", "vert", "vertical",
 
     # Inner layer chromatic LL_nodes
-    "_c", "_c_sharp", "_d", "_d_sharp", "_e",
-    "_f", "_f_sharp", "_g", "_g_sharp", "_a", "_a_sharp", "_b",
+    # "_c", "_c_sharp", "_d", "_d_sharp", "_e",
+    # "_f", "_f_sharp", "_g", "_g_sharp", "_a", "_a_sharp", "_b",
 
     # Outer layer chromatic LL_nodes
     "c", "c_sharp", "d", "d_sharp", "e",
