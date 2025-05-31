@@ -26,13 +26,17 @@ def ring_from_list(list_to_make_into_ring):
 def apply_interval(starting_note, interval): return traverse_LL(starting_note, return_INTERVAL_halfsteps(interval));
         
 def list_of_notes(root_note, mode):
-    ret_val = [root_note.content]; note_cursor = root_note;
+    ret_val = [root_note]; note_cursor = root_note;
+    old_interval_scale_head = interval_scale.access;
+
     interval_scale.access = mode;
     for i, CURRENT_INTERVAL in enumerate(interval_scale):
         if i == interval_scale.cardinality - 1: break;
         new = apply_interval(note_cursor, CURRENT_INTERVAL);
         ret_val.append(new.content);
         note_cursor = new;
+
+    interval_scale.access = old_interval_scale_head;
     return ret_val;
 
 def read_list(list_to_read):

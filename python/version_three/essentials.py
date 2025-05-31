@@ -10,9 +10,9 @@ def read_note(note): print(return_NOTE_str(note));
 # ^^^--> ALL NOTE STUFF        ^^^
 
 class INTERVAL(Enum): half_step = (1, "half step", "H"); whole_step = (2, "whole step", "W"); minor_third = (3, "minor third", "m3"); major_third = (4, "major third", "M3"); perfect_fourth = (5, "perfect fourth", "P4"); tritone = (6, "tritone", "A4"); perfect_fifth = (7, "perfect fifth", "P5"); minor_sixth = (8, "minor sixth", "m6"); major_sixth = (9, "major sixth", "M6"); minor_seventh = (10, "minor seventh", "m7"); major_seventh = (11, "major seventh", "M7");
-def return_INTERVAL_halfsteps(interval_to_read): return interval_to_read.value[0];
-def return_INTERVAL_name(interval): return interval.value[1];
-def return_INTERVAL_abbreviation(interval): return interval.value[2];
+def return_INTERVAL_halfsteps(interval_to_read): return interval_to_read.content.value[0];
+def return_INTERVAL_name(interval): return interval.content.value[1];
+def return_INTERVAL_abbreviation(interval): return interval.content.value[2];
 def read_interval(interval): print(return_INTERVAL_name(interval));
 # ^^^--> ALL INTERVAL STUFF    ^^^
 
@@ -24,12 +24,13 @@ def link_LL_nodes(LL_nodes):
     for i in range(len(LL_nodes)):
         LL_nodes[i].next = LL_nodes[(i + 1) % len(LL_nodes)]
 
-def return_layer_ZERO_str(layer_ONE_node, orientation=None):
-    layer_ZERO_node = layer_ONE_node.content;
-    if isinstance(layer_ZERO_node.content, NOTE): return return_NOTE_str(layer_ZERO_node.content);
-    elif isinstance(layer_ZERO_node.content, INTERVAL):
-        if orientation == "horizontal": return return_INTERVAL_abbreviation(layer_ZERO_node.content);
-        elif orientation == "vertical": return return_INTERVAL_name(layer_ZERO_node.content);
+def return_layer_ZERO_str(node, orientation=None):
+    if isinstance(node.content, LL_node): node = node.content;
+    if isinstance(node.content, NOTE):
+        return return_NOTE_str(node.content);
+    elif isinstance(node.content, INTERVAL):
+        if orientation == "horizontal": return return_INTERVAL_abbreviation(node);
+        elif orientation == "vertical": return return_INTERVAL_name(node);
 
 class ring_from_cll:
     def __init__(self, circular_LL):
@@ -42,33 +43,27 @@ class ring_from_cll:
         current = self.access; count = 0;
         while count < self.cardinality: yield current.content; current = current.next; count += 1;
 
-    def _loop(self, found_element, orientation=None):
+    def _object_and_content_search(self, starting_position):
+        cursor = self.access; iterator = 0; # set variables needed for object search
+        while iterator < self.cardinality and cursor.content != starting_position: cursor = cursor.next; iterator += 1;
+        if cursor == starting_position: return cursor;
+        raise ValueError("Error, object  '  ", starting_position, "  ' is not in this ring ! (and neither is a different object containing the same exact value!)");
+
+    def loop(self, starting_position=None, orientation="horizontal"):
+        if starting_position == None: starting_position = self.access;
         output_str = str();
         for i in range(self.cardinality):
-            piece = return_layer_ZERO_str(found_element, orientation);
+            piece = return_layer_ZERO_str(starting_position, orientation);
             if orientation == "vertical":
                 output_str += piece + "\n"; # print(piece);
             elif orientation == "horizontal":
                 output_str += piece + ", ";
-            found_element = found_element.next;
+            starting_position = starting_position.next;
         if orientation == "horizontal":
             output_str = output_str[:-2];
             output_str = "<" + output_str + ">";
         else: output_str = output_str[:-1];
         print(output_str);
-
-    def _object_and_content_search(self, starting_position):
-        cursor = self.access; iterator = 0; # set variables needed for object search
-        while iterator < self.cardinality and cursor != starting_position: cursor = cursor.next; iterator += 1;
-        if cursor == starting_position: return starting_position;
-        cursor = self.access; iterator = 0; # set variables needed for content search
-        while cursor.content != starting_position.content and iterator < self.cardinality: cursor = cursor.next; iterator += 1;
-        if (iterator == self.cardinality): raise ValueError("Error, object  '", starting_position, "'  is not in this ring ! (and neither is a different object containing the same exact value!)");
-        return cursor;
-
-    def loop(self, starting_position=None, orientation="horizontal"):
-        if starting_position == None: starting_position = self.access;
-        self._loop(self._object_and_content_search(starting_position), orientation);
 
     def list_of_elements(self):
         ret_val = [];
