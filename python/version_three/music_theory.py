@@ -208,22 +208,19 @@ g_sharp.next = a;
 a.next = a_sharp;
 a_sharp.next = b;
 b.next = c;
-# ^^^ Here we create the outer layer (here we wrap the inner layer)
-
 chromatic_scale = ring_from_cll(c);
-print("--> created the ring 'chromatic_scale', which represents the notes within an octave (C, C#, D, etc).")
+# ^^^ ALL CODE TO CREATE THE UNIVERSAL CHROMATIC PATTERN THAT WE ARE GOING TO USE ALL THE TIME ^^^
 
-_half_step = LL_node(__half_step);
-_whole_step = LL_node(__whole_step);
-# ^^^ Inner layer
 
-ionian     = LL_node(_whole_step);
-dorian     = LL_node(_whole_step);
-phrygian   = LL_node(_half_step);
-lydian     = LL_node(_whole_step);
-mixolydian = LL_node(_whole_step);
-aeolian    = LL_node(_whole_step);
-locrian    = LL_node(_half_step);
+_half_step  = LL_node(__half_step);  # <<< Inner layer dealings
+_whole_step = LL_node(__whole_step); # <<< Inner layer dealings
+ionian      = LL_node(_whole_step);
+dorian      = LL_node(_whole_step);
+phrygian    = LL_node(_half_step);
+lydian      = LL_node(_whole_step);
+mixolydian  = LL_node(_whole_step);
+aeolian     = LL_node(_whole_step);
+locrian     = LL_node(_half_step);
 ionian    .next = dorian;
 dorian    .next = phrygian;
 phrygian  .next = lydian;
@@ -231,8 +228,15 @@ lydian    .next = mixolydian;
 mixolydian.next = aeolian;
 aeolian   .next = locrian;
 locrian   .next = ionian;
-# ^^^ Here we create the outer layer (here we wrap the inner layer)
-
-
 interval_scale = ring_from_cll(ionian);
+# ^^^ ALL CODE TO CREATE THE UNIVERSAL INTERVAL PATTERN THAT WE ARE GOING TO USE ALL THE TIME ^^^
+
+
+pre_liminary_help_info = "Start this program as \"python3 -i ";
+pre_liminary_help_info += os.path.basename(__file__);
+pre_liminary_help_info += "\" if you want to get anything useful out of it.\nOnce in interactive mode, you can use 'help()' to learn about available functions.";
+print(pre_liminary_help_info);
+print("\nDiagnostic data:");
+print("--> created the ring 'chromatic_scale', which represents the notes within an octave (C, C#, D, etc).")
 print("--> created the ring 'interval_scale', which represents all modes (ionian, dorian, etc).")
+print("--> setup complete!");
