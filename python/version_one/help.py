@@ -6,6 +6,9 @@
 
 def show_help():
     print("### Help menu ( help() ):");
+    print("## clear_screen()");
+    print("##    Clears the interactive prompt.");
+    print("##");
     print("## new_permutation(list_to_convert)");
     print("##    Makes a circular linked list from the list 'list_to_convert', while conserving the order.");
     print("##    Returns the circular linked at the position which corresponds to 'list_to_convert[0]'.");
