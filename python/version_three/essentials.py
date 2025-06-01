@@ -20,6 +20,15 @@ class LL_node:
     def __init__(self, content, next_node=None):
         self.content = content; self.next = next_node;
 
+def traverse_LL(starting_position, distance):
+    traversed_ring = starting_position;
+    for i in range(distance): traversed_ring = traversed_ring.next;
+    return traversed_ring;
+
+def add_to_LL(LL_element_already_in_LL, element_to_add): # a function for inserting into a (circular) linked list
+    old_next = LL_element_already_in_LL.next; LL_element_already_in_LL.next = LL_node(element_to_add); LL_element_already_in_LL = LL_element_already_in_LL.next;
+    LL_element_already_in_LL.next = old_next; return LL_element_already_in_LL;
+
 def cll_from_list(LL_nodes):
     for i in range(len(LL_nodes)): LL_nodes[i].next = LL_nodes[(i + 1) % len(LL_nodes)]
     return LL_nodes[0];
@@ -83,7 +92,7 @@ notes = [NOTE.c, NOTE.c_sharp, NOTE.d, NOTE.d_sharp, NOTE.e, NOTE.f, NOTE.f_shar
 inner_nodes = [LL_node(note) for note in notes]; c = cll_from_list(inner_nodes); c_sharp = inner_nodes[ 1]; d       = inner_nodes[ 2];
 d_sharp = inner_nodes[ 3]; e       = inner_nodes[ 4]; f       = inner_nodes[ 5]; f_sharp = inner_nodes[ 6]; g       = inner_nodes[ 7];
 g_sharp = inner_nodes[ 8]; a       = inner_nodes[ 9]; a_sharp = inner_nodes[10]; b       = inner_nodes[11];
-outer_nodes = [LL_node(inner_node) for inner_node in inner_nodes]; chromatic_scale = ring_from_cll(cll_from_list(outer_nodes));
+chromatic_scale = ring_from_cll(cll_from_list([LL_node(inner_node) for inner_node in inner_nodes]));
 # ^^^--> Creation procedure for the ring 'chromatic_scale'
 
 half_step   = LL_node(INTERVAL. half_step); whole_step  = LL_node(INTERVAL.whole_step); # << inner layer
@@ -92,12 +101,31 @@ lydian      = LL_node(whole_step, mixolydian); phrygian    = LL_node( half_step,
 ionian      = LL_node(whole_step,     dorian); locrian.next = ionian; interval_scale = ring_from_cll(ionian);
 # ^^^--> Creation procedure for the ring 'interval_scale'
 
+def cll_from_list(list_to_convert):
+    if not list_to_convert: raise ValueError("Cannot create a cyclical linked list (or any linked list for that matter), from a list with no items inside of it");
+    head = LL_node(list_to_convert[0]); head.next = head;
+    if len(list_to_convert) == 1: return head;
+    for i in range(1, len(list_to_convert)): head = add_to_LL(head, list_to_convert[i]);
+    return head.next;
+
+def apply_interval(starting_note, interval): return traverse_LL(starting_note, return_INTERVAL_halfsteps(interval));
+def list_of_notes(root_note, mode):
+    ret_val = [root_note]; note_cursor = root_note;
+    old_interval_scale_head = interval_scale.access; interval_scale.access = mode;
+    for i, CURRENT_INTERVAL in enumerate(interval_scale):
+        if i == interval_scale.cardinality - 1: break;
+        new = apply_interval(note_cursor, CURRENT_INTERVAL); ret_val.append(new); note_cursor = new;
+    interval_scale.access = old_interval_scale_head; return ret_val;
+
+def ring_from_list(list):
+    return ring_from_cll(cll_from_list(list));
+
 __all__ = [
     # Data types
     "NOTE", "INTERVAL",
 
     # Functions
-    "return_NOTE_str", "read_note", "return_INTERVAL_halfsteps", "return_INTERVAL_name", "return_INTERVAL_abbreviation", "read_interval", "LL_node", "ring_from_cll", "return_layer_ONE_str",
+    "return_NOTE_str", "read_note", "return_INTERVAL_halfsteps", "return_INTERVAL_name", "return_INTERVAL_abbreviation", "read_interval", "LL_node", "ring_from_cll", "return_layer_ONE_str", "list_of_notes", "apply_interval", "cll_from_list", "ring_from_list",
 
     # Abbreviations
     "h", "H", "hor", "horizontal", "v", "V", "vert", "vertical",
