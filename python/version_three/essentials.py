@@ -101,11 +101,11 @@ lydian      = LL_node(whole_step, mixolydian); phrygian    = LL_node( half_step,
 ionian      = LL_node(whole_step,     dorian); locrian.next = ionian; interval_scale = ring_from_cll(ionian);
 # ^^^--> Creation procedure for the ring 'interval_scale'
 
-def cll_from_list(list_to_convert):
-    if not list_to_convert: raise ValueError("Cannot create a cyclical linked list (or any linked list for that matter), from a list with no items inside of it");
-    head = LL_node(list_to_convert[0]); head.next = head;
-    if len(list_to_convert) == 1: return head;
-    for i in range(1, len(list_to_convert)): head = add_to_LL(head, list_to_convert[i]);
+def cll_from_list(list):
+    if not list: raise ValueError("Cannot create a cyclical linked list (or any linked list for that matter), from a list with no items inside of it");
+    head = LL_node(list[0]); head.next = head;
+    if len(list) == 1: return head;
+    for i in range(1, len(list)): head = add_to_LL(head, list[i]);
     return head.next;
 
 def apply_interval(starting_note, interval): return traverse_LL(starting_note, return_INTERVAL_halfsteps(interval));
@@ -119,6 +119,78 @@ def list_of_notes(root_note, mode):
 
 def ring_from_list(list):
     return ring_from_cll(cll_from_list(list));
+
+# C scales
+c_ionian     = ring_from_list(list_of_notes(c,     ionian)); c_dorian     = ring_from_list(list_of_notes(c,     dorian));
+c_phrygian   = ring_from_list(list_of_notes(c,   phrygian)); c_lydian     = ring_from_list(list_of_notes(c,     lydian));
+c_mixolydian = ring_from_list(list_of_notes(c, mixolydian)); c_aeolian    = ring_from_list(list_of_notes(c,    aeolian));
+c_locrian    = ring_from_list(list_of_notes(c,    locrian));
+
+# C sharp scales
+c_sharp_ionian     = ring_from_list(list_of_notes(c_sharp,     ionian)); c_sharp_dorian     = ring_from_list(list_of_notes(c_sharp,     dorian));
+c_sharp_phrygian   = ring_from_list(list_of_notes(c_sharp,   phrygian)); c_sharp_lydian     = ring_from_list(list_of_notes(c_sharp,     lydian));
+c_sharp_mixolydian = ring_from_list(list_of_notes(c_sharp, mixolydian)); c_sharp_aeolian    = ring_from_list(list_of_notes(c_sharp,    aeolian));
+c_sharp_locrian    = ring_from_list(list_of_notes(c_sharp,    locrian));
+
+# D scales
+d_ionian     = ring_from_list(list_of_notes(d,     ionian)); d_dorian     = ring_from_list(list_of_notes(d,     dorian));
+d_phrygian   = ring_from_list(list_of_notes(d,   phrygian)); d_lydian     = ring_from_list(list_of_notes(d,     lydian));
+d_mixolydian = ring_from_list(list_of_notes(d, mixolydian)); d_aeolian    = ring_from_list(list_of_notes(d,    aeolian));
+d_locrian    = ring_from_list(list_of_notes(d,    locrian));
+
+# D sharp scales
+d_sharp_ionian     = ring_from_list(list_of_notes(d_sharp,     ionian)); d_sharp_dorian     = ring_from_list(list_of_notes(d_sharp,     dorian));
+d_sharp_phrygian   = ring_from_list(list_of_notes(d_sharp,   phrygian)); d_sharp_lydian     = ring_from_list(list_of_notes(d_sharp,     lydian));
+d_sharp_mixolydian = ring_from_list(list_of_notes(d_sharp, mixolydian)); d_sharp_aeolian    = ring_from_list(list_of_notes(d_sharp,    aeolian));
+d_sharp_locrian    = ring_from_list(list_of_notes(d_sharp,    locrian));
+
+# E scales
+e_ionian     = ring_from_list(list_of_notes(e,     ionian)); e_dorian     = ring_from_list(list_of_notes(e,     dorian));
+e_phrygian   = ring_from_list(list_of_notes(e,   phrygian)); e_lydian     = ring_from_list(list_of_notes(e,     lydian));
+e_mixolydian = ring_from_list(list_of_notes(e, mixolydian)); e_aeolian    = ring_from_list(list_of_notes(e,    aeolian));
+e_locrian    = ring_from_list(list_of_notes(e,    locrian));
+
+# F scales
+f_ionian     = ring_from_list(list_of_notes(f,     ionian)); f_dorian     = ring_from_list(list_of_notes(f,     dorian));
+f_phrygian   = ring_from_list(list_of_notes(f,   phrygian)); f_lydian     = ring_from_list(list_of_notes(f,     lydian));
+f_mixolydian = ring_from_list(list_of_notes(f, mixolydian)); f_aeolian    = ring_from_list(list_of_notes(f,    aeolian));
+f_locrian    = ring_from_list(list_of_notes(f,    locrian));
+
+# F sharp scales
+f_sharp_ionian     = ring_from_list(list_of_notes(f_sharp,     ionian)); f_sharp_dorian     = ring_from_list(list_of_notes(f_sharp,     dorian));
+f_sharp_phrygian   = ring_from_list(list_of_notes(f_sharp,   phrygian)); f_sharp_lydian     = ring_from_list(list_of_notes(f_sharp,     lydian));
+f_sharp_mixolydian = ring_from_list(list_of_notes(f_sharp, mixolydian)); f_sharp_aeolian    = ring_from_list(list_of_notes(f_sharp,    aeolian));
+f_sharp_locrian    = ring_from_list(list_of_notes(f_sharp,    locrian));
+
+# G scales
+g_ionian     = ring_from_list(list_of_notes(g,     ionian)); g_dorian     = ring_from_list(list_of_notes(g,     dorian));
+g_phrygian   = ring_from_list(list_of_notes(g,   phrygian)); g_lydian     = ring_from_list(list_of_notes(g,     lydian));
+g_mixolydian = ring_from_list(list_of_notes(g, mixolydian)); g_aeolian    = ring_from_list(list_of_notes(g,    aeolian));
+g_locrian    = ring_from_list(list_of_notes(g,    locrian));
+
+# G sharp scales
+g_sharp_ionian     = ring_from_list(list_of_notes(g_sharp,     ionian)); g_sharp_dorian     = ring_from_list(list_of_notes(g_sharp,     dorian));
+g_sharp_phrygian   = ring_from_list(list_of_notes(g_sharp,   phrygian)); g_sharp_lydian     = ring_from_list(list_of_notes(g_sharp,     lydian));
+g_sharp_mixolydian = ring_from_list(list_of_notes(g_sharp, mixolydian)); g_sharp_aeolian    = ring_from_list(list_of_notes(g_sharp,    aeolian));
+g_sharp_locrian    = ring_from_list(list_of_notes(g_sharp,    locrian));
+
+# A scales
+a_ionian     = ring_from_list(list_of_notes(a,     ionian)); a_dorian     = ring_from_list(list_of_notes(a,     dorian));
+a_phrygian   = ring_from_list(list_of_notes(a,   phrygian)); a_lydian     = ring_from_list(list_of_notes(a,     lydian));
+a_mixolydian = ring_from_list(list_of_notes(a, mixolydian)); a_aeolian    = ring_from_list(list_of_notes(a,    aeolian));
+a_locrian    = ring_from_list(list_of_notes(a,    locrian));
+
+# A sharp scales
+a_sharp_ionian     = ring_from_list(list_of_notes(a_sharp,     ionian)); a_sharp_dorian     = ring_from_list(list_of_notes(a_sharp,     dorian));
+a_sharp_phrygian   = ring_from_list(list_of_notes(a_sharp,   phrygian)); a_sharp_lydian     = ring_from_list(list_of_notes(a_sharp,     lydian));
+a_sharp_mixolydian = ring_from_list(list_of_notes(a_sharp, mixolydian)); a_sharp_aeolian    = ring_from_list(list_of_notes(a_sharp,    aeolian));
+a_sharp_locrian    = ring_from_list(list_of_notes(a_sharp,    locrian));
+
+# B scales
+b_ionian     = ring_from_list(list_of_notes(b,     ionian)); b_dorian     = ring_from_list(list_of_notes(b,     dorian));
+b_phrygian   = ring_from_list(list_of_notes(b,   phrygian)); b_lydian     = ring_from_list(list_of_notes(b,     lydian));
+b_mixolydian = ring_from_list(list_of_notes(b, mixolydian)); b_aeolian    = ring_from_list(list_of_notes(b,    aeolian));
+b_locrian    = ring_from_list(list_of_notes(b,    locrian));
 
 __all__ = [
     # Data types
@@ -139,5 +211,113 @@ __all__ = [
     "mixolydian", "aeolian", "locrian",
 
     # Ring structures
-    "chromatic_scale", "interval_scale"
+    "chromatic_scale", "interval_scale",
+
+    # C modes
+    "c_ionian",
+    "c_dorian",
+    "c_phrygian",
+    "c_lydian",
+    "c_mixolydian",
+    "c_aeolian",
+    "c_locrian",
+
+    # C sharp modes
+    "c_sharp_ionian",
+    "c_sharp_dorian",
+    "c_sharp_phrygian",
+    "c_sharp_lydian",
+    "c_sharp_mixolydian",
+    "c_sharp_aeolian",
+    "c_sharp_locrian",
+
+    # D modes
+    "d_ionian",
+    "d_dorian",
+    "d_phrygian",
+    "d_lydian",
+    "d_mixolydian",
+    "d_aeolian",
+    "d_locrian",
+
+    # D sharp modes
+    "d_sharp_ionian",
+    "d_sharp_dorian",
+    "d_sharp_phrygian",
+    "d_sharp_lydian",
+    "d_sharp_mixolydian",
+    "d_sharp_aeolian",
+    "d_sharp_locrian",
+
+    # E modes
+    "e_ionian",
+    "e_dorian",
+    "e_phrygian",
+    "e_lydian",
+    "e_mixolydian",
+    "e_aeolian",
+    "e_locrian",
+
+    # F modes
+    "f_ionian",
+    "f_dorian",
+    "f_phrygian",
+    "f_lydian",
+    "f_mixolydian",
+    "f_aeolian",
+    "f_locrian",
+    
+    # F sharp modes
+    "f_sharp_ionian",
+    "f_sharp_dorian",
+    "f_sharp_phrygian",
+    "f_sharp_lydian",
+    "f_sharp_mixolydian",
+    "f_sharp_aeolian",
+    "f_sharp_locrian",
+
+    # G modes
+    "g_ionian",
+    "g_dorian",
+    "g_phrygian",
+    "g_lydian",
+    "g_mixolydian",
+    "g_aeolian",
+    "g_locrian",
+
+    # G sharp modes
+    "g_sharp_ionian",
+    "g_sharp_dorian",
+    "g_sharp_phrygian",
+    "g_sharp_lydian",
+    "g_sharp_mixolydian",
+    "g_sharp_aeolian",
+    "g_sharp_locrian",
+
+    # A modes
+    "a_ionian",
+    "a_dorian",
+    "a_phrygian",
+    "a_lydian",
+    "a_mixolydian",
+    "a_aeolian",
+    "a_locrian",
+
+    # A sharp
+    "a_sharp_ionian",
+    "a_sharp_dorian",
+    "a_sharp_phrygian",
+    "a_sharp_lydian",
+    "a_sharp_mixolydian",
+    "a_sharp_aeolian",
+    "a_sharp_locrian",
+
+    # B modes
+    "b_ionian",
+    "b_dorian",
+    "b_phrygian",
+    "b_lydian",
+    "b_mixolydian",
+    "b_aeolian",
+    "b_locrian",
 ]
