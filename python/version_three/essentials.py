@@ -20,9 +20,9 @@ class LL_node:
     def __init__(self, content, next_node=None):
         self.content = content; self.next = next_node;
 
-def link_LL_nodes(LL_nodes):
-    for i in range(len(LL_nodes)):
-        LL_nodes[i].next = LL_nodes[(i + 1) % len(LL_nodes)]
+def cll_from_list(LL_nodes):
+    for i in range(len(LL_nodes)): LL_nodes[i].next = LL_nodes[(i + 1) % len(LL_nodes)]
+    return LL_nodes[0];
 
 def return_layer_ONE_str(node, orientation=None):
     if isinstance(node.content, LL_node): node = node.content;
@@ -69,38 +69,27 @@ class ring_from_cll:
         """Add a new node with the given value at the end of the circular list."""
         new_node = LL_node(value)
         if not self.access:
-            self.access = new_node
-            new_node.next = self.access
-            self.cardinality = 1
-            return
+            self.access = new_node;
+            new_node.next = self.access;
+            self.cardinality = 1;
+            return;
         current = self.access;
         while current.next != self.access: current = current.next;
-        current.next = new_node
-        new_node.next = self.access
-        self.cardinality += 1
+        current.next = new_node;
+        new_node.next = self.access;
+        self.cardinality += 1;
 
 notes = [NOTE.c, NOTE.c_sharp, NOTE.d, NOTE.d_sharp, NOTE.e, NOTE.f, NOTE.f_sharp, NOTE.g, NOTE.g_sharp, NOTE.a, NOTE.a_sharp, NOTE.b];
-inner_nodes = [LL_node(note) for note in notes]; link_LL_nodes(inner_nodes);           # << inner layer
-
-b       = LL_node(inner_nodes[11]);
-a_sharp = LL_node(inner_nodes[10], b      ); a       = LL_node(inner_nodes[ 9], a_sharp); g_sharp = LL_node(inner_nodes[ 8], a      );
-g       = LL_node(inner_nodes[ 7], g_sharp); f_sharp = LL_node(inner_nodes[ 6], g      ); f       = LL_node(inner_nodes[ 5], f_sharp);
-e       = LL_node(inner_nodes[ 4], f      ); d_sharp = LL_node(inner_nodes[ 3], e      ); d       = LL_node(inner_nodes[ 2], d_sharp);
-c_sharp = LL_node(inner_nodes[ 1], d      ); c       = LL_node(inner_nodes[ 0], c_sharp); b.next = c;
-chromatic_scale = ring_from_cll(c);
-
-b       = inner_nodes[11];
-a_sharp = inner_nodes[10]; a       = inner_nodes[ 9]; g_sharp = inner_nodes[ 8];
-g       = inner_nodes[ 7]; f_sharp = inner_nodes[ 6]; f       = inner_nodes[ 5];
-e       = inner_nodes[ 4]; d_sharp = inner_nodes[ 3]; d       = inner_nodes[ 2];
-c_sharp = inner_nodes[ 1]; c       = inner_nodes[ 0];
+inner_nodes = [LL_node(note) for note in notes]; c = cll_from_list(inner_nodes); c_sharp = inner_nodes[ 1]; d       = inner_nodes[ 2];
+d_sharp = inner_nodes[ 3]; e       = inner_nodes[ 4]; f       = inner_nodes[ 5]; f_sharp = inner_nodes[ 6]; g       = inner_nodes[ 7];
+g_sharp = inner_nodes[ 8]; a       = inner_nodes[ 9]; a_sharp = inner_nodes[10]; b       = inner_nodes[11];
+outer_nodes = [LL_node(inner_node) for inner_node in inner_nodes]; chromatic_scale = ring_from_cll(cll_from_list(outer_nodes));
 # ^^^--> Creation procedure for the ring 'chromatic_scale'
 
 half_step   = LL_node(INTERVAL. half_step); whole_step  = LL_node(INTERVAL.whole_step); # << inner layer
-ionian      = LL_node(whole_step); dorian      = LL_node(whole_step); phrygian    = LL_node( half_step); lydian      = LL_node(whole_step);
-mixolydian  = LL_node(whole_step); aeolian     = LL_node(whole_step); locrian     = LL_node( half_step);
-ionian    .next =     dorian; dorian    .next =   phrygian; phrygian  .next =     lydian; lydian    .next = mixolydian;
-mixolydian.next =    aeolian; aeolian   .next =    locrian; locrian   .next =     ionian; interval_scale = ring_from_cll(ionian);
+locrian     = LL_node( half_step            ); aeolian     = LL_node(whole_step,    locrian); mixolydian  = LL_node(whole_step,    aeolian);
+lydian      = LL_node(whole_step, mixolydian); phrygian    = LL_node( half_step,     lydian); dorian      = LL_node(whole_step,   phrygian);
+ionian      = LL_node(whole_step,     dorian); locrian.next = ionian; interval_scale = ring_from_cll(ionian);
 # ^^^--> Creation procedure for the ring 'interval_scale'
 
 __all__ = [
