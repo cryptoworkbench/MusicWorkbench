@@ -2,6 +2,14 @@ pre_liminary_help_info = "Start this program as \"python3 -i ";
 pre_liminary_help_info += os.path.basename(__file__);
 pre_liminary_help_info += "\" if you want to get anything useful out of it.\nOnce in interactive mode, you can use 'show_help()' to learn about available functions.";
 
+
+notes = [NOTE.c, NOTE.c_sharp, NOTE.d, NOTE.d_sharp, NOTE.e, NOTE.f, NOTE.f_sharp, NOTE.g, NOTE.g_sharp, NOTE.a, NOTE.a_sharp, NOTE.b];
+inner_nodes = [LL_node(note) for note in notes]; c = cll_from_list_of_LL_nodes(inner_nodes); c_sharp = inner_nodes[ 1]; d       = inner_nodes[ 2];
+d_sharp = inner_nodes[ 3]; e       = inner_nodes[ 4]; f       = inner_nodes[ 5]; f_sharp = inner_nodes[ 6]; g       = inner_nodes[ 7];
+g_sharp = inner_nodes[ 8]; a       = inner_nodes[ 9]; a_sharp = inner_nodes[10]; b       = inner_nodes[11];
+chromatic_scale = ring_from_cll(cll_from_list_of_LL_nodes([LL_node(inner_node) for inner_node in inner_nodes]));
+# ^^^--> Creation procedure for the ring 'chromatic_scale'
+`
 # C scales
 c_ionian     = ring_from_list(list_of_notes(c,     ionian)); c_dorian     = ring_from_list(list_of_notes(c,     dorian));
 c_phrygian   = ring_from_list(list_of_notes(c,   phrygian)); c_lydian     = ring_from_list(list_of_notes(c,     lydian));
@@ -96,4 +104,15 @@ __all__ = [
     # The synonyms for aeolian scales
     "c_minor", "c_sharp_minor", "d_minor", "d_sharp_minor", "e_minor", "f_minor", "f_sharp_minor",
     "g_minor", "g_sharp_minor", "a_minor", "a_sharp_minor", "b_minor"
+    
+    # Notes:
+    "c", "c_sharp", "d", "d_sharp", "e", "f", "f_sharp", "g", "g_sharp", "a", "a_sharp", "b",
+
+    # Modes:
+    "ionian", "dorian", "phrygian", "lydian",
+    "mixolydian", "aeolian", "locrian",
+
+    # Ring structures:
+    "chromatic_scale", "interval_scale",
 ]
+({note_name}_ionian, {note_name}_dorian, {note_name}_phrygian, etc)
