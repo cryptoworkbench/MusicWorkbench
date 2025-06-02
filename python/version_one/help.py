@@ -21,9 +21,19 @@ def show_help():
     print("##    Returns a list containing all the elements that are in the ring (with intact order).");
     print("##    list[0] = ring.access");
     print("##");
-    print("## ring.loop(object_in_ring (OPTIONAL))");
+    print("## ring.loop(object_in_ring (OPTIONAL), orientation (OPTIONAL))");
     print("##    Loops through the entire ring, starting at the object within the ring that is provided as argument, if an argument is provided.");
     print("##    Otherwise just starts at ring.access.");
+    print("##");
+    print("## ring.melody(list_of_scale_degrees)");
+    print("##    Returns a ring representing the melody.");
+    print("##    The melody has to be specified in 'list_of_scale_degrees' as it's list of scale degrees relative to the correct source ring.");
+    print("##");
+    print("##    So 'ode_to_joy = c_major.melody([2, 2, 3, 4, 4, 3, 2, 1, 0, 0, 1, 2, 2, 1, 1])';");
+    print("##    for example, would put the memorable 'Ode to Joy' melody in the ring 'ode_to_joy'.");
+    print("##");
+    print("##    But to get the note sequence C -> D -> E -> F# into a ring using the 'melody' method, you'd have to use:");
+    print("##    'modeless_melody = chromatic_scale.melody([0, 2, 4, 6])'       (since there is no mode with contains four consecutive wholesteps).");
     print("##");
 
 __all__ = ["show_help"]

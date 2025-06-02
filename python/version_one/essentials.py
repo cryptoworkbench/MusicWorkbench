@@ -34,12 +34,17 @@ def _add_to_cLL(LL_element_already_in_LL, element_to_add): # a function for inse
     old_next = LL_element_already_in_LL.next; LL_element_already_in_LL.next = _LL_node(element_to_add); LL_element_already_in_LL = LL_element_already_in_LL.next;
     LL_element_already_in_LL.next = old_next; return LL_element_already_in_LL;
 
-def _CLL_from_list_of_LL_nodes(list_of_LL_nodes):
+def _CLL_from_list_of_unlinked_LL_nodes(list_of_LL_nodes):
     for i in range(len(list_of_LL_nodes)): list_of_LL_nodes[i].next = list_of_LL_nodes[(i + 1) % len(list_of_LL_nodes)]
     return list_of_LL_nodes[0];
 
+def _traverse_cLL(starting_position, distance):
+    traversed_cLL = starting_position;
+    for i in range(distance): traversed_cLL = traversed_cLL.next;
+    return traversed_cLL;
+
 def _return_deepest_layer(node, orientation=None):
-    if isinstance(node.content, _LL_node): node = node.content;
+    while isinstance(node.content, _LL_node): node = node.content;
     if isinstance(node.content, _NOTE): return _return_NOTE_name(node.content);
     elif isinstance(node.content, _INTERVAL):
         if orientation == "horizontal": return _return_INTERVAL_abbreviation(node);
@@ -113,7 +118,11 @@ class _ring:
     def auto_loop_horizontally(self, complete_cycles=10, frequency=1):
         self.auto_loop(complete_cycles, frequency, "horizontal");
 
-    # def loop_with_ColorMusic_descriptions(self, 
+    def melody(self, list_of_scale_degrees):
+        notes_in_melody = [];
+        for scale_degree in list_of_scale_degrees: notes_in_melody.append(_traverse_cLL(self.access, scale_degree));
+        return ring_from_list(notes_in_melody);
+
 def _ring_from_CLL(CLL):
     return _ring(CLL);
 
@@ -124,11 +133,6 @@ def _CLL_from_list(list):
     for i in range(1, len(list)): head = _add_to_cLL(head, list[i]);
     return head.next;
 
-def _traverse_cLL(starting_position, distance):
-    traversed_cLL = starting_position;
-    for i in range(distance): traversed_cLL = traversed_cLL.next;
-    return traversed_cLL;
-
 def _apply_interval(starting_note, interval): return _traverse_cLL(starting_note, _return_INTERVAL_halfsteps(interval));
 
 def _initialize_notes_and_chromatic_scale(namespace):
@@ -136,7 +140,7 @@ def _initialize_notes_and_chromatic_scale(namespace):
              _NOTE.f_sharp, _NOTE.g, _NOTE.g_sharp, _NOTE.a, _NOTE.a_sharp, _NOTE.b]
     
     inner_nodes = [_LL_node(note) for note in notes]
-    cll = _CLL_from_list_of_LL_nodes(inner_nodes)
+    cll = _CLL_from_list_of_unlinked_LL_nodes(inner_nodes)
 
     # Assign circular linked list nodes to global variables
     for i, var_name in enumerate([
@@ -146,7 +150,7 @@ def _initialize_notes_and_chromatic_scale(namespace):
         namespace[var_name] = inner_nodes[i]
 
     # Also add the full chromatic scale ring
-    chromatic_ring = _ring_from_CLL(_CLL_from_list_of_LL_nodes([_LL_node(n) for n in inner_nodes]))
+    chromatic_ring = _ring_from_CLL(_CLL_from_list_of_unlinked_LL_nodes([_LL_node(n) for n in inner_nodes]))
     namespace['chromatic_scale'] = chromatic_ring;
     print("--> created the ring 'chromatic_scale', which represents the notes within an octave (C, C#, D, etc).");
 
