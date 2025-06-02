@@ -2,8 +2,22 @@ import time
 import os
 from enum import Enum
 
-class _NOTE(Enum): c = "C"; c_sharp = "C#"; d = "D"; d_sharp = "D#"; e = "E"; f = "F"; f_sharp = "F#"; g = "G"; g_sharp = "G#"; a = "A"; a_sharp = "A#"; b = "B";
-def _return_NOTE_str(note): return note.value;
+class _NOTE(Enum):
+    c = ("C", "red square");
+    c_sharp = ("C#", "green/blue circle");
+    d = ("D", "orange square");
+    d_sharp = ("D#", "blue/purple circle");
+    e = ("E", "yellow square");
+    f = ("F", "purple/red circle");
+    f_sharp = ("F#", "green");
+    g = ("G", "red/orange circle");
+    g_sharp = ("G#", "blue square");
+    a = ("A", "orange/yellow circle");
+    a_sharp = ("A#", "purple square");
+    b = ("B", "yellow/green circle");
+
+def _return_NOTE_name(note): return note.value[0];
+def _return_NOTE_ColorMusic_description(note): return note.value[1];
 # ^^^--> ALL NOTE STUFF        ^^^
 
 class _INTERVAL(Enum): half_step = (1, "half step", "H"); whole_step = (2, "whole step", "W"); minor_third = (3, "minor third", "m3"); major_third = (4, "major third", "M3"); perfect_fourth = (5, "perfect fourth", "P4"); tritone = (6, "tritone", "A4"); perfect_fifth = (7, "perfect fifth", "P5"); minor_sixth = (8, "minor sixth", "m6"); major_sixth = (9, "major sixth", "M6"); minor_seventh = (10, "minor seventh", "m7"); major_seventh = (11, "major seventh", "M7");
@@ -26,8 +40,7 @@ def _CLL_from_list_of_LL_nodes(list_of_LL_nodes):
 
 def _return_deepest_layer(node, orientation=None):
     if isinstance(node.content, _LL_node): node = node.content;
-    if isinstance(node.content, _NOTE):
-        return _return_NOTE_str(node.content);
+    if isinstance(node.content, _NOTE): return _return_NOTE_name(node.content);
     elif isinstance(node.content, _INTERVAL):
         if orientation == "horizontal": return _return_INTERVAL_abbreviation(node);
         elif orientation == "vertical": return _return_INTERVAL_name(node);
@@ -45,6 +58,20 @@ class _ring:
     def __iter__(self):
         current = self.access; count = 0;
         while count < self.cardinality: yield current.content; current = current.next; count += 1;
+
+    def extend_with(self, value):
+        """Add a new node with the given value at the end of the circular list."""
+        new_node = _LL_node(value)
+        if not self.access:
+            self.access = new_node;
+            new_node.next = self.access;
+            self.cardinality = 1;
+            return;
+        current = self.access;
+        while current.next != self.access: current = current.next;
+        current.next = new_node;
+        new_node.next = self.access;
+        self.cardinality += 1;
 
     def _search(self, starting_position):
         cursor = self.access; iterator = 0; # set variables needed for object search
@@ -69,38 +96,24 @@ class _ring:
         else: output_str = output_str[:-1];
         print(output_str);
 
-    def loop_vertically(self, starting_position):
-        self.loop(starting_position, "vertical");
-
-    def loop_horizontally(self, starting_position):
-        self.loop(starting_position, "horizontal");
-
-    def loop_automatedly(self, orientation="horizontal", complete_cycles=10, frequency=1):
-        cursor = self.access; selected_function = self.loop_horizontally;
-        if orientation == "vertical": selected_function = self.loop_vertically;
+    def auto_loop(self, complete_cycles=10, frequency=1, orientation="horizontal"):
+        cursor = self.access; 
         for i in range(complete_cycles):
             for j in range(self.cardinality):
-                clear_screen(); selected_function(cursor); cursor = cursor.next; remaining_cycles = complete_cycles - i;
+                clear_screen(); self.loop(cursor, orientation); cursor = cursor.next; remaining_cycles = complete_cycles - i;
                 print(f'\nOffset from starting element: {j}');
                 print(  f'Remaining cycles            : {remaining_cycles}');
-                print(f'\nCurrent speed               : {frequency}s');
+                print(  f'Current speed               : {frequency}s');
                 print("\nTo exit press '<ctrl> + c'.");
                 time.sleep(frequency);
-        
-    def extend_with(self, value):
-        """Add a new node with the given value at the end of the circular list."""
-        new_node = _LL_node(value)
-        if not self.access:
-            self.access = new_node;
-            new_node.next = self.access;
-            self.cardinality = 1;
-            return;
-        current = self.access;
-        while current.next != self.access: current = current.next;
-        current.next = new_node;
-        new_node.next = self.access;
-        self.cardinality += 1;
 
+    def auto_loop_vertically(self, complete_cycles=10, frequency=1):
+        self.auto_loop(complete_cycles, frequency, "vertical");
+
+    def auto_loop_horizontally(self, complete_cycles=10, frequency=1):
+        self.auto_loop(complete_cycles, frequency, "horizontal");
+
+    # def loop_with_ColorMusic_descriptions(self, 
 def _ring_from_CLL(CLL):
     return _ring(CLL);
 
