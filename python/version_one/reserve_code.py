@@ -115,4 +115,27 @@ __all__ = [
     # Ring structures:
     "chromatic_scale", "interval_scale",
 ]
-({note_name}_ionian, {note_name}_dorian, {note_name}_phrygian, etc)
+
+def show_help():
+    print("## cll_from_list(list_to_convert)");
+    print("##    Makes a circular linked list from the list 'list_to_convert', while conserving the order.");
+    print("##    Returns the circular linked at the position which corresponds to 'list_to_convert[0]'.");
+    print("##");
+    print("## add_to_linked_list(linked_list_to_insert_into, element_to_be_inserted)");
+    print("##    Inserts the element 'element_to_be_inserted' into the linked list 'linked_list_to_insert_into'.");
+    print("##    Works as well for cyclical linked lists.");
+    print("##");
+    print("## traverse_LL(starting_position, N)");
+    print("##    Returns the Nth chain of the link.");
+    print("##");
+    print("## apply_interval(starting_note, interval)");
+    print("##    Returns the note an 'interval' distance away from 'starting_note'.");
+    print("##");
+    print("## ring_from_cll(cyclical_linked_list)");
+    print("##    Turns the cyclical linked list 'cyclical_linked_list' into a 'ring'.");
+    print("##    Cyclical linked lists are turned into rings in order to give them methods.");
+    print("##");
+    print("## ring.extend_with(element)");
+    print("##    Extends the cyclical linked list the 'ring' class points to with 'element', insertion happens before ring.access, so;");
+    print("##    new_member.next == ring.access");
+    print("##");

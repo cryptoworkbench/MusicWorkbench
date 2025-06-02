@@ -1,32 +1,21 @@
 from enum import Enum
 
-h = H = hor  = horizontal = "horizontal";
-v = V = vert = vertical   = "vertical";
-# ^^^--> Some shortcuts to make the user's live a bit easier ^^^
-
-class NOTE(Enum): c = "C"; c_sharp = "C#"; d = "D"; d_sharp = "D#"; e = "E"; f = "F"; f_sharp = "F#"; g = "G"; g_sharp = "G#"; a = "A"; a_sharp = "A#"; b = "B";
-def return_NOTE_str(note): return note.value;
-def read_note(note): print(return_NOTE_str(note));
+class _NOTE(Enum): c = "C"; c_sharp = "C#"; d = "D"; d_sharp = "D#"; e = "E"; f = "F"; f_sharp = "F#"; g = "G"; g_sharp = "G#"; a = "A"; a_sharp = "A#"; b = "B";
+def _return_NOTE_str(note): return note.value;
 # ^^^--> ALL NOTE STUFF        ^^^
 
-class INTERVAL(Enum): half_step = (1, "half step", "H"); whole_step = (2, "whole step", "W"); minor_third = (3, "minor third", "m3"); major_third = (4, "major third", "M3"); perfect_fourth = (5, "perfect fourth", "P4"); tritone = (6, "tritone", "A4"); perfect_fifth = (7, "perfect fifth", "P5"); minor_sixth = (8, "minor sixth", "m6"); major_sixth = (9, "major sixth", "M6"); minor_seventh = (10, "minor seventh", "m7"); major_seventh = (11, "major seventh", "M7");
-def return_INTERVAL_halfsteps(interval_to_read): return interval_to_read.content.value[0];
-def return_INTERVAL_name(interval): return interval.content.value[1];
-def return_INTERVAL_abbreviation(interval): return interval.content.value[2];
-def read_interval(interval): print(return_INTERVAL_name(interval));
+class _INTERVAL(Enum): half_step = (1, "half step", "H"); whole_step = (2, "whole step", "W"); minor_third = (3, "minor third", "m3"); major_third = (4, "major third", "M3"); perfect_fourth = (5, "perfect fourth", "P4"); tritone = (6, "tritone", "A4"); perfect_fifth = (7, "perfect fifth", "P5"); minor_sixth = (8, "minor sixth", "m6"); major_sixth = (9, "major sixth", "M6"); minor_seventh = (10, "minor seventh", "m7"); major_seventh = (11, "major seventh", "M7");
+def _return_INTERVAL_halfsteps(interval_to_read): return interval_to_read.content.value[0];
+def _return_INTERVAL_name(interval): return interval.content.value[1];
+def _return_INTERVAL_abbreviation(interval): return interval.content.value[2];
 # ^^^--> ALL INTERVAL STUFF    ^^^
 
-class LL_node:
+class _LL_node:
     def __init__(self, content, next_node=None):
         self.content = content; self.next = next_node;
 
-def _traverse_CLL(starting_position, distance):
-    traversed_LL = starting_position;
-    for i in range(distance): traversed_LL = traversed_LL.next;
-    return traversed_LL;
-
 def _add_to_cLL(LL_element_already_in_LL, element_to_add): # a function for inserting into a (circular) linked list
-    old_next = LL_element_already_in_LL.next; LL_element_already_in_LL.next = LL_node(element_to_add); LL_element_already_in_LL = LL_element_already_in_LL.next;
+    old_next = LL_element_already_in_LL.next; LL_element_already_in_LL.next = _LL_node(element_to_add); LL_element_already_in_LL = LL_element_already_in_LL.next;
     LL_element_already_in_LL.next = old_next; return LL_element_already_in_LL;
 
 def _CLL_from_list_of_LL_nodes(list_of_LL_nodes):
@@ -34,14 +23,14 @@ def _CLL_from_list_of_LL_nodes(list_of_LL_nodes):
     return list_of_LL_nodes[0];
 
 def _return_deepest_layer(node, orientation=None):
-    if isinstance(node.content, LL_node): node = node.content;
-    if isinstance(node.content, NOTE):
-        return return_NOTE_str(node.content);
-    elif isinstance(node.content, INTERVAL):
-        if orientation == "horizontal": return return_INTERVAL_abbreviation(node);
-        elif orientation == "vertical": return return_INTERVAL_name(node);
+    if isinstance(node.content, _LL_node): node = node.content;
+    if isinstance(node.content, _NOTE):
+        return _return_NOTE_str(node.content);
+    elif isinstance(node.content, _INTERVAL):
+        if orientation == "horizontal": return _return_INTERVAL_abbreviation(node);
+        elif orientation == "vertical": return _return_INTERVAL_name(node);
 
-class ring_from_cll:
+class _ring:
     def __init__(self, circular_LL):
         if circular_LL == None: raise ValueError("LL must be provided.");
         self.access = circular_LL; self.cardinality = 1;
@@ -56,7 +45,7 @@ class ring_from_cll:
         cursor = self.access; iterator = 0; # set variables needed for object search
         while iterator < self.cardinality and cursor.content != starting_position: cursor = cursor.next; iterator += 1;
         if cursor.content == starting_position: return cursor;
-        raise ValueError("Error, object  '  ", starting_position, "  ' is not in this ring ! (and neither is a different object containing the same exact value!)");
+        raise ValueError(f"Error, object  '{starting_position}' is not in this ring ! (and neither is a different object containing the same exact value!)");
 
     def loop(self, starting_position=None, orientation="horizontal"):
         if starting_position == None: starting_position = self.access;
@@ -76,7 +65,7 @@ class ring_from_cll:
 
     def extend_with(self, value):
         """Add a new node with the given value at the end of the circular list."""
-        new_node = LL_node(value)
+        new_node = _LL_node(value)
         if not self.access:
             self.access = new_node;
             new_node.next = self.access;
@@ -88,30 +77,39 @@ class ring_from_cll:
         new_node.next = self.access;
         self.cardinality += 1;
 
+def _ring_from_CLL(CLL):
+    return _ring(CLL);
+
 def _CLL_from_list(list):
     if not list: raise ValueError("Cannot create a cyclical linked list (or any linked list for that matter), from a list with no items inside of it");
-    head = LL_node(list[0]); head.next = head;
+    head = _LL_node(list[0]); head.next = head;
     if len(list) == 1: return head;
     for i in range(1, len(list)): head = _add_to_cLL(head, list[i]);
     return head.next;
 
-def apply_interval(starting_note, interval): return _traverse_CLL(starting_note, return_INTERVAL_halfsteps(interval));
+def _traverse_cLL(starting_position, distance):
+    traversed_cLL = starting_position;
+    for i in range(distance): traversed_cLL = traversed_cLL.next;
+    return traversed_cLL;
+
+def _apply_interval(starting_note, interval): return _traverse_cLL(starting_note, _return_INTERVAL_halfsteps(interval));
+
 def list_of_notes(root_note, mode):
     ret_val = [root_note]; note_cursor = root_note;
     old_interval_scale_head = interval_scale.access; interval_scale.access = mode;
     for i, CURRENT_INTERVAL in enumerate(interval_scale):
         if i == interval_scale.cardinality - 1: break;
-        new = apply_interval(note_cursor, CURRENT_INTERVAL); ret_val.append(new); note_cursor = new;
+        new = _apply_interval(note_cursor, CURRENT_INTERVAL); ret_val.append(new); note_cursor = new;
     interval_scale.access = old_interval_scale_head; return ret_val;
 
 def ring_from_list(list):
-    return ring_from_cll(_CLL_from_list(list));
+    return _ring_from_CLL(_CLL_from_list(list));
 
-def _initialize_notes_and_chromatic_scale(name_space):
-    notes = [NOTE.c, NOTE.c_sharp, NOTE.d, NOTE.d_sharp, NOTE.e, NOTE.f, 
-             NOTE.f_sharp, NOTE.g, NOTE.g_sharp, NOTE.a, NOTE.a_sharp, NOTE.b]
+def _initialize_notes_and_chromatic_scale(namespace):
+    notes = [_NOTE.c, _NOTE.c_sharp, _NOTE.d, _NOTE.d_sharp, _NOTE.e, _NOTE.f, 
+             _NOTE.f_sharp, _NOTE.g, _NOTE.g_sharp, _NOTE.a, _NOTE.a_sharp, _NOTE.b]
     
-    inner_nodes = [LL_node(note) for note in notes]
+    inner_nodes = [_LL_node(note) for note in notes]
     cll = _CLL_from_list_of_LL_nodes(inner_nodes)
 
     # Assign circular linked list nodes to global variables
@@ -119,49 +117,47 @@ def _initialize_notes_and_chromatic_scale(name_space):
         'c', 'c_sharp', 'd', 'd_sharp', 'e', 'f', 
         'f_sharp', 'g', 'g_sharp', 'a', 'a_sharp', 'b'
     ]):
-        name_space[var_name] = inner_nodes[i]
+        namespace[var_name] = inner_nodes[i]
 
     # Also add the full chromatic scale ring
-    chromatic_ring = ring_from_cll(_CLL_from_list_of_LL_nodes([LL_node(n) for n in inner_nodes]))
-    name_space['chromatic_scale'] = chromatic_ring;
+    chromatic_ring = _ring_from_CLL(_CLL_from_list_of_LL_nodes([_LL_node(n) for n in inner_nodes]))
+    namespace['chromatic_scale'] = chromatic_ring;
     print("--> created the ring 'chromatic_scale', which represents the notes within an octave (C, C#, D, etc).");
 
 def _initialize_interval_scale(namespace):
-    namespace['half_step'] = LL_node(INTERVAL.half_step)
-    namespace['whole_step'] = LL_node(INTERVAL.whole_step)
-
-    namespace['locrian'] = LL_node(namespace['half_step'])
-    namespace['aeolian'] = LL_node(namespace['whole_step'], namespace['locrian'])
-    namespace['mixolydian'] = LL_node(namespace['whole_step'], namespace['aeolian'])
-    namespace['lydian'] = LL_node(namespace['whole_step'], namespace['mixolydian'])
-    namespace['phrygian'] = LL_node(namespace['half_step'], namespace['lydian'])
-    namespace['dorian'] = LL_node(namespace['whole_step'], namespace['phrygian'])
-    namespace['ionian'] = LL_node(namespace['whole_step'], namespace['dorian'])
-
-    namespace['locrian'].next = namespace['ionian']
-    globals()['interval_scale'] = namespace['interval_scale'] = ring_from_cll(namespace['ionian'])
+    namespace[ 'half_step']     = _LL_node(_INTERVAL.half_step);
+    namespace['whole_step']     = _LL_node(_INTERVAL.whole_step);
+    namespace[   'locrian']     = _LL_node(namespace[ 'half_step']);
+    namespace[   'aeolian']     = _LL_node(namespace['whole_step'], namespace[   'locrian']);
+    namespace['mixolydian']     = _LL_node(namespace['whole_step'], namespace[   'aeolian']);
+    namespace[    'lydian']     = _LL_node(namespace['whole_step'], namespace['mixolydian']);
+    namespace[  'phrygian']     = _LL_node(namespace[ 'half_step'], namespace[    'lydian']);
+    namespace[    'dorian']     = _LL_node(namespace['whole_step'], namespace[  'phrygian']);
+    namespace[    'ionian']     = _LL_node(namespace['whole_step'], namespace[    'dorian']);
+    namespace['locrian'].next   = namespace['ionian']
+    globals()['interval_scale'] = namespace['interval_scale'] = _ring_from_CLL(namespace['ionian'])
     print("--> created the ring 'interval_scale', which represents all modes (ionian, dorian, etc).");
 
-def _initialize_scales_for_every_mode_key_combo(name_space):
+def _initialize_scales_for_every_mode_key_combo(namespace):
     notes = [
-        ("c", name_space['c']), ("c_sharp", name_space['c_sharp']), ("d", name_space['d']), ("d_sharp", name_space['d_sharp']),
-        ("e", name_space['e']), ("f", name_space['f']), ("f_sharp", name_space['f_sharp']), ("g", name_space['g']),
-        ("g_sharp", name_space['g_sharp']), ("a", name_space['a']), ("a_sharp", name_space['a_sharp']), ("b", name_space['b'])
+        ("c", namespace['c']), ("c_sharp", namespace['c_sharp']), ("d", namespace['d']), ("d_sharp", namespace['d_sharp']),
+        ("e", namespace['e']), ("f", namespace['f']), ("f_sharp", namespace['f_sharp']), ("g", namespace['g']),
+        ("g_sharp", namespace['g_sharp']), ("a", namespace['a']), ("a_sharp", namespace['a_sharp']), ("b", namespace['b'])
     ]
     modes = [
-        ("ionian", name_space['ionian']), ("dorian", name_space['dorian']), ("phrygian", name_space['phrygian']),
-        ("lydian", name_space['lydian']), ("mixolydian", name_space['mixolydian']),
-        ("aeolian", name_space['aeolian']), ("locrian", name_space['locrian'])
+        ("ionian", namespace['ionian']), ("dorian", namespace['dorian']), ("phrygian", namespace['phrygian']),
+        ("lydian", namespace['lydian']), ("mixolydian", namespace['mixolydian']),
+        ("aeolian", namespace['aeolian']), ("locrian", namespace['locrian'])
     ]
     for note_name, note_node in notes:
         for mode_name, mode_node in modes:
             var_name = f"{note_name}_{mode_name}"
-            name_space[var_name] = ring_from_list(list_of_notes(note_node, mode_node))
+            namespace[var_name] = ring_from_list(list_of_notes(note_node, mode_node))
         # print(f"--> all {note_name} scales have been initialized ({note_name}_ionian, {note_name}_dorian, {note_name}_phrygian, etc)");
 
     for note_name, _ in notes:
-        name_space[f"{note_name}_major"] = name_space[f"{note_name}_ionian"];
-        name_space[f"{note_name}_minor"] = name_space[f"{note_name}_aeolian"];
+        namespace[f"{note_name}_major"] = namespace[f"{note_name}_ionian"];
+        namespace[f"{note_name}_minor"] = namespace[f"{note_name}_aeolian"];
     # print("--> all synonyms have been set up as well (like \"c_major = c_ionian\", \"g_sharp_minor = g_sharp_aeolian\", etc).");
     print("--> created the 84 rings for all possible key-mode combinations, that's 12 * 7 = 84 scales in total !");
     print("    ---> access them like 'c_major.loop()', 'g_dorian.loop()', 'f_locrian()', etc ...");
@@ -172,5 +168,10 @@ def initialize_everything(namespace):
     _initialize_interval_scale(namespace);
     _initialize_scales_for_every_mode_key_combo(namespace);
     print("--> setup complete!");
+
+h = H = hor  = horizontal = "horizontal";
+v = V = vert = vertical   = "vertical";
+# ^^^--> shortcuts for specifying orientation preference in ring.loop()
+# ^^^--> Some shortcuts to make the user's life a bit easier ^^^
 
 __all__ = [name for name in globals() if not name.startswith('_')]
