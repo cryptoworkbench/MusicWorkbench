@@ -1,3 +1,5 @@
+import time
+import os
 from enum import Enum
 
 class _NOTE(Enum): c = "C"; c_sharp = "C#"; d = "D"; d_sharp = "D#"; e = "E"; f = "F"; f_sharp = "F#"; g = "G"; g_sharp = "G#"; a = "A"; a_sharp = "A#"; b = "B";
@@ -30,6 +32,9 @@ def _return_deepest_layer(node, orientation=None):
         if orientation == "horizontal": return _return_INTERVAL_abbreviation(node);
         elif orientation == "vertical": return _return_INTERVAL_name(node);
 
+def clear_screen():
+    os.system('cls' if os.name == 'nt' else 'clear')
+
 class _ring:
     def __init__(self, circular_LL):
         if circular_LL == None: raise ValueError("LL must be provided.");
@@ -43,8 +48,9 @@ class _ring:
 
     def _search(self, starting_position):
         cursor = self.access; iterator = 0; # set variables needed for object search
-        while iterator < self.cardinality and cursor.content != starting_position: cursor = cursor.next; iterator += 1;
-        if cursor.content == starting_position: return cursor;
+        while iterator < self.cardinality and cursor.content != starting_position and cursor != starting_position:
+            cursor = cursor.next; iterator += 1;
+        if cursor.content == starting_position or cursor == starting_position: return cursor;
         raise ValueError(f"Error, object  '{starting_position}' is not in this ring ! (and neither is a different object containing the same exact value!)");
 
     def loop(self, starting_position=None, orientation="horizontal"):
@@ -63,6 +69,24 @@ class _ring:
         else: output_str = output_str[:-1];
         print(output_str);
 
+    def loop_automated(self, orientation="horizontal", complete_cycles=10, frequency=1):
+        cursor = self.access;
+        for i in range(complete_cycles):
+            for j in range(self.cardinality):
+                clear_screen(); self.loop(cursor, orientation); cursor = cursor.next; remaining_cycles = complete_cycles - i;
+                print(f'\nOffset from starting element: {j}');
+                print(f'Remaining cycles             : {remaining_cycles}');
+                print(f'\nCurrent speed: {frequency}s');
+                print("\nTo exit press '<ctrl> + c'.");
+                time.sleep(frequency);
+
+        while i != cardinality:
+            clear_screen(); self.loop(cursor, orientation); reduced_offset = i % self.cardinality;
+            print(f"\ncurrent offset: {reduced_offset}\nRemaining cycles: {cycles}");
+            print("\n\n'<ctrl> + c' to exit.");
+            cursor = cursor.next;
+            time.sleep(frequency);
+        
     def extend_with(self, value):
         """Add a new node with the given value at the end of the circular list."""
         new_node = _LL_node(value)
@@ -93,17 +117,6 @@ def _traverse_cLL(starting_position, distance):
     return traversed_cLL;
 
 def _apply_interval(starting_note, interval): return _traverse_cLL(starting_note, _return_INTERVAL_halfsteps(interval));
-
-def list_of_notes(root_note, mode):
-    ret_val = [root_note]; note_cursor = root_note;
-    old_interval_scale_head = interval_scale.access; interval_scale.access = mode;
-    for i, CURRENT_INTERVAL in enumerate(interval_scale):
-        if i == interval_scale.cardinality - 1: break;
-        new = _apply_interval(note_cursor, CURRENT_INTERVAL); ret_val.append(new); note_cursor = new;
-    interval_scale.access = old_interval_scale_head; return ret_val;
-
-def ring_from_list(list):
-    return _ring_from_CLL(_CLL_from_list(list));
 
 def _initialize_notes_and_chromatic_scale(namespace):
     notes = [_NOTE.c, _NOTE.c_sharp, _NOTE.d, _NOTE.d_sharp, _NOTE.e, _NOTE.f, 
@@ -169,9 +182,19 @@ def initialize_everything(namespace):
     _initialize_scales_for_every_mode_key_combo(namespace);
     print("--> setup complete!");
 
+def list_of_notes(root_note, mode):
+    ret_val = [root_note]; note_cursor = root_note;
+    old_interval_scale_head = interval_scale.access; interval_scale.access = mode;
+    for i, CURRENT_INTERVAL in enumerate(interval_scale):
+        if i == interval_scale.cardinality - 1: break;
+        new = _apply_interval(note_cursor, CURRENT_INTERVAL); ret_val.append(new); note_cursor = new;
+    interval_scale.access = old_interval_scale_head; return ret_val;
+
+def ring_from_list(list):
+    return _ring_from_CLL(_CLL_from_list(list));
+
 h = H = hor  = horizontal = "horizontal";
 v = V = vert = vertical   = "vertical";
 # ^^^--> shortcuts for specifying orientation preference in ring.loop()
-# ^^^--> Some shortcuts to make the user's life a bit easier ^^^
 
 __all__ = [name for name in globals() if not name.startswith('_')]
