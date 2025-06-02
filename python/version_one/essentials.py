@@ -59,8 +59,8 @@ class _ring:
         # ^^^--> These two lines translate between the two permutation layers
         output_str = "";
         for i in range(self.cardinality):
-            piece = _return_deepest_layer(starting_position, orientation);
-            output_str += piece;
+            element_str = _return_deepest_layer(starting_position, orientation);
+            output_str += element_str;
             if orientation == "vertical": output_str += "\n";
             elif orientation == "horizontal": output_str += ", ";
             starting_position = starting_position.next;
@@ -69,23 +69,23 @@ class _ring:
         else: output_str = output_str[:-1];
         print(output_str);
 
-    def loop_automated(self, orientation="horizontal", complete_cycles=10, frequency=1):
-        cursor = self.access;
+    def loop_vertically(self, starting_position):
+        self.loop(starting_position, "vertical");
+
+    def loop_horizontally(self, starting_position):
+        self.loop(starting_position, "horizontal");
+
+    def loop_automatedly(self, orientation="horizontal", complete_cycles=10, frequency=1):
+        cursor = self.access; selected_function = self.loop_horizontally;
+        if orientation == "vertical": selected_function = self.loop_vertically;
         for i in range(complete_cycles):
             for j in range(self.cardinality):
-                clear_screen(); self.loop(cursor, orientation); cursor = cursor.next; remaining_cycles = complete_cycles - i;
+                clear_screen(); selected_function(cursor); cursor = cursor.next; remaining_cycles = complete_cycles - i;
                 print(f'\nOffset from starting element: {j}');
-                print(f'Remaining cycles             : {remaining_cycles}');
-                print(f'\nCurrent speed: {frequency}s');
+                print(  f'Remaining cycles            : {remaining_cycles}');
+                print(f'\nCurrent speed               : {frequency}s');
                 print("\nTo exit press '<ctrl> + c'.");
                 time.sleep(frequency);
-
-        while i != cardinality:
-            clear_screen(); self.loop(cursor, orientation); reduced_offset = i % self.cardinality;
-            print(f"\ncurrent offset: {reduced_offset}\nRemaining cycles: {cycles}");
-            print("\n\n'<ctrl> + c' to exit.");
-            cursor = cursor.next;
-            time.sleep(frequency);
         
     def extend_with(self, value):
         """Add a new node with the given value at the end of the circular list."""
@@ -193,8 +193,8 @@ def list_of_notes(root_note, mode):
 def ring_from_list(list):
     return _ring_from_CLL(_CLL_from_list(list));
 
-h = H = hor  = horizontal = "horizontal";
-v = V = vert = vertical   = "vertical";
+h = H = hor  = horizontal = horizontally = "horizontal";
+v = V = vert = vertical   = vertically   = "vertical";
 # ^^^--> shortcuts for specifying orientation preference in ring.loop()
 
 __all__ = [name for name in globals() if not name.startswith('_')]
