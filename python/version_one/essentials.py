@@ -120,12 +120,32 @@ def list_of_notes(root_note, mode):
 def ring_from_list(list):
     return ring_from_cll(cll_from_list(list));
 
+def generate_all_scales(target_globals):
+    notes = [
+        ("c", c), ("c_sharp", c_sharp), ("d", d), ("d_sharp", d_sharp),
+        ("e", e), ("f", f), ("f_sharp", f_sharp), ("g", g),
+        ("g_sharp", g_sharp), ("a", a), ("a_sharp", a_sharp), ("b", b)
+    ]
+    modes = [
+        ("ionian", ionian), ("dorian", dorian), ("phrygian", phrygian),
+        ("lydian", lydian), ("mixolydian", mixolydian),
+        ("aeolian", aeolian), ("locrian", locrian)
+    ]
+    for note_name, note_node in notes:
+        for mode_name, mode_node in modes:
+            var_name = f"{note_name}_{mode_name}"
+            target_globals[var_name] = ring_from_list(list_of_notes(note_node, mode_node))
+
+    for note_name, _ in notes:
+        target_globals[f"{note_name}_major"] = target_globals[f"{note_name}_ionian"]
+        target_globals[f"{note_name}_minor"] = target_globals[f"{note_name}_aeolian"]
+
 __all__ = [
         # Data types:
     "NOTE", "INTERVAL",
 
     # Functions:
-    "return_NOTE_str", "read_note", "return_INTERVAL_halfsteps", "return_INTERVAL_name", "return_INTERVAL_abbreviation", "read_interval", "LL_node", "ring_from_cll", "return_layer_ONE_str", "list_of_notes", "apply_interval", "cll_from_list", "ring_from_list",
+    "return_NOTE_str", "read_note", "return_INTERVAL_halfsteps", "return_INTERVAL_name", "return_INTERVAL_abbreviation", "read_interval", "LL_node", "ring_from_cll", "return_layer_ONE_str", "list_of_notes", "apply_interval", "cll_from_list", "ring_from_list", "generate_all_scales",
 
     # Abbreviations:
     "h", "H", "hor", "horizontal", "v", "V", "vert", "vertical",
