@@ -75,9 +75,10 @@ def clear_screen() -> None:
     os.system('cls' if os.name == 'nt' else 'clear')
 
 class _ring:
-    def __init__(self, circular_LL):
+    def __init__(self, name: str, circular_LL: _LL_node):
         if circular_LL == None: raise ValueError("LL must be provided.");
-        self.access = circular_LL; self.cardinality = 1;
+        if name == None: raise ValueError("Name must be provided.");
+        self.name = name; self.access = circular_LL; self.cardinality = 1;
         cursor = circular_LL; cursor = cursor.next;
         while cursor != circular_LL: cursor = cursor.next; self.cardinality += 1;
 
@@ -145,11 +146,11 @@ class _ring:
         """Calls 'self.autoloop()' with the orientation set to 'horizontal'."""
         self.auto_loop(complete_cycles, frequency, "horizontal");
 
-    def melody(self, list_of_scale_degrees):
+    def melody(self, name_for_new_melody: str, list_of_scale_degrees):
         """Returns a ring containing the melody specified by the scale degrees."""
         notes_in_melody = [];
         for scale_degree in list_of_scale_degrees: notes_in_melody.append(_traverse_cLL(self.access, scale_degree));
-        return ring_from_list(notes_in_melody);
+        return ring_from_list(name_for_new_melody, notes_in_melody);
 
 '''
 class _melody_ring(self):
@@ -157,8 +158,8 @@ class _melody_ring(self):
         print("method inherited");
 '''
 
-def _ring_from_CLL(CLL: _LL_node) -> _ring:
-    return _ring(CLL);
+def _ring_from_CLL(name: str, CLL: _LL_node) -> _ring:
+    return _ring(name, CLL);
 
 def _CLL_from_list(list) -> _LL_node:
     if not list: raise ValueError("Cannot create a cyclical linked list (or any linked list for that matter), from a list with no items inside of it");
@@ -185,8 +186,7 @@ def _initialize_notes_and_chromatic_scale(namespace: dict[str, object]) -> None:
         namespace[var_name] = inner_nodes[i]
 
     # Also add the full chromatic scale ring
-    chromatic_ring = _ring_from_CLL(_CLL_from_list_of_unlinked_LL_nodes([_create_LL_node(n) for n in inner_nodes]))
-    namespace['chromatic_scale'] = chromatic_ring;
+    namespace['chromatic_scale'] = _ring_from_CLL("chromatic_scale", _CLL_from_list_of_unlinked_LL_nodes([_create_LL_node(n) for n in inner_nodes]))
     print("--> created the ring 'chromatic_scale', which represents the notes within an octave (C, C#, D, etc).");
 
 def _initialize_interval_scale(namespace) -> None:
@@ -200,7 +200,7 @@ def _initialize_interval_scale(namespace) -> None:
     namespace[    'dorian']     = _create_LL_node(namespace['whole_step'], namespace[  'phrygian']);
     namespace[    'ionian']     = _create_LL_node(namespace['whole_step'], namespace[    'dorian']);
     namespace['locrian'].next   = namespace['ionian']
-    globals()['interval_scale'] = namespace['interval_scale'] = _ring_from_CLL(namespace['ionian'])
+    globals()['interval_scale'] = namespace['interval_scale'] = _ring_from_CLL("interval_scale", namespace['ionian'])
     print("--> created the ring 'interval_scale', which represents all modes (ionian, dorian, etc).");
 
 def _initialize_scales_for_every_mode_key_combo(namespace) -> None:
@@ -217,7 +217,7 @@ def _initialize_scales_for_every_mode_key_combo(namespace) -> None:
     for note_name, note_node in notes:
         for mode_name, mode_node in modes:
             var_name = f"{note_name}_{mode_name}"
-            namespace[var_name] = ring_from_list(list_of_notes(note_node, mode_node))
+            namespace[var_name] = ring_from_list(var_name, list_of_notes(note_node, mode_node))
         # print(f"--> all {note_name} scales have been initialized ({note_name}_ionian, {note_name}_dorian, {note_name}_phrygian, etc)");
 
     for note_name, _ in notes:
@@ -242,8 +242,8 @@ def list_of_notes(root_note: _LL_node, mode: _LL_node) -> list:
         new = _apply_interval(note_cursor, CURRENT_INTERVAL); ret_val.append(new); note_cursor = new;
     interval_scale.access = old_interval_scale_head; return ret_val;
 
-def ring_from_list(list: list) -> _ring:
-    return _ring_from_CLL(_CLL_from_list(list));
+def ring_from_list(name: str, list: list) -> _ring:
+    return _ring_from_CLL(name, _CLL_from_list(list));
 
 h = H = hor  = horizontal = horizontally = "horizontal";
 v = V = vert = vertical   = vertically   = "vertical";

@@ -2,7 +2,7 @@ from essentials import *
 from help import *
 
 def initialize_ode_to_joy(namespace: dict[str, object]) -> None:
-    namespace["ode_to_joy"] = c_major.melody([2, 2, 3, 4, 4, 3, 2, 1, 0, 0, 1, 2, 2, 1, 1]);
+    namespace["ode_to_joy"] = c_major.melody("Ode to Joy in C major", [2, 2, 3, 4, 4, 3, 2, 1, 0, 0, 1, 2, 2, 1, 1]);
     print("---> ode_to_joy also available!, try:");
     print("    --> ode_to_joy.loop()");
 
