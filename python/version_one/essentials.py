@@ -6,8 +6,11 @@ class _LL_node:
     def __init__(self, content, next_node=None):
         self.content = content; self.next = next_node;
 
+def _create_LL_node(content, next_node: _LL_node = None) -> _LL_node:
+    return _LL_node(content, next_node);
+
 def _add_to_cLL(LL_element_already_in_LL: _LL_node, element_to_add: _LL_node) -> _LL_node: # a function for inserting into a (circular) linked list
-    old_next = LL_element_already_in_LL.next; LL_element_already_in_LL.next = _LL_node(element_to_add); LL_element_already_in_LL = LL_element_already_in_LL.next;
+    old_next = LL_element_already_in_LL.next; LL_element_already_in_LL.next = _create_LL_node(element_to_add); LL_element_already_in_LL = LL_element_already_in_LL.next;
     LL_element_already_in_LL.next = old_next; return LL_element_already_in_LL;
 
 def _CLL_from_list_of_unlinked_LL_nodes(list_of_LL_nodes: list) -> _LL_node:
@@ -70,7 +73,7 @@ class _ring:
     def extend_with(self, value):
         """Add a new node with a given value at the end of the circular list."""
         # _add_to_cLL(self.access, 
-        new_node = _LL_node(value)
+        new_node = _create_LL_node(value)
         if not self.access:
             self.access = new_node;
             new_node.next = self.access;
@@ -84,9 +87,8 @@ class _ring:
 
     def _search(self, starting_position):
         cursor = self.access; iterator = 0; # set variables needed for object search
-        while iterator < self.cardinality and cursor.content != starting_position and cursor != starting_position:
-            cursor = cursor.next; iterator += 1;
-        if cursor.content == starting_position or cursor == starting_position: return cursor;
+        for iterator in range(self.cardinality):
+            if cursor.content == starting_position or cursor == starting_position: return cursor;
         raise ValueError(f"Error, object  '{starting_position}' is not in this ring ! (and neither is a different object containing the same exact value!)");
 
     def loop(self, starting_position=None, orientation="horizontal"):
@@ -143,7 +145,7 @@ def _ring_from_CLL(CLL: _LL_node) -> _ring:
 
 def _CLL_from_list(list) -> _LL_node:
     if not list: raise ValueError("Cannot create a cyclical linked list (or any linked list for that matter), from a list with no items inside of it");
-    head = _LL_node(list[0]); head.next = head;
+    head = _create_LL_node(list[0]); head.next = head;
     if len(list) == 1: return head;
     for i in range(1, len(list)): head = _add_to_cLL(head, list[i]);
     return head.next;
@@ -155,7 +157,7 @@ def _initialize_notes_and_chromatic_scale(namespace: dict[str, object]) -> None:
     notes = [_NOTE.c, _NOTE.c_sharp, _NOTE.d, _NOTE.d_sharp, _NOTE.e, _NOTE.f, 
              _NOTE.f_sharp, _NOTE.g, _NOTE.g_sharp, _NOTE.a, _NOTE.a_sharp, _NOTE.b]
     
-    inner_nodes = [_LL_node(note) for note in notes]
+    inner_nodes = [_create_LL_node(note) for note in notes]
     cll = _CLL_from_list_of_unlinked_LL_nodes(inner_nodes)
 
     # Assign circular linked list nodes to global variables
@@ -166,20 +168,20 @@ def _initialize_notes_and_chromatic_scale(namespace: dict[str, object]) -> None:
         namespace[var_name] = inner_nodes[i]
 
     # Also add the full chromatic scale ring
-    chromatic_ring = _ring_from_CLL(_CLL_from_list_of_unlinked_LL_nodes([_LL_node(n) for n in inner_nodes]))
+    chromatic_ring = _ring_from_CLL(_CLL_from_list_of_unlinked_LL_nodes([_create_LL_node(n) for n in inner_nodes]))
     namespace['chromatic_scale'] = chromatic_ring;
     print("--> created the ring 'chromatic_scale', which represents the notes within an octave (C, C#, D, etc).");
 
 def _initialize_interval_scale(namespace) -> None:
-    namespace[ 'half_step']     = _LL_node(_INTERVAL.half_step);
-    namespace['whole_step']     = _LL_node(_INTERVAL.whole_step);
-    namespace[   'locrian']     = _LL_node(namespace[ 'half_step']);
-    namespace[   'aeolian']     = _LL_node(namespace['whole_step'], namespace[   'locrian']);
-    namespace['mixolydian']     = _LL_node(namespace['whole_step'], namespace[   'aeolian']);
-    namespace[    'lydian']     = _LL_node(namespace['whole_step'], namespace['mixolydian']);
-    namespace[  'phrygian']     = _LL_node(namespace[ 'half_step'], namespace[    'lydian']);
-    namespace[    'dorian']     = _LL_node(namespace['whole_step'], namespace[  'phrygian']);
-    namespace[    'ionian']     = _LL_node(namespace['whole_step'], namespace[    'dorian']);
+    namespace[ 'half_step']     = _create_LL_node(_INTERVAL.half_step);
+    namespace['whole_step']     = _create_LL_node(_INTERVAL.whole_step);
+    namespace[   'locrian']     = _create_LL_node(namespace[ 'half_step']);
+    namespace[   'aeolian']     = _create_LL_node(namespace['whole_step'], namespace[   'locrian']);
+    namespace['mixolydian']     = _create_LL_node(namespace['whole_step'], namespace[   'aeolian']);
+    namespace[    'lydian']     = _create_LL_node(namespace['whole_step'], namespace['mixolydian']);
+    namespace[  'phrygian']     = _create_LL_node(namespace[ 'half_step'], namespace[    'lydian']);
+    namespace[    'dorian']     = _create_LL_node(namespace['whole_step'], namespace[  'phrygian']);
+    namespace[    'ionian']     = _create_LL_node(namespace['whole_step'], namespace[    'dorian']);
     namespace['locrian'].next   = namespace['ionian']
     globals()['interval_scale'] = namespace['interval_scale'] = _ring_from_CLL(namespace['ionian'])
     print("--> created the ring 'interval_scale', which represents all modes (ionian, dorian, etc).");
@@ -205,7 +207,7 @@ def _initialize_scales_for_every_mode_key_combo(namespace) -> None:
         namespace[f"{note_name}_major"] = namespace[f"{note_name}_ionian"];
         namespace[f"{note_name}_minor"] = namespace[f"{note_name}_aeolian"];
     # print("--> all synonyms have been set up as well (like \"c_major = c_ionian\", \"g_sharp_minor = g_sharp_aeolian\", etc).");
-    print("--> created the 84 rings for all possible key-mode combinations, that's 12 * 7 = 84 scales in total !");
+    print("--> created the 84 rings for all possible key-mode combinations, that's 7 modes * 12 keys = 84 scales in total !");
     print("    ---> access them like 'c_major.loop()', 'g_dorian.loop()', 'f_locrian()', etc ...");
 
 def initialize_everything(namespace: dict[str, object]) -> None:
@@ -223,7 +225,7 @@ def list_of_notes(root_note: _LL_node, mode: _LL_node) -> list:
         new = _apply_interval(note_cursor, CURRENT_INTERVAL); ret_val.append(new); note_cursor = new;
     interval_scale.access = old_interval_scale_head; return ret_val;
 
-def ring_from_list(list) -> _ring:
+def ring_from_list(list: list) -> _ring:
     return _ring_from_CLL(_CLL_from_list(list));
 
 h = H = hor  = horizontal = horizontally = "horizontal";
