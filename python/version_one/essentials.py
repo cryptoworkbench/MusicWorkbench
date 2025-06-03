@@ -140,7 +140,7 @@ class _ring:
         """Display the content of the ring by cycling through it once."""
         if starting_position == None: starting_position = self.access;
         else: starting_position = self._search(starting_position);
-        # ^^^--> These two lines translate between the two permutation layers
+        # ^^--> These lines translate between all involved permutation layers
         output_str = "";
         for i in range(self.cardinality):
             element_str = _return_last_layer(starting_position, orientation);
@@ -207,9 +207,29 @@ class _scale(_ring):
 class _melody(_ring):
     def __init__(self, name: str, circular_LL: _LL_node, source_pattern = None):
         super().__init__(name, circular_LL, source_pattern);
-    def transpose(self, half_steps: int): 
+    def transpose(self, half_steps: int = None, name: str = None): 
         """Returns the melody transposed with the supplied interval."""
-
+        if (half_steps == None):
+            while True:
+                user_input = input("Enter amount of half steps to transpose by: ");
+                try:
+                    half_steps = int(user_input)
+                    break
+                except ValueError:
+                    print("That's not a valid integer, try again.\n")
+        transposed_melody = []
+        for i, LL_node in enumerate(self):
+            original_note = _return_second_to_last_layer(LL_node);
+            new_note      = _traverse_cLL(original_note, half_steps);
+            transposed_melody.append(new_note);
+        if (name == None):
+            while True:
+                name = input("Enter name for new melody: ")
+                try:
+                    if name.strip() != "": break
+                except ValueError:
+                    print("That's not a valid name, try again.\n")
+        return melody_from_list(name, transposed_melody, self);
 
 def chord(ring: _ring):
     note_one   = _return_last_layer(_traverse_cLL(ring.access, 0));
