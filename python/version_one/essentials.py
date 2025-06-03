@@ -144,16 +144,15 @@ class _ring:
         output_str = "";
         for i in range(self.cardinality):
             element_str = _return_last_layer(starting_position, orientation);
-            output_str += element_str;
-            if orientation == "vertical": output_str += "\n";
-            elif orientation == "horizontal": output_str += ", ";
+            if orientation == "vertical": output_str += f"{empty_indent} {element_str}\n"
+            elif orientation == "horizontal": output_str += f"{element_str}, ";
             starting_position = starting_position.next;
         if orientation == "horizontal":
-            output_str = "<" + output_str[:-2] + ">";
+            output_str = f"{empty_indent} <{output_str[:-2]}>";
         else: output_str = output_str[:-1];
         print(output_str);
 
-    def auto_loop(self, complete_cycles=10, frequency=1, orientation="horizontal"):
+    def auto_loop(self, orientation="horizontal", complete_cycles=10, frequency=0.9):
         """Calls 'self.loop()' iteratively in combination with 'clear_screen()' in order to give 'self.loop()' a dynamic touch."""
         cursor = self.access; 
         for i in range(complete_cycles):
@@ -165,13 +164,13 @@ class _ring:
                 print("\nTo exit press '<ctrl> + c'.");
                 time.sleep(frequency);
 
-    def auto_loop_vertically(self, complete_cycles=10, frequency=1):
+    def auto_loop_vertically(self, complete_cycles=10, frequency=0.9):
         """Calls 'self.autoloop()' with the orientation set to 'vertical'."""
-        self.auto_loop(complete_cycles, frequency, "vertical");
+        self.auto_loop("vertical", complete_cycles, frequency);
 
-    def auto_loop_horizontally(self, complete_cycles=10, frequency=1):
+    def auto_loop_horizontally(self, complete_cycles=10, frequency=0.9):
         """Calls 'self.autoloop()' with the orientation set to 'horizontal'."""
-        self.auto_loop(complete_cycles, frequency, "horizontal");
+        self.auto_loop("horizontal", complete_cycles, frequency);
 
     def melody(self, name_for_new_melody: str, list_of_scale_degrees):
         """Returns a ring containing the melody specified by the scale degrees."""
@@ -221,11 +220,8 @@ class _melody(_ring):
         if (half_steps == None):
             while True:
                 user_input = input("Enter amount of half steps to transpose by: ");
-                try:
-                    half_steps = int(user_input)
-                    break
-                except ValueError:
-                    print("That's not a valid integer, try again.\n")
+                try: half_steps = int(user_input); break
+                except ValueError: print("That's not a valid integer, try again.\n")
         transposed_melody = []
         for i, LL_node in enumerate(self):
             original_note = _return_second_to_last_layer(LL_node);
@@ -234,10 +230,8 @@ class _melody(_ring):
         if (name == None):
             while True:
                 name = input("Enter name for new melody: ")
-                try:
-                    if name.strip() != "": break
-                except ValueError:
-                    print("That's not a valid name, try again.\n")
+                if name: break
+                print("That's not a valid name, try again.\n")
         return melody_from_list(name, transposed_melody, self);
 
 def chord(ring: _ring):
@@ -326,7 +320,7 @@ def initialize_everything(namespace: dict[str, object]) -> None:
     _initialize_notes_and_chromatic_scale(namespace);
     _initialize_interval_scale(namespace);
     _initialize_scales_for_every_mode_key_combo(namespace);
-    print("--> setup complete!");
+    print("{indent} setup complete!");
 
 def list_of_notes(root_note: _LL_node, mode: _LL_node) -> list:
     ret_val = [root_note]; note_cursor = root_note;
