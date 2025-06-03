@@ -86,12 +86,19 @@ class _ring:
         current = self.access; count = 0;
         while count < self.cardinality: yield current.content; current = current.next; count += 1;
 
-    def info(self):
-        print("Info about ring:")
-        print(f"Name          : {self.name}\nCardinality   : {self.cardinality}")
-        print( "Source pattern: ", end = "")
+    def _name_info(self):
+        print(f"Name            :  {self.name}");
+
+    def _info(self):
+        print(f"Size            :  {self.cardinality} elements")
+        print( "Source pattern  :  ", end = "")
         if self.source_pattern == None: print("None")
         else: print(f"{self.source_pattern.name}")
+
+    def info(self):
+        print("INFO ABOUT RING:")
+        self._name_info();
+        self._info()
 
     def extend_with(self, value):
         """Add a new node with a given value at the end of the circular list."""
@@ -159,14 +166,36 @@ class _ring:
         for scale_degree in list_of_scale_degrees: notes_in_melody.append(_traverse_cLL(self.access, scale_degree));
         return ring_from_list(name_for_new_melody, notes_in_melody, self);
 
-'''
-class _melody_ring(self):
-    def test():
-        print("method inherited");
-'''
+class _scale_ring(_ring):
+    def __init__(self, name: str, key: _LL_node, mode: str, circular_LL: _LL_node, source_pattern = None):
+        super().__init__(name, circular_LL, source_pattern);
+        self.key  = key;
+        self.mode = mode;
 
-def _ring_from_CLL(name: str, CLL: _LL_node, source_pattern: _ring = None) -> _ring:
+    def info(self):
+        print("INFO ABOUT SCALE:");
+        super()._name_info();
+        print(f"Key / root-note :  {_return_deepest_layer(self.key)}");
+        print(f"Mode            :  {self.mode}");
+        super()._info();
+
+    def chords(self):
+        note_one   = _return_deepest_layer(_traverse_cLL(self.access, 0));
+        note_two   = _return_deepest_layer(_traverse_cLL(self.access, 2));
+        note_three = _return_deepest_layer(_traverse_cLL(self.access, 4));
+        print(f"the first chord is: {note_one} + {note_two} + {note_three}");
+
+def chord(ring: _ring):
+    note_one   = _return_deepest_layer(_traverse_cLL(ring.access, 0));
+    note_two   = _return_deepest_layer(_traverse_cLL(ring.access, 2));
+    note_three = _return_deepest_layer(_traverse_cLL(ring.access, 4));
+    print(f"the first chord is: {note_one} + {note_two} + {note_three}");
+
+def _ring_from_CLL(name: str, CLL: _LL_node, source_pattern = None) -> _ring:
     return _ring(name, CLL, source_pattern);
+
+def _scale_ring_from_CLL(name: str, key: _LL_node, mode: str, CLL: _LL_node, source_pattern = None) -> _scale_ring:
+    return _scale_ring(name, key, mode, CLL, source_pattern);
 
 def _CLL_from_list(list) -> _LL_node:
     if not list: raise ValueError("Cannot create a cyclical linked list (or any linked list for that matter), from a list with no items inside of it");
@@ -224,7 +253,7 @@ def _initialize_scales_for_every_mode_key_combo(namespace) -> None:
     for note_name, note_node in notes:
         for mode_name, mode_node in modes:
             var_name = f"{note_name}_{mode_name}"
-            namespace[var_name] = ring_from_list(var_name, list_of_notes(note_node, mode_node), namespace["chromatic_scale"])
+            namespace[var_name] = scale_ring_from_list(var_name, namespace[note_name], mode_name, list_of_notes(note_node, mode_node), namespace["chromatic_scale"])
         # print(f"--> all {note_name} scales have been initialized ({note_name}_ionian, {note_name}_dorian, {note_name}_phrygian, etc)");
 
     for note_name, _ in notes:
@@ -251,6 +280,9 @@ def list_of_notes(root_note: _LL_node, mode: _LL_node) -> list:
 
 def ring_from_list(name: str, list: list, source_pattern: _ring = None) -> _ring:
     return _ring_from_CLL(name, _CLL_from_list(list), source_pattern);
+
+def scale_ring_from_list(name: str, key: _LL_node, mode: str, list: list, source_pattern: _ring = None) -> _scale_ring:
+    return _scale_ring_from_CLL(name, key, mode, _CLL_from_list(list), source_pattern);
 
 h = H = hor  = horizontal = horizontally = "horizontal";
 v = V = vert = vertical   = vertically   = "vertical";
