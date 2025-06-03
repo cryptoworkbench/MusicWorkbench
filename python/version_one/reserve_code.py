@@ -117,10 +117,16 @@ __all__ = [
 ]
 
 class _ring:
-    def loop():
+    def _search():
         cursor = self.access; # iterator = 0; # set variables needed for object search
         for iterator in range(self.cardinality):
             if cursor.content == starting_position or cursor == starting_position: return cursor;
+
+        while isinstance(cursor, _LL_node):
+            for iterator in range(self.cardinality):
+                if cursor == starting_position: return cursor;
+            cursor = cursor.content;
+            print("could not find object in permutation layer/");
 
 def show_help():
     print("## cll_from_list(list_to_convert)");

@@ -4,6 +4,7 @@ import importlib
 _self = importlib.import_module(__name__)
 
 from enum import Enum
+from functools import partial
 
 indent       = "-->";
 empty_indent = "   ";
@@ -68,9 +69,13 @@ def _return_INTERVAL_abbreviation(interval: _LL_node) -> str:
     """Returns the abbreviated name for the specified interval."""
     return interval.content.value[2];
 
-def _return_deepest_layer(node: _LL_node, orientation=None) -> str:
-    """Returns the string from the bottom of the '_LL_node' layers (permutation layers)."""
+def _return_second_to_last_layer(node: _LL_node) -> _LL_node:
     while isinstance(node.content, _LL_node): node = node.content;
+    return node;
+
+def _return_last_layer(node: _LL_node, orientation=None) -> str:
+    """Returns the string from the bottom of the '_LL_node' layers (permutation layers)."""
+    node = _return_second_to_last_layer(node);
     if isinstance(node.content, _NOTE): return _return_NOTE_name(node.content);
     elif isinstance(node.content, _INTERVAL):
         if orientation == "horizontal": return _return_INTERVAL_abbreviation(node);
@@ -125,11 +130,20 @@ class _ring:
         self.cardinality += 1;
 
     def _search(self, starting_position: _LL_node):
-        cursor = starting_position;
-        while isinstance(cursor, _LL_node):
-            for iterator in range(self.cardinality):
-                if cursor == starting_position: return cursor;
-            cursor = cursor.content;
+        '''
+        cursor = self.access; # iterator = 0; # set variables needed for object search
+        while (cursor != starting_position 
+        for iterator in range(self.cardinality):
+            if cursor.content == starting_position or cursor == starting_position: return cursor;
+               cursor = cursor.next;
+        self_cursor = self;
+        LL_cursor   = self_cursor.access;
+        '''
+        LL_node_to_match_against = _return_second_to_last_layer(starting_position);
+        for iterator in range(self.cardinality):
+            original_ring_LL_cursor = _traverse_cLL(self.access, iterator)
+            if _return_second_to_last_layer(original_ring_LL_cursor) == LL_node_to_match_against:
+                return original_ring_LL_cursor;
         raise ValueError(f"Error, object  '{starting_position}' is not in this ring ! (and neither is a different object containing the same exact value!)");
 
     def loop(self, starting_position: _LL_node = None, orientation = "horizontal"):
@@ -139,7 +153,7 @@ class _ring:
         # ^^^--> These two lines translate between the two permutation layers
         output_str = "";
         for i in range(self.cardinality):
-            element_str = _return_deepest_layer(starting_position, orientation);
+            element_str = _return_last_layer(starting_position, orientation);
             output_str += element_str;
             if orientation == "vertical": output_str += "\n";
             elif orientation == "horizontal": output_str += ", ";
@@ -183,7 +197,7 @@ class _scale(_ring):
 
     def info(self):
         super().info();
-        print(f"{empty_indent} Key / root-note :  {_return_deepest_layer(self.key)}");
+        print(f"{empty_indent} Key / root-note :  {_return_last_layer(self.key)}");
         print(f"{empty_indent} Mode            :  {self.mode}");
 
     def _derive_primary_chord(self, chord_number):
@@ -197,18 +211,20 @@ class _scale(_ring):
     def chords(self, chord_number):
         chord_one = self._derive_primary_chord(chord_number);
         chord_one_str = "The first chord is: ";
-        for i in range(0, len(chord_one)): chord_one_str += _return_deepest_layer(chord_one[i]) + " + ";
+        for i in range(0, len(chord_one)): chord_one_str += _return_last_layer(chord_one[i]) + " + ";
         print(chord_one_str[:-3]);
 
 class _melody(_ring):
     def __init__(self, name: str, circular_LL: _LL_node, source_pattern = None):
         super().__init__(name, circular_LL, source_pattern);
-    # def transpose: 
+    def transpose(self, half_steps: int): 
+        """Returns the melody transposed with the supplied interval."""
+
 
 def chord(ring: _ring):
-    note_one   = _return_deepest_layer(_traverse_cLL(ring.access, 0));
-    note_two   = _return_deepest_layer(_traverse_cLL(ring.access, 2));
-    note_three = _return_deepest_layer(_traverse_cLL(ring.access, 4));
+    note_one   = _return_last_layer(_traverse_cLL(ring.access, 0));
+    note_two   = _return_last_layer(_traverse_cLL(ring.access, 2));
+    note_three = _return_last_layer(_traverse_cLL(ring.access, 4));
     print(f"the first chord is: {note_one} + {note_two} + {note_three}");
 
 def _ring_from_CLL(name: str, CLL: _LL_node, source_pattern = None) -> _ring:
@@ -246,7 +262,7 @@ def _initialize_notes_and_chromatic_scale(namespace: dict[str, object]) -> None:
 
     # Also add the full chromatic scale ring
     namespace['chromatic_scale'] = _ring_from_CLL("chromatic_scale", _CLL_from_list_of_unlinked_LL_nodes([_create_LL_node(n) for n in inner_nodes]))
-    print("--> created the ring 'chromatic_scale', which represents the notes within an octave (C, C#, D, etc).");
+    print(f"{indent} created the ring 'chromatic_scale', which represents the notes within an octave (C, C#, D, etc).");
 
 def _initialize_interval_scale(namespace) -> None:
     namespace[ 'half_step']     = _create_LL_node(_INTERVAL.half_step);
@@ -260,7 +276,7 @@ def _initialize_interval_scale(namespace) -> None:
     namespace[    'ionian']     = _create_LL_node(namespace['whole_step'], namespace[    'dorian']);
     namespace['locrian'].next   = namespace['ionian']
     globals()['interval_scale'] = namespace['interval_scale'] = _ring_from_CLL("interval_scale", namespace['ionian'])
-    print("--> created the ring 'interval_scale', which represents all modes (ionian, dorian, etc).");
+    print(f"{indent} created the ring 'interval_scale', which represents all modes (ionian, dorian, etc).");
 
 def _initialize_scales_for_every_mode_key_combo(namespace) -> None:
     notes = [
@@ -283,8 +299,8 @@ def _initialize_scales_for_every_mode_key_combo(namespace) -> None:
         namespace[f"{note_name}_major"] = namespace[f"{note_name}_ionian"];
         namespace[f"{note_name}_minor"] = namespace[f"{note_name}_aeolian"];
     # print("--> all synonyms have been set up as well (like \"c_major = c_ionian\", \"g_sharp_minor = g_sharp_aeolian\", etc).");
-    print("--> created the 84 rings for all possible key-mode combinations, that's 7 modes * 12 keys = 84 scales in total !");
-    print("    ---> access them like 'c_major.loop()', 'g_dorian.loop()', 'f_locrian()', etc ...");
+    print(f"{indent} created the 84 rings for all possible key-mode combinations, that's 7 modes * 12 keys = 84 scales in total !");
+    print(f"{empty_indent} {indent} access them like 'c_major.loop()', 'g_dorian.loop()', 'f_locrian()', etc ...");
 
 def initialize_everything(namespace: dict[str, object]) -> None:
     print("Initializing program:");
