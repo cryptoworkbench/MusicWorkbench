@@ -1,6 +1,12 @@
 import time
 import os
+import importlib
+_self = importlib.import_module(__name__)
+
 from enum import Enum
+
+indent       = "-->";
+empty_indent = "   ";
 
 class _LL_node:
     def __init__(self, content, next_node=None):
@@ -86,19 +92,22 @@ class _ring:
         current = self.access; count = 0;
         while count < self.cardinality: yield current.content; current = current.next; count += 1;
 
-    def _name_info(self):
-        print(f"Name            :  {self.name}");
-
-    def _info(self):
-        print(f"Size            :  {self.cardinality} elements")
-        print( "Source pattern  :  ", end = "")
-        if self.source_pattern == None: print("None")
-        else: print(f"{self.source_pattern.name}")
+    def _info_header(self):
+        header_str = f"{indent} INFO ABOUT ";
+        match(self):
+            case _self._scale(): header_str += "SCALE";
+            case _self._melody(): header_str += "MELODY";
+            case _self._ring(): header_str += "SOURCE PATTERN";
+        header_str += ":";
+        return header_str
 
     def info(self):
-        print("INFO ABOUT RING:")
-        self._name_info();
-        self._info()
+        print(self._info_header());
+        print(f"{empty_indent} Name            :  {self.name}");
+        print(f"{empty_indent} Size            :  {self.cardinality} elements")
+        print(f"{empty_indent} Source pattern  :  ", end = "")
+        if self.source_pattern == None: print("None")
+        else: print(f"{self.source_pattern.name}")
 
     def extend_with(self, value):
         """Add a new node with a given value at the end of the circular list."""
@@ -164,7 +173,7 @@ class _ring:
         """Returns a ring containing the melody specified by the scale degrees."""
         notes_in_melody = [];
         for scale_degree in list_of_scale_degrees: notes_in_melody.append(_traverse_cLL(self.access, scale_degree));
-        return ring_from_list(name_for_new_melody, notes_in_melody, self);
+        return melody_from_list(name_for_new_melody, notes_in_melody, self);
 
 class _scale(_ring):
     def __init__(self, name: str, key: _LL_node, mode: str, circular_LL: _LL_node, source_pattern = None):
@@ -173,11 +182,9 @@ class _scale(_ring):
         self.mode = mode;
 
     def info(self):
-        print("INFO ABOUT SCALE:");
-        super()._name_info();
-        print(f"Key / root-note :  {_return_deepest_layer(self.key)}");
-        print(f"Mode            :  {self.mode}");
-        super()._info();
+        super().info();
+        print(f"{empty_indent} Key / root-note :  {_return_deepest_layer(self.key)}");
+        print(f"{empty_indent} Mode            :  {self.mode}");
 
     def _derive_primary_chord(self, chord_number):
         notes_in_primary_chord = [];
@@ -193,6 +200,11 @@ class _scale(_ring):
         for i in range(0, len(chord_one)): chord_one_str += _return_deepest_layer(chord_one[i]) + " + ";
         print(chord_one_str[:-3]);
 
+class _melody(_ring):
+    def __init__(self, name: str, circular_LL: _LL_node, source_pattern = None):
+        super().__init__(name, circular_LL, source_pattern);
+    # def transpose: 
+
 def chord(ring: _ring):
     note_one   = _return_deepest_layer(_traverse_cLL(ring.access, 0));
     note_two   = _return_deepest_layer(_traverse_cLL(ring.access, 2));
@@ -204,6 +216,9 @@ def _ring_from_CLL(name: str, CLL: _LL_node, source_pattern = None) -> _ring:
 
 def _scale_ring_from_CLL(name: str, key: _LL_node, mode: str, CLL: _LL_node, source_pattern = None) -> _scale:
     return _scale(name, key, mode, CLL, source_pattern);
+
+def _melody_ring_from_CLL(name: str, CLL: _LL_node, source_pattern = None) -> _melody:
+    return _melody(name, CLL, source_pattern);
 
 def _CLL_from_list(list) -> _LL_node:
     if not list: raise ValueError("Cannot create a cyclical linked list (or any linked list for that matter), from a list with no items inside of it");
@@ -291,6 +306,9 @@ def ring_from_list(name: str, list: list, source_pattern: _ring = None) -> _ring
 
 def scale_ring_from_list(name: str, key: _LL_node, mode: str, list: list, source_pattern: _ring = None) -> _scale:
     return _scale_ring_from_CLL(name, key, mode, _CLL_from_list(list), source_pattern);
+
+def melody_from_list(name: str, list: list, source_pattern: _ring = None) -> _melody:
+    return _melody_ring_from_CLL(name, _CLL_from_list(list), source_pattern);
 
 h = H = hor  = horizontal = horizontally = "horizontal";
 v = V = vert = vertical   = vertically   = "vertical";
