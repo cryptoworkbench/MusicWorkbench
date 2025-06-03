@@ -166,7 +166,7 @@ class _ring:
         for scale_degree in list_of_scale_degrees: notes_in_melody.append(_traverse_cLL(self.access, scale_degree));
         return ring_from_list(name_for_new_melody, notes_in_melody, self);
 
-class _scale_ring(_ring):
+class _scale(_ring):
     def __init__(self, name: str, key: _LL_node, mode: str, circular_LL: _LL_node, source_pattern = None):
         super().__init__(name, circular_LL, source_pattern);
         self.key  = key;
@@ -179,11 +179,19 @@ class _scale_ring(_ring):
         print(f"Mode            :  {self.mode}");
         super()._info();
 
-    def chords(self):
-        note_one   = _return_deepest_layer(_traverse_cLL(self.access, 0));
-        note_two   = _return_deepest_layer(_traverse_cLL(self.access, 2));
-        note_three = _return_deepest_layer(_traverse_cLL(self.access, 4));
-        print(f"the first chord is: {note_one} + {note_two} + {note_three}");
+    def _derive_primary_chord(self, chord_number):
+        notes_in_primary_chord = [];
+        index_of_root_note = (chord_number - 1) % self.cardinality;
+        cursor = _traverse_cLL(self.access, index_of_root_note);
+        for i in range(index_of_root_note, 2 * 3 + index_of_root_note, 2):
+            notes_in_primary_chord.append(_traverse_cLL(cursor, i))
+        return notes_in_primary_chord;
+
+    def chords(self, chord_number):
+        chord_one = self._derive_primary_chord(chord_number);
+        chord_one_str = "The first chord is: ";
+        for i in range(0, len(chord_one)): chord_one_str += _return_deepest_layer(chord_one[i]) + " + ";
+        print(chord_one_str[:-3]);
 
 def chord(ring: _ring):
     note_one   = _return_deepest_layer(_traverse_cLL(ring.access, 0));
@@ -194,8 +202,8 @@ def chord(ring: _ring):
 def _ring_from_CLL(name: str, CLL: _LL_node, source_pattern = None) -> _ring:
     return _ring(name, CLL, source_pattern);
 
-def _scale_ring_from_CLL(name: str, key: _LL_node, mode: str, CLL: _LL_node, source_pattern = None) -> _scale_ring:
-    return _scale_ring(name, key, mode, CLL, source_pattern);
+def _scale_ring_from_CLL(name: str, key: _LL_node, mode: str, CLL: _LL_node, source_pattern = None) -> _scale:
+    return _scale(name, key, mode, CLL, source_pattern);
 
 def _CLL_from_list(list) -> _LL_node:
     if not list: raise ValueError("Cannot create a cyclical linked list (or any linked list for that matter), from a list with no items inside of it");
@@ -281,7 +289,7 @@ def list_of_notes(root_note: _LL_node, mode: _LL_node) -> list:
 def ring_from_list(name: str, list: list, source_pattern: _ring = None) -> _ring:
     return _ring_from_CLL(name, _CLL_from_list(list), source_pattern);
 
-def scale_ring_from_list(name: str, key: _LL_node, mode: str, list: list, source_pattern: _ring = None) -> _scale_ring:
+def scale_ring_from_list(name: str, key: _LL_node, mode: str, list: list, source_pattern: _ring = None) -> _scale:
     return _scale_ring_from_CLL(name, key, mode, _CLL_from_list(list), source_pattern);
 
 h = H = hor  = horizontal = horizontally = "horizontal";
