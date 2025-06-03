@@ -75,7 +75,7 @@ def clear_screen() -> None:
     os.system('cls' if os.name == 'nt' else 'clear')
 
 class _ring:
-    def __init__(self, name: str, circular_LL: _LL_node, source_pattern: _ring = None):
+    def __init__(self, name: str, circular_LL: _LL_node, source_pattern = None):
         if circular_LL == None: raise ValueError("LL must be provided.");
         if name == None: raise ValueError("Name must be provided.");
         self.name = name; self.access = circular_LL; self.source_pattern = source_pattern; self.cardinality = 1;
@@ -85,6 +85,13 @@ class _ring:
     def __iter__(self):
         current = self.access; count = 0;
         while count < self.cardinality: yield current.content; current = current.next; count += 1;
+
+    def info(self):
+        print("Info about ring:")
+        print(f"Name          : {self.name}\nCardinality   : {self.cardinality}")
+        print( "Source pattern: ", end = "")
+        if self.source_pattern == None: print("None")
+        else: print(f"{self.source_pattern.name}")
 
     def extend_with(self, value):
         """Add a new node with a given value at the end of the circular list."""
