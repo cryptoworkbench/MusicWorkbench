@@ -7,9 +7,11 @@ class _LL_node:
         self.content = content; self.next = next_node;
 
 def _create_LL_node(content, next_node: _LL_node = None) -> _LL_node:
+    """Returns an instance of the class _LL_node."""
     return _LL_node(content, next_node);
 
-def _add_to_cLL(LL_element_already_in_LL: _LL_node, element_to_add: _LL_node) -> _LL_node: # a function for inserting into a (circular) linked list
+def _add_to_cLL(LL_element_already_in_LL: _LL_node, element_to_add: _LL_node) -> _LL_node:
+    """A function for inserting into a (circular) linked list. Returns the new element in order to be able to update the cursor in the calling loop."""
     old_next = LL_element_already_in_LL.next; LL_element_already_in_LL.next = _create_LL_node(element_to_add); LL_element_already_in_LL = LL_element_already_in_LL.next;
     LL_element_already_in_LL.next = old_next; return LL_element_already_in_LL;
 
@@ -38,17 +40,30 @@ class _NOTE(Enum):
     a_sharp = ("A#", "purple square");
     b = ("B", "yellow/green circle");
 
-def _return_NOTE_name(note: _NOTE) -> str: return note.value[0];
-def _return_NOTE_ColorMusic_description(note: _NOTE) -> str: return note.value[1];
-# ^^^--> ALL NOTE STUFF        ^^^
+def _return_NOTE_name(note: _NOTE) -> str:
+    """Returns the name of a note as string."""
+    return note.value[0];
+
+def _return_NOTE_ColorMusic_description(note: _NOTE) -> str:
+    """Returns a description of the symbol ColorMusic by Mike George uses to depict this note."""
+    return note.value[1];
 
 class _INTERVAL(Enum): half_step = (1, "half step", "H"); whole_step = (2, "whole step", "W"); minor_third = (3, "minor third", "m3"); major_third = (4, "major third", "M3"); perfect_fourth = (5, "perfect fourth", "P4"); tritone = (6, "tritone", "A4"); perfect_fifth = (7, "perfect fifth", "P5"); minor_sixth = (8, "minor sixth", "m6"); major_sixth = (9, "major sixth", "M6"); minor_seventh = (10, "minor seventh", "m7"); major_seventh = (11, "major seventh", "M7");
-def _return_INTERVAL_halfsteps(interval: _LL_node) -> str: return interval.content.value[0];
-def _return_INTERVAL_name(interval: _LL_node) -> str: return interval.content.value[1];
-def _return_INTERVAL_abbreviation(interval: _LL_node) -> str: return interval.content.value[2];
-# ^^^--> ALL INTERVAL STUFF    ^^^
+
+def _return_INTERVAL_halfsteps(interval: _LL_node) -> str:
+    """Returns the amount of halfsteps that in specified interval."""
+    return interval.content.value[0];
+
+def _return_INTERVAL_name(interval: _LL_node) -> str:
+    """Returns the name of specified interval."""
+    return interval.content.value[1];
+
+def _return_INTERVAL_abbreviation(interval: _LL_node) -> str:
+    """Returns the abbreviated name for the specified interval."""
+    return interval.content.value[2];
 
 def _return_deepest_layer(node: _LL_node, orientation=None) -> str:
+    """Returns the string from the bottom of the '_LL_node' layers (permutation layers)."""
     while isinstance(node.content, _LL_node): node = node.content;
     if isinstance(node.content, _NOTE): return _return_NOTE_name(node.content);
     elif isinstance(node.content, _INTERVAL):
@@ -86,12 +101,13 @@ class _ring:
         self.cardinality += 1;
 
     def _search(self, starting_position):
-        cursor = self.access; iterator = 0; # set variables needed for object search
-        for iterator in range(self.cardinality):
-            if cursor.content == starting_position or cursor == starting_position: return cursor;
+        while isinstance(cursor, _LL_node):
+            for iterator in range(self.cardinality):
+                if cursor == starting_position: return cursor;
+            cursor = cursor.content;
         raise ValueError(f"Error, object  '{starting_position}' is not in this ring ! (and neither is a different object containing the same exact value!)");
 
-    def loop(self, starting_position=None, orientation="horizontal"):
+    def loop(self, starting_position: _LL_node = None, orientation = "horizontal"):
         """Display the content of the ring by cycling through it once."""
         if starting_position == None: starting_position = self.access;
         else: starting_position = self._search(starting_position);

@@ -116,6 +116,12 @@ __all__ = [
     "chromatic_scale", "interval_scale",
 ]
 
+class _ring:
+    def loop():
+        cursor = self.access; # iterator = 0; # set variables needed for object search
+        for iterator in range(self.cardinality):
+            if cursor.content == starting_position or cursor == starting_position: return cursor;
+
 def show_help():
     print("## cll_from_list(list_to_convert)");
     print("##    Makes a circular linked list from the list 'list_to_convert', while conserving the order.");
