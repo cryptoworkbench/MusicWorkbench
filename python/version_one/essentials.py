@@ -75,10 +75,10 @@ def clear_screen() -> None:
     os.system('cls' if os.name == 'nt' else 'clear')
 
 class _ring:
-    def __init__(self, name: str, circular_LL: _LL_node):
+    def __init__(self, name: str, circular_LL: _LL_node, source_pattern: _ring = None):
         if circular_LL == None: raise ValueError("LL must be provided.");
         if name == None: raise ValueError("Name must be provided.");
-        self.name = name; self.access = circular_LL; self.cardinality = 1;
+        self.name = name; self.access = circular_LL; self.source_pattern = source_pattern; self.cardinality = 1;
         cursor = circular_LL; cursor = cursor.next;
         while cursor != circular_LL: cursor = cursor.next; self.cardinality += 1;
 
@@ -150,7 +150,7 @@ class _ring:
         """Returns a ring containing the melody specified by the scale degrees."""
         notes_in_melody = [];
         for scale_degree in list_of_scale_degrees: notes_in_melody.append(_traverse_cLL(self.access, scale_degree));
-        return ring_from_list(name_for_new_melody, notes_in_melody);
+        return ring_from_list(name_for_new_melody, notes_in_melody, self);
 
 '''
 class _melody_ring(self):
@@ -158,8 +158,8 @@ class _melody_ring(self):
         print("method inherited");
 '''
 
-def _ring_from_CLL(name: str, CLL: _LL_node) -> _ring:
-    return _ring(name, CLL);
+def _ring_from_CLL(name: str, CLL: _LL_node, source_pattern: _ring = None) -> _ring:
+    return _ring(name, CLL, source_pattern);
 
 def _CLL_from_list(list) -> _LL_node:
     if not list: raise ValueError("Cannot create a cyclical linked list (or any linked list for that matter), from a list with no items inside of it");
@@ -217,7 +217,7 @@ def _initialize_scales_for_every_mode_key_combo(namespace) -> None:
     for note_name, note_node in notes:
         for mode_name, mode_node in modes:
             var_name = f"{note_name}_{mode_name}"
-            namespace[var_name] = ring_from_list(var_name, list_of_notes(note_node, mode_node))
+            namespace[var_name] = ring_from_list(var_name, list_of_notes(note_node, mode_node), namespace["chromatic_scale"])
         # print(f"--> all {note_name} scales have been initialized ({note_name}_ionian, {note_name}_dorian, {note_name}_phrygian, etc)");
 
     for note_name, _ in notes:
@@ -242,8 +242,8 @@ def list_of_notes(root_note: _LL_node, mode: _LL_node) -> list:
         new = _apply_interval(note_cursor, CURRENT_INTERVAL); ret_val.append(new); note_cursor = new;
     interval_scale.access = old_interval_scale_head; return ret_val;
 
-def ring_from_list(name: str, list: list) -> _ring:
-    return _ring_from_CLL(name, _CLL_from_list(list));
+def ring_from_list(name: str, list: list, source_pattern: _ring = None) -> _ring:
+    return _ring_from_CLL(name, _CLL_from_list(list), source_pattern);
 
 h = H = hor  = horizontal = horizontally = "horizontal";
 v = V = vert = vertical   = vertically   = "vertical";
