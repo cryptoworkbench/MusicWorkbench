@@ -130,20 +130,10 @@ class _ring:
         self.cardinality += 1;
 
     def _search(self, starting_position: _LL_node):
-        '''
-        cursor = self.access; # iterator = 0; # set variables needed for object search
-        while (cursor != starting_position 
+        LL_node_to_match_against = _return_second_to_last_layer(starting_position); original_ring_LL_cursor = self.access;
         for iterator in range(self.cardinality):
-            if cursor.content == starting_position or cursor == starting_position: return cursor;
-               cursor = cursor.next;
-        self_cursor = self;
-        LL_cursor   = self_cursor.access;
-        '''
-        LL_node_to_match_against = _return_second_to_last_layer(starting_position);
-        for iterator in range(self.cardinality):
-            original_ring_LL_cursor = _traverse_cLL(self.access, iterator)
-            if _return_second_to_last_layer(original_ring_LL_cursor) == LL_node_to_match_against:
-                return original_ring_LL_cursor;
+            if _return_second_to_last_layer(original_ring_LL_cursor) == LL_node_to_match_against: return original_ring_LL_cursor
+            original_ring_LL_cursor = original_ring_LL_cursor.next
         raise ValueError(f"Error, object  '{starting_position}' is not in this ring ! (and neither is a different object containing the same exact value!)");
 
     def loop(self, starting_position: _LL_node = None, orientation = "horizontal"):
