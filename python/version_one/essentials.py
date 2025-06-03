@@ -100,7 +100,8 @@ class _ring:
         new_node.next = self.access;
         self.cardinality += 1;
 
-    def _search(self, starting_position):
+    def _search(self, starting_position: _LL_node):
+        cursor = starting_position;
         while isinstance(cursor, _LL_node):
             for iterator in range(self.cardinality):
                 if cursor == starting_position: return cursor;
