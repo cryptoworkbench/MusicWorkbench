@@ -190,23 +190,32 @@ class _scale(_ring):
         print(f"{empty_indent} Key / root-note :  {_return_last_layer(self.key)}");
         print(f"{empty_indent} Mode            :  {self.mode}");
 
-    def _derive_primary_chord(self, chord_number):
+    def _chord(self, chord_number):
         notes_in_primary_chord = [];
-        index_of_root_note = (chord_number - 1) % self.cardinality;
+        index_of_root_note = chord_number % self.cardinality;
         cursor = _traverse_cLL(self.access, index_of_root_note);
         for i in range(index_of_root_note, 2 * 3 + index_of_root_note, 2):
             notes_in_primary_chord.append(_traverse_cLL(cursor, i))
         return notes_in_primary_chord;
 
-    def chords(self, chord_number):
-        chord_one = self._derive_primary_chord(chord_number);
-        chord_one_str = "The first chord is: ";
-        for i in range(0, len(chord_one)): chord_one_str += _return_last_layer(chord_one[i]) + " + ";
-        print(chord_one_str[:-3]);
+    def chord(self, chord_number: int) -> list:
+        chord_to_print = self._chord(chord_number - 1); current_string = "";
+        for j in range(0, len(chord_to_print)): current_string += _return_last_layer(chord_to_print[j]) + " + ";
+        print(current_string[:-3]);
+        return chord_to_print;
+
+    def chords(self):
+        number_adjectives = ['first', 'second', 'third', 'fourth', 'fifth', 'sixth', 'seventh'];
+        for i, number_adjective in enumerate(number_adjectives):
+            current_chord = self._chord(i);
+            current_string = f"The {number_adjective} chord is: ";
+            for j in range(0, len(current_chord)): current_string += _return_last_layer(current_chord[j]) + " + ";
+            print(current_string[:-3]);
 
 class _melody(_ring):
     def __init__(self, name: str, circular_LL: _LL_node, source_pattern = None):
         super().__init__(name, circular_LL, source_pattern);
+
     def transpose(self, half_steps: int = None, name: str = None): 
         """Returns the melody transposed with the supplied interval."""
         if (half_steps == None):
