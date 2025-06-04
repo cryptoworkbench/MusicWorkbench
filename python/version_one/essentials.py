@@ -368,7 +368,8 @@ def melody_from_list(namespace: dict[str, object], list: list, name: str = None,
     """ returns void, but the value retrieved by '_melody_ring_from_CLL()' is stored in 'namespace' """
     if name == None: name = get_name("melody")
     namespace[name] = _melody_ring_from_CLL(namespace, name, _CLL_from_list(list), source_pattern);
-    print(f"The melody '{name}' has been saved!")
+    print(      f"{indent} the melody {name} has been saved, access it like:");
+    print(f"{empty_indent} {indent} ode_to_joy.loop()");
 
 h = H = hor  = horizontal = horizontally = "horizontal";
 v = V = vert = vertical   = vertically   = "vertical";
