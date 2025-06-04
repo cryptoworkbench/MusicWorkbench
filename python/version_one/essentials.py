@@ -8,6 +8,7 @@ from functools import partial
 
 indent       = "-->";
 empty_indent = "   ";
+REFERENCE_OCTAVE = 4;
 
 class _LL_node:
     def __init__(self, content, next_node=None):
@@ -195,10 +196,14 @@ class _ring:
     def melody(self, list_of_scale_degrees, name_for_new_melody: str = None):
         """Returns a ring containing the melody specified by the scale degrees."""
         notes_in_melody = [];
-        for scale_degree in list_of_scale_degrees: notes_in_melody.append(_traverse_cLL(self.access, scale_degree));
+        octave_information = [];
+        for scale_degree in list_of_scale_degrees:
+            notes_in_melody.append(_traverse_cLL(self.access, scale_degree % self.cardinality));
+            octave_information.append( REFERENCE_OCTAVE + (scale_degree - scale_degree % self.cardinality) // self.cardinality ) 
         melody_from_list(self.original_namespace, notes_in_melody, name_for_new_melody, self);
+        self.original_namespace[name_for_new_melody].octave_info = octave_information;
         print(      f"{indent} The melody '{name_for_new_melody}' has been saved, access it like:");
-        print(f"{empty_indent} {indent} {name_for_new_melody}.loop()");
+        print(f"{empty_indent} {indent} {name_for_new_melody}.content()");
 
 class _scale(_ring):
     def __init__(self, namespace: dict[str, object], name: str, key: _LL_node, mode: str, circular_LL: _LL_node, source_pattern = None):
@@ -248,8 +253,17 @@ def get_name(structure_type: str = "structure"):
         else: return name;
 
 class _melody(_ring):
-    def __init__(self, namespace, name: str, circular_LL: _LL_node, source_pattern = None):
+    def __init__(self, namespace, name: str, circular_LL: _LL_node, source_pattern = None, octaves: list = None):
         super().__init__(namespace, name, circular_LL, source_pattern);
+        self.octave_info = []
+        if octaves == None:
+            for x in self: self.octave_info.append(REFERENCE_OCTAVE);
+
+    def info(self):
+        super().info();
+        if self.source_pattern and isinstance(self.source_pattern, _scale):
+            print(f"{empty_indent} Key             :  {last_layer(self.source_pattern.key)}");
+            print(f"{empty_indent} Mode            :  {self.source_pattern.mode}");
 
     def transpose(self, half_steps: int = None, name: str = None): 
         """Returns the melody transposed with the supplied interval."""
@@ -263,6 +277,13 @@ class _melody(_ring):
         melody_from_list(self.original_namespace, transposed_melody, name, self);
         print(      f"{indent} The transposition '{name}' has been saved, access it like:");
         print(f"{empty_indent} {indent} {name}.loop()");
+
+    def content(self):
+        output_str = ""
+        for x, y in zip(self.octave_info, self):
+            output_str += f"{last_layer(y)}{x}, "
+        print(output_str[:-2])
+
 
 def chord(ring: _ring):
     note_one   = last_layer(_traverse_cLL(ring.access, 0));
@@ -368,10 +389,10 @@ def list_of_notes(root_note: _LL_node, mode: _LL_node) -> list:
 def scale_ring_from_list(namespace, name: str, key: _LL_node, mode: str, list: list, source_pattern: _ring = None) -> _scale:
     return _scale_ring_from_CLL(namespace, name, key, mode, _CLL_from_list(list), source_pattern);
 
-def melody_from_list(namespace: dict[str, object], list: list, name: str = None, source_pattern: _ring = None) -> None: # but updates namespace:
+def melody_from_list(namespace: dict[str, object], list_of_notes: list, name: str = None, source_pattern: _ring = None) -> None: # but updates namespace:
     """ gets a '_melody' class using '_melody_ring_from_CLL'. returns void, but the value retrieved by '_melody_ring_from_CLL()' is stored in 'namespace' """
     if name == None: name = get_name("melody")
-    namespace[name] = _melody_ring_from_CLL(namespace, name, _CLL_from_list(list), source_pattern);
+    namespace[name] = _melody_ring_from_CLL(namespace, name, _CLL_from_list(list_of_notes), source_pattern);
 
 h = H = hor  = horizontal = horizontally = "horizontal";
 v = V = vert = vertical   = vertically   = "vertical";
