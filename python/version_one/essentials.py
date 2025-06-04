@@ -100,7 +100,7 @@ def clear_screen() -> None:
 
 class _ring:
     def __init__(self, namespace: dict[str, object], name: str, circular_LL: _LL_node, source_pattern = None):
-        self.namespace = namespace;
+        self.original_namespace = namespace;
         if name == None: name = get_name()
         if circular_LL == None: raise ValueError("LL must be provided.");
         self.name = name; self.access = circular_LL; self.source_pattern = source_pattern; self.cardinality = 1;
@@ -196,7 +196,7 @@ class _ring:
         """Returns a ring containing the melody specified by the scale degrees."""
         notes_in_melody = [];
         for scale_degree in list_of_scale_degrees: notes_in_melody.append(_traverse_cLL(self.access, scale_degree));
-        melody_from_list(self.namespace, notes_in_melody, name_for_new_melody, self);
+        melody_from_list(self.original_namespace, notes_in_melody, name_for_new_melody, self);
 
 class _scale(_ring):
     def __init__(self, namespace: dict[str, object], name: str, key: _LL_node, mode: str, circular_LL: _LL_node, source_pattern = None):
@@ -258,7 +258,7 @@ class _melody(_ring):
             new_note      = _traverse_cLL(original_note, half_steps);
             transposed_melody.append(new_note);
         if (name == None): name = get_name()
-        melody_from_list(self.namespace, transposed_melody,name , self);
+        melody_from_list(self.original_namespace, transposed_melody,name , self);
 
 def chord(ring: _ring):
     note_one   = last_layer(_traverse_cLL(ring.access, 0));
@@ -266,15 +266,16 @@ def chord(ring: _ring):
     note_three = last_layer(_traverse_cLL(ring.access, 4));
     print(f"the first chord is: {note_one} + {note_two} + {note_three}");
 
-def _ring_from_CLL(namespace: dict[str, object], name: str, CLL: _LL_node, source_pattern = None) -> _ring:
-    ret_val = _ring(namespace, name, CLL, source_pattern);
-    namespace[name] = ret_val;
-    return ret_val;
+def _ring_from_CLL(namespace: dict[str, object], name: str, CLL: _LL_node, source_pattern = None) -> None:
+    """ returns void, but the value retrieved by '_ring()' is stored in 'namespace' """
+    namespace[name] = _ring(namespace, name, CLL, source_pattern);
 
 def _scale_ring_from_CLL(namespace, name: str, key: _LL_node, mode: str, CLL: _LL_node, source_pattern = None) -> _scale:
+    """ wrapper function for the class '_scale' """
     return _scale(namespace, name, key, mode, CLL, source_pattern);
 
 def _melody_ring_from_CLL(namespace: dict[str, object], name: str, CLL: _LL_node, source_pattern = None) -> _melody:
+    """ wrapper function for the class '_melody' """
     return _melody(namespace, name, CLL, source_pattern);
 
 def _CLL_from_list(list) -> _LL_node:
@@ -317,7 +318,8 @@ def _initialize_interval_scale(namespace: dict[str, object]) -> None:
     namespace[    'dorian']     = _create_LL_node(namespace['whole_step'], namespace[  'phrygian']);
     namespace[    'ionian']     = _create_LL_node(namespace['whole_step'], namespace[    'dorian']);
     namespace['locrian'].next   = namespace['ionian']
-    globals()['interval_scale'] = namespace['interval_scale'] = _ring_from_CLL(namespace, "interval_scale", namespace['ionian'])
+    _ring_from_CLL(namespace, "interval_scale", namespace['ionian'])
+    globals()['interval_scale'] = namespace['interval_scale'];
     print(f"{indent} created the ring 'interval_scale', which represents all modes (ionian, dorian, etc).");
 
 def _initialize_scales_for_every_mode_key_combo(namespace) -> None:
@@ -362,10 +364,10 @@ def list_of_notes(root_note: _LL_node, mode: _LL_node) -> list:
 def scale_ring_from_list(namespace, name: str, key: _LL_node, mode: str, list: list, source_pattern: _ring = None) -> _scale:
     return _scale_ring_from_CLL(namespace, name, key, mode, _CLL_from_list(list), source_pattern);
 
-def melody_from_list(namespace: dict[str, object], list: list, name: str = None, source_pattern: _ring = None) -> _melody:
+def melody_from_list(namespace: dict[str, object], list: list, name: str = None, source_pattern: _ring = None) -> None: # but updates namespace:
+    """ returns void, but the value retrieved by '_melody_ring_from_CLL()' is stored in 'namespace' """
     if name == None: name = get_name("melody")
-    ret_val = _melody_ring_from_CLL(namespace, name, _CLL_from_list(list), source_pattern);
-    namespace[name] = ret_val;
+    namespace[name] = _melody_ring_from_CLL(namespace, name, _CLL_from_list(list), source_pattern);
     print(f"The melody '{name}' has been saved!")
 
 h = H = hor  = horizontal = horizontally = "horizontal";
