@@ -81,6 +81,15 @@ def _return_last_layer(node: _LL_node, orientation=None) -> str:
         if orientation == "horizontal": return _return_INTERVAL_abbreviation(node);
         elif orientation == "vertical": return _return_INTERVAL_name(node);
 
+'''
+def _list_starting_at(LL_length: int, starting_position: _LL_node, orientation="vertical"):
+    element_strs = []
+    for i in range(LL_length):
+        element_str = _return_last_layer(starting_position, orientation);
+        starting_position = starting_position.next;
+    return element_strs;
+'''
+
 def clear_screen() -> None:
     """Clears the screen using the OS's clear function ('cls' for windows, 'clear' for linux)."""
     os.system('cls' if os.name == 'nt' else 'clear')
@@ -136,17 +145,23 @@ class _ring:
             original_ring_LL_cursor = original_ring_LL_cursor.next
         raise ValueError(f"Error, object  '{starting_position}' is not in this ring ! (and neither is a different object containing the same exact value!)");
 
-    def loop(self, starting_position: _LL_node = None, orientation = "horizontal"):
-        """Display the content of the ring by cycling through it once."""
+    def _list_starting_at(self, starting_position: _LL_node, orientation="vertical"):
         if starting_position == None: starting_position = self.access;
         else: starting_position = self._search(starting_position);
         # ^^--> These lines translate between all involved permutation layers
-        output_str = "";
+        element_strs = []
         for i in range(self.cardinality):
-            element_str = _return_last_layer(starting_position, orientation);
+            element_strs.append(_return_last_layer(starting_position, orientation));
+            starting_position = starting_position.next;
+        return element_strs;
+
+    def loop(self, starting_position: _LL_node = None, orientation = "horizontal"):
+        """Display the content of the ring by cycling through it once."""
+        element_strs = self._list_starting_at(starting_position, orientation);
+        output_str = ""
+        for element_str in element_strs:
             if orientation == "vertical": output_str += f"{empty_indent} {element_str}\n"
             elif orientation == "horizontal": output_str += f"{element_str}, ";
-            starting_position = starting_position.next;
         if orientation == "horizontal":
             output_str = f"{empty_indent} <{output_str[:-2]}>";
         else: output_str = output_str[:-1];
