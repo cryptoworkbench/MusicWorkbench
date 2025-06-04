@@ -197,6 +197,8 @@ class _ring:
         notes_in_melody = [];
         for scale_degree in list_of_scale_degrees: notes_in_melody.append(_traverse_cLL(self.access, scale_degree));
         melody_from_list(self.original_namespace, notes_in_melody, name_for_new_melody, self);
+        print(      f"{indent} The melody '{name_for_new_melody}' has been saved, access it like:");
+        print(f"{empty_indent} {indent} {name_for_new_melody}.loop()");
 
 class _scale(_ring):
     def __init__(self, namespace: dict[str, object], name: str, key: _LL_node, mode: str, circular_LL: _LL_node, source_pattern = None):
@@ -258,7 +260,9 @@ class _melody(_ring):
             new_note      = _traverse_cLL(original_note, half_steps);
             transposed_melody.append(new_note);
         if (name == None): name = get_name()
-        melody_from_list(self.original_namespace, transposed_melody,name , self);
+        melody_from_list(self.original_namespace, transposed_melody, name, self);
+        print(      f"{indent} The transposition '{name}' has been saved, access it like:");
+        print(f"{empty_indent} {indent} {name}.loop()");
 
 def chord(ring: _ring):
     note_one   = last_layer(_traverse_cLL(ring.access, 0));
@@ -365,11 +369,9 @@ def scale_ring_from_list(namespace, name: str, key: _LL_node, mode: str, list: l
     return _scale_ring_from_CLL(namespace, name, key, mode, _CLL_from_list(list), source_pattern);
 
 def melody_from_list(namespace: dict[str, object], list: list, name: str = None, source_pattern: _ring = None) -> None: # but updates namespace:
-    """ returns void, but the value retrieved by '_melody_ring_from_CLL()' is stored in 'namespace' """
+    """ gets a '_melody' class using '_melody_ring_from_CLL'. returns void, but the value retrieved by '_melody_ring_from_CLL()' is stored in 'namespace' """
     if name == None: name = get_name("melody")
     namespace[name] = _melody_ring_from_CLL(namespace, name, _CLL_from_list(list), source_pattern);
-    print(      f"{indent} the melody {name} has been saved, access it like:");
-    print(f"{empty_indent} {indent} ode_to_joy.loop()");
 
 h = H = hor  = horizontal = horizontally = "horizontal";
 v = V = vert = vertical   = vertically   = "vertical";
