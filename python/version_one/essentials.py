@@ -149,19 +149,19 @@ class _ring:
         if starting_position == None: starting_position = self.access;
         else: starting_position = self._search(starting_position);
         # ^^--> These lines translate between all involved permutation layers
-        element_strs = []
+        element_LL_nodes = []
         for i in range(self.cardinality):
-            element_strs.append(_return_last_layer(starting_position, orientation));
+            element_LL_nodes.append(_return_second_to_last_layer(starting_position));
             starting_position = starting_position.next;
-        return element_strs;
+        return element_LL_nodes;
 
     def loop(self, starting_position: _LL_node = None, orientation = "horizontal"):
         """Display the content of the ring by cycling through it once."""
-        element_strs = self._list_starting_at(starting_position, orientation);
+        element_LL_nodes = self._list_starting_at(starting_position, orientation);
         output_str = ""
-        for element_str in element_strs:
-            if orientation == "vertical": output_str += f"{empty_indent} {element_str}\n"
-            elif orientation == "horizontal": output_str += f"{element_str}, ";
+        for element_LL_node in element_LL_nodes:
+            if orientation == "vertical": output_str += f"{empty_indent} {_return_last_layer(element_LL_node)}\n"
+            elif orientation == "horizontal": output_str += f"{_return_last_layer(element_LL_node)}, ";
         if orientation == "horizontal":
             output_str = f"{empty_indent} <{output_str[:-2]}>";
         else: output_str = output_str[:-1];
