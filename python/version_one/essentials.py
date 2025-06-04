@@ -81,6 +81,9 @@ def _return_last_layer(node: _LL_node, orientation=None) -> str:
         if orientation == "horizontal": return _return_INTERVAL_abbreviation(node);
         elif orientation == "vertical": return _return_INTERVAL_name(node);
 
+def display_list(LL_nodes: list):
+    for LL_node in LL_nodes:
+        print(f"{empty_indent} {_return_last_layer(LL_node)}");
 '''
 def _list_starting_at(LL_length: int, starting_position: _LL_node, orientation="vertical"):
     element_strs = []
