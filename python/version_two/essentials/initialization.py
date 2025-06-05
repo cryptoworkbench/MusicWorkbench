@@ -2,7 +2,7 @@ from .notes_and_intervals.note_stuff import _NOTE
 from .notes_and_intervals.interval_stuff import _INTERVAL
 from .programmer_shortcuts import indent, empty_indent
 from .LL_node_stuff import _create_LL_node, _CLL_from_list_of_unlinked_LL_nodes
-from .essentials import _ring_from_CLL, scale_ring_from_list
+from .ring_classes import _ring_from_CLL, scale_ring_from_list
 from .musical_operations import list_of_notes
 
 def _initialize_notes_and_chromatic_scale(namespace: dict[str, object]) -> None:
