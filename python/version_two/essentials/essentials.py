@@ -3,18 +3,16 @@ import os
 import importlib
 _self = importlib.import_module(__name__)
 
-from functools import partial
 from .LL_node_stuff import *
 from .note_stuff import *
 from .interval_stuff import *
+from .input_methods import *
+from .user_shortcuts import *
+from .programmer_shortcuts import *
 
-indent       = "-->";
-empty_indent = "   ";
-REFERENCE_OCTAVE = 4;
-
-def _return_second_to_last_layer(node: _LL_node) -> _LL_node:
-    while isinstance(node.content, _LL_node): node = node.content;
-    return node;
+def clear_screen() -> None:
+    """Clears the screen using the OS's clear function ('cls' for windows, 'clear' for linux)."""
+    os.system('cls' if os.name == 'nt' else 'clear')
 
 def last_layer(node: _LL_node, orientation="horizontal") -> str:
     """Returns the string from the bottom of the '_LL_node' layers (permutation layers)."""
@@ -28,18 +26,6 @@ def last_layer(node: _LL_node, orientation="horizontal") -> str:
 def display_list(LL_nodes: list):
     for LL_node in LL_nodes:
         print(f"{empty_indent} {last_layer(LL_node)}");
-'''
-def _list_starting_at(LL_length: int, starting_position: _LL_node, orientation="vertical"):
-    element_strs = []
-    for i in range(LL_length):
-        element_str = last_layer(starting_position, orientation);
-        starting_position = starting_position.next;
-    return element_strs;
-'''
-
-def clear_screen() -> None:
-    """Clears the screen using the OS's clear function ('cls' for windows, 'clear' for linux)."""
-    os.system('cls' if os.name == 'nt' else 'clear')
 
 class _ring:
     def __init__(self, namespace: dict[str, object], name: str, circular_LL: _LL_node, source_pattern = None):
@@ -180,20 +166,6 @@ class _scale(_ring):
             for j in range(0, len(current_chord)): current_string += last_layer(current_chord[j]) + " + ";
             print(current_string[:-3]);
 
-def get_half_steps():
-    while True:
-        user_input = input("Enter amount of half steps: ");
-        try: half_steps = int(user_input); break
-        except ValueError: print("That's not a valid integer, try again.\n")
-    return half_steps;
-
-def get_name(structure_type: str = "structure"):
-    while True:
-        name = input(f"Enter name for the new {structure_type}: ")
-        if not name: print("Name cannot be empty.\n")
-        elif ' ' in name: print("Name cannot contain spaces.\n")
-        else: return name;
-
 class _melody(_ring):
     def __init__(self, namespace, name: str, circular_LL: _LL_node, source_pattern = None, octaves: list = None):
         super().__init__(namespace, name, circular_LL, source_pattern);
@@ -226,7 +198,6 @@ class _melody(_ring):
             output_str += f"{last_layer(y)}{x}, "
         print(output_str[:-2])
 
-
 def chord(ring: _ring):
     note_one   = last_layer(_traverse_cLL(ring.access, 0));
     note_two   = last_layer(_traverse_cLL(ring.access, 2));
@@ -234,7 +205,7 @@ def chord(ring: _ring):
     print(f"the first chord is: {note_one} + {note_two} + {note_three}");
 
 def _ring_from_CLL(namespace: dict[str, object], name: str, CLL: _LL_node, source_pattern = None) -> None:
-    """ returns void, but the value retrieved by '_ring()' is stored in 'namespace' """
+    """ wrapper function for '_ring'. returns void, but the value retrieved by '_ring()' is stored in 'namespace' """
     namespace[name] = _ring(namespace, name, CLL, source_pattern);
 
 def _scale_ring_from_CLL(namespace, name: str, key: _LL_node, mode: str, CLL: _LL_node, source_pattern = None) -> _scale:
@@ -244,13 +215,6 @@ def _scale_ring_from_CLL(namespace, name: str, key: _LL_node, mode: str, CLL: _L
 def _melody_ring_from_CLL(namespace: dict[str, object], name: str, CLL: _LL_node, source_pattern = None) -> _melody:
     """ wrapper function for the class '_melody' """
     return _melody(namespace, name, CLL, source_pattern);
-
-def _CLL_from_list(list) -> _LL_node:
-    if not list: raise ValueError("Cannot create a cyclical linked list (or any linked list for that matter), from a list with no items inside of it");
-    head = _create_LL_node(list[0]); head.next = head;
-    if len(list) == 1: return head;
-    for i in range(1, len(list)): head = _add_to_cLL(head, list[i]);
-    return head.next;
 
 def _apply_interval(starting_note: _LL_node, interval) -> _LL_node:
     return _traverse_cLL(starting_note, _return_INTERVAL_halfsteps(interval));
@@ -290,16 +254,8 @@ def _initialize_interval_scale(namespace: dict[str, object]) -> None:
     print(f"{indent} created the ring 'interval_scale', which represents all modes (ionian, dorian, etc).");
 
 def _initialize_scales_for_every_mode_key_combo(namespace) -> None:
-    notes = [
-        ("c", namespace['c']), ("c_sharp", namespace['c_sharp']), ("d", namespace['d']), ("d_sharp", namespace['d_sharp']),
-        ("e", namespace['e']), ("f", namespace['f']), ("f_sharp", namespace['f_sharp']), ("g", namespace['g']),
-        ("g_sharp", namespace['g_sharp']), ("a", namespace['a']), ("a_sharp", namespace['a_sharp']), ("b", namespace['b'])
-    ]
-    modes = [
-        ("ionian", namespace['ionian']), ("dorian", namespace['dorian']), ("phrygian", namespace['phrygian']),
-        ("lydian", namespace['lydian']), ("mixolydian", namespace['mixolydian']),
-        ("aeolian", namespace['aeolian']), ("locrian", namespace['locrian'])
-    ]
+    notes = [("c", namespace['c']), ("c_sharp", namespace['c_sharp']), ("d", namespace['d']), ("d_sharp", namespace['d_sharp']), ("e", namespace['e']), ("f", namespace['f']), ("f_sharp", namespace['f_sharp']), ("g", namespace['g']), ("g_sharp", namespace['g_sharp']), ("a", namespace['a']), ("a_sharp", namespace['a_sharp']), ("b", namespace['b']) ]
+    modes = [("ionian", namespace['ionian']), ("dorian", namespace['dorian']), ("phrygian", namespace['phrygian']), ("lydian", namespace['lydian']), ("mixolydian", namespace['mixolydian']), ("aeolian", namespace['aeolian']), ("locrian", namespace['locrian'])]
     for note_name, note_node in notes:
         for mode_name, mode_node in modes:
             var_name = f"{note_name}_{mode_name}"
@@ -335,9 +291,5 @@ def melody_from_list(namespace: dict[str, object], list_of_notes: list, name: st
     """ gets a '_melody' class using '_melody_ring_from_CLL'. returns void, but the value retrieved by '_melody_ring_from_CLL()' is stored in 'namespace' """
     if name == None: name = get_name("melody")
     namespace[name] = _melody_ring_from_CLL(namespace, name, _CLL_from_list(list_of_notes), source_pattern);
-
-h = H = hor  = horizontal = horizontally = "horizontal";
-v = V = vert = vertical   = vertically   = "vertical";
-# ^^^--> shortcuts for specifying orientation preference in ring.loop()
 
 # __all__ = [name for name in globals() if not name.startswith('_')]
