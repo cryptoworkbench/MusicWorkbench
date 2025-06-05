@@ -1,9 +1,14 @@
 """ This module is supposed to only contain functions like 'clear_screen' (cls/clear), and shortcuts like 'hor', 'horizontal', 'ver', and 'vertical'. """
 import os
 
+def _startup_message(mains_filename: str):
+    print(f"Start this program as \"python3 -i {mains_filename}\" if you want to get anything useful out of it. Once in interactive mode, you can use 'show_help()' to learn about available functions.\n");
 def clear_screen() -> None:
     """Clears the screen using the OS's clear function ('cls' for windows, 'clear' for linux)."""
     os.system('cls' if os.name == 'nt' else 'clear')
+def start_experience(mains_filename: str):
+    clear_screen();
+    _startup_message(mains_filename);
 def show_help():
     print("### Help menu ( help() ):");
     print("## clear_screen()");
@@ -40,4 +45,4 @@ def show_help():
 h = H = hor = horizontal = horizontally = "horizontal"; v = V = ver = vert = vertical   = vertically   = "vertical"; # for _ring.loop()
 # ^^^ SHORTCUTS FOR USER CONVENIENCE ^^^
 
-__all__ = [name for name in globals()]
+__all__ = [name for name in globals() if not name.startswith('_')]
