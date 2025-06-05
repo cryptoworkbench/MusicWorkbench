@@ -1,7 +1,7 @@
 import os
-from essentials.utilities import clear_screen
+from essentials.user_utilities import *
 from essentials.initialization import initialize_everything
-from help import *
+from essentials.help import *
 
 def initialize_ode_to_joy(namespace: dict[str, object]) -> None:
     c_major.melody([2, 2, 3, 4, 4, 3, 2, 1, 0, 0, 1, 2, 2, 1, 1], "ode_to_joy");

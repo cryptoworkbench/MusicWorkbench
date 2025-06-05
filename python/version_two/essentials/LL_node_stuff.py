@@ -36,7 +36,7 @@ def _CLL_from_list(list_to_process: list) -> _LL_node:
     return head.next;
 def display_list(LL_nodes: list):
     for LL_node in LL_nodes:
-        print(f"{empty_indent} {last_layer(LL_node)}");
+        print(f"{empty_indent} {_return_last_layer(LL_node)}");
 # ^^^ FUNCTIONS FOR WORKING WITH THAT DATATYPE ^^^
 
 __all__ = [name for name in globals()]

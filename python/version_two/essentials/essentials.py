@@ -1,13 +1,12 @@
 import time, importlib
 _self = importlib.import_module(__name__)
 
-from .notes_and_intervals.notes_and_intervals import last_layer
+from .notes_and_intervals.notes_and_intervals import _return_last_layer
 from .notes_and_intervals.note_stuff import _NOTE, _return_NOTE_name, _return_NOTE_ColorMusic_description
 from .notes_and_intervals.interval_stuff import _INTERVAL, _return_INTERVAL_halfsteps, _return_INTERVAL_name, _return_INTERVAL_abbreviation
-from .utilities import *
+from .user_utilities import *
 from .LL_node_stuff import *
 from .input_methods import *
-from .user_shortcuts import *
 from .programmer_shortcuts import *
 from .musical_operations import *
 
@@ -76,14 +75,14 @@ class _ring:
                 """ we try to find it in the current cll """
                 i += 1; cursor = cursor.next;
             if i == self.cardinality:
-                """ if it's not in the current cll we let _search find an element in the current cll which is equivalent in terms of last_layer() """
+                """ if it's not in the current cll we let _search find an element in the current cll which is equivalent in terms of _return_last_layer() """
                 starting_position = self._search(starting_position)
 
         cursor = starting_position;
         output_str = "";
         while cursor.next != starting_position:
-            if orientation == "horizontal": output_str += f"{last_layer(cursor)}, ";
-            if orientation == "vertical": output_str += f"{empty_indent} {last_layer(cursor, 'vertical')}\n"
+            if orientation == "horizontal": output_str += f"{_return_last_layer(cursor)}, ";
+            if orientation == "vertical": output_str += f"{empty_indent} {_return_last_layer(cursor, 'vertical')}\n"
             cursor = cursor.next;
         if orientation == "horizontal":
             output_str = f"{empty_indent} <{output_str[:-2]}>";
@@ -125,7 +124,7 @@ class _scale(_ring):
 
     def info(self):
         super().info();
-        print(f"{empty_indent} Key / root-note :  {last_layer(self.key)}");
+        print(f"{empty_indent} Key / root-note :  {_return_last_layer(self.key)}");
         print(f"{empty_indent} Mode            :  {self.mode}");
 
     def _chord(self, chord_number):
@@ -138,7 +137,7 @@ class _scale(_ring):
 
     def chord(self, chord_number: int) -> list:
         chord_to_print = self._chord(chord_number - 1); current_string = "";
-        for j in range(0, len(chord_to_print)): current_string += last_layer(chord_to_print[j]) + " + ";
+        for j in range(0, len(chord_to_print)): current_string += _return_last_layer(chord_to_print[j]) + " + ";
         print(current_string[:-3]);
         return chord_to_print;
 
@@ -147,7 +146,7 @@ class _scale(_ring):
         for i, number_adjective in enumerate(number_adjectives):
             current_chord = self._chord(i);
             current_string = f"The {number_adjective} chord is: ";
-            for j in range(0, len(current_chord)): current_string += last_layer(current_chord[j]) + " + ";
+            for j in range(0, len(current_chord)): current_string += _return_last_layer(current_chord[j]) + " + ";
             print(current_string[:-3]);
 class _melody(_ring):
     def __init__(self, namespace, name: str, circular_LL: _LL_node, source_pattern = None, octaves: list = None):
@@ -159,7 +158,7 @@ class _melody(_ring):
     def info(self):
         super().info();
         if self.source_pattern and isinstance(self.source_pattern, _scale):
-            print(f"{empty_indent} Key             :  {last_layer(self.source_pattern.key)}");
+            print(f"{empty_indent} Key             :  {_return_last_layer(self.source_pattern.key)}");
             print(f"{empty_indent} Mode            :  {self.source_pattern.mode}");
 
     def transpose(self, half_steps: int = None, name: str = None): 
@@ -178,7 +177,7 @@ class _melody(_ring):
     def content(self):
         output_str = ""
         for x, y in zip(self.octave_info, self):
-            output_str += f"{last_layer(y)}{x}, "
+            output_str += f"{_return_last_layer(y)}{x}, "
         print(output_str[:-2])
 # ^^^ MAIN DATATYPES ^^^
 
