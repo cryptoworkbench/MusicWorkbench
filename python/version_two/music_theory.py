@@ -1,4 +1,4 @@
-from essentials.zero import *
+from essentials.essentials import *
 from help import *
 
 def initialize_ode_to_joy(namespace: dict[str, object]) -> None:
@@ -12,5 +12,3 @@ print(f"Start this program as \"python3 -i {os.path.basename(__file__)}\" if you
 initialize_everything(globals());
 initialize_ode_to_joy(globals());
 initialize_frere_jackques(globals());
-
-lol = _LL_node("lol");

@@ -3,72 +3,14 @@ import os
 import importlib
 _self = importlib.import_module(__name__)
 
-from enum import Enum
 from functools import partial
+from .LL_node_stuff import *
+from .note_stuff import *
+from .interval_stuff import *
 
 indent       = "-->";
 empty_indent = "   ";
 REFERENCE_OCTAVE = 4;
-
-class _LL_node:
-    def __init__(self, content, next_node=None):
-        self.content = content; self.next = next_node;
-
-def _create_LL_node(content, next_node: _LL_node = None) -> _LL_node:
-    """Returns an instance of the class _LL_node."""
-    return _LL_node(content, next_node);
-
-def _add_to_cLL(LL_element_already_in_LL: _LL_node, element_to_add: _LL_node) -> _LL_node:
-    """A function for inserting into a (circular) linked list. Returns the new element in order to be able to update the cursor in the calling loop."""
-    old_next = LL_element_already_in_LL.next; LL_element_already_in_LL.next = _create_LL_node(element_to_add); LL_element_already_in_LL = LL_element_already_in_LL.next;
-    LL_element_already_in_LL.next = old_next; return LL_element_already_in_LL;
-
-def _CLL_from_list_of_unlinked_LL_nodes(list_of_LL_nodes: list) -> _LL_node:
-    """Links the list LL nodes provided by as argument. Intended to be used with a list of entirely unlinked LL nodes."""
-    for i in range(len(list_of_LL_nodes)): list_of_LL_nodes[i].next = list_of_LL_nodes[(i + 1) % len(list_of_LL_nodes)]
-    return list_of_LL_nodes[0];
-
-def _traverse_cLL(starting_position: _LL_node, distance: int) -> _LL_node:
-    """Traverses a (cyclical) linked list and returns the node at the Nth chain."""
-    traversed_cLL = starting_position;
-    for i in range(distance): traversed_cLL = traversed_cLL.next;
-    return traversed_cLL;
-
-class _NOTE(Enum):
-    c = ("C", "red square");
-    c_sharp = ("C#", "green/blue circle");
-    d = ("D", "orange square");
-    d_sharp = ("D#", "blue/purple circle");
-    e = ("E", "yellow square");
-    f = ("F", "purple/red circle");
-    f_sharp = ("F#", "green");
-    g = ("G", "red/orange circle");
-    g_sharp = ("G#", "blue square");
-    a = ("A", "orange/yellow circle");
-    a_sharp = ("A#", "purple square");
-    b = ("B", "yellow/green circle");
-
-def _return_NOTE_name(note: _NOTE) -> str:
-    """Returns the name of a note as string."""
-    return note.value[0];
-
-def _return_NOTE_ColorMusic_description(note: _NOTE) -> str:
-    """Returns a description of the symbol ColorMusic by Mike George uses to depict this note."""
-    return note.value[1];
-
-class _INTERVAL(Enum): half_step = (1, "half step", "H"); whole_step = (2, "whole step", "W"); minor_third = (3, "minor third", "m3"); major_third = (4, "major third", "M3"); perfect_fourth = (5, "perfect fourth", "P4"); tritone = (6, "tritone", "A4"); perfect_fifth = (7, "perfect fifth", "P5"); minor_sixth = (8, "minor sixth", "m6"); major_sixth = (9, "major sixth", "M6"); minor_seventh = (10, "minor seventh", "m7"); major_seventh = (11, "major seventh", "M7");
-
-def _return_INTERVAL_halfsteps(interval: _LL_node) -> str:
-    """Returns the amount of halfsteps that in specified interval."""
-    return interval.content.value[0];
-
-def _return_INTERVAL_name(interval: _LL_node) -> str:
-    """Returns the name of specified interval."""
-    return interval.content.value[1];
-
-def _return_INTERVAL_abbreviation(interval: _LL_node) -> str:
-    """Returns the abbreviated name for the specified interval."""
-    return interval.content.value[2];
 
 def _return_second_to_last_layer(node: _LL_node) -> _LL_node:
     while isinstance(node.content, _LL_node): node = node.content;
