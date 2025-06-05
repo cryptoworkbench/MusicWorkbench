@@ -55,11 +55,11 @@ def _initialize_scales_for_every_mode_key_combo(namespace) -> None:
     print(f"{indent} created the 84 rings for all possible key-mode combinations, that's 7 modes * 12 keys = 84 scales in total !");
     print(f"{empty_indent} {indent} access them like 'c_major.loop()', 'g_dorian.loop()', 'f_locrian()', etc ...");
 
-def initialize_everything(namespace: dict[str, object]) -> None:
+def initialize_data_structures(namespace: dict[str, object]) -> None:
     print("Initializing program:");
     _initialize_notes_and_chromatic_scale(namespace);
     _initialize_interval_scale(namespace);
     _initialize_scales_for_every_mode_key_combo(namespace);
     print(f"{indent} setup complete!");
 
-__all__ = ["initialize_everything"]
+__all__ = ["initialize_data_structures"]
