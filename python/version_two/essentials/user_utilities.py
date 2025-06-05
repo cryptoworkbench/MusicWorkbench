@@ -6,7 +6,7 @@ def _startup_message(mains_filename: str):
 def clear_screen() -> None:
     """Clears the screen using the OS's clear function ('cls' for windows, 'clear' for linux)."""
     os.system('cls' if os.name == 'nt' else 'clear')
-def start_experience(mains_filename: str):
+def initialize_screen(mains_filename: str):
     clear_screen();
     _startup_message(mains_filename);
 def show_help():

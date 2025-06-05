@@ -8,7 +8,7 @@ def initialize_ode_to_joy(namespace: dict[str, object]) -> None:
 def initialize_frere_jackques(namespace: dict[str, object]) -> None:
     c_major.melody([0, 1, 2, 0, 0, 1, 2, 0, 2, 3, 4, 2, 3, 4, 4, 5, 4, 3, 2, 0, 4, 5, 4, 3, 2, 0, 0, -3, 0, 0, -3, 0], "frere_jackques");
 
-start_experience(mains_filename);
+initialize_screen(mains_filename);
 initialize_data_structures(globals());
 initialize_ode_to_joy(globals());
 initialize_frere_jackques(globals());
