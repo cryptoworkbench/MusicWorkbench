@@ -90,13 +90,13 @@ class _ring:
                 i += 1; cursor = cursor.next;
             if i == self.cardinality:
                 """ if it's not in the current cll we let _search find an element in the current cll which is equivalent in terms of last_layer() """
-                starting_position = _search(starting_position)
+                starting_position = self._search(starting_position)
 
         cursor = starting_position;
         output_str = "";
         while cursor.next != starting_position:
-            if orientation == "vertical": output_str += f"{empty_indent} {last_layer(cursor)}\n"
-            elif orientation == "horizontal": output_str += f"{last_layer(cursor)}, ";
+            if orientation == "horizontal": output_str += f"{last_layer(cursor)}, ";
+            if orientation == "vertical": output_str += f"{empty_indent} {last_layer(cursor, 'vertical')}\n"
             cursor = cursor.next;
         if orientation == "horizontal":
             output_str = f"{empty_indent} <{output_str[:-2]}>";
