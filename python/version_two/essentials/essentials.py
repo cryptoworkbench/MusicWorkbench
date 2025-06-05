@@ -3,9 +3,11 @@ import os
 import importlib
 _self = importlib.import_module(__name__)
 
+from .notes_and_intervals.notes_and_intervals import *
+
 from .LL_node_stuff import *
-from .note_stuff import *
-from .interval_stuff import *
+# from .note_stuff import *
+# from .interval_stuff import *
 from .input_methods import *
 from .user_shortcuts import *
 from .programmer_shortcuts import *
