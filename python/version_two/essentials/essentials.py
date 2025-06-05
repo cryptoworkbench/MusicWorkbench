@@ -3,31 +3,19 @@ import os
 import importlib
 _self = importlib.import_module(__name__)
 
-from .notes_and_intervals.notes_and_intervals import *
+from .notes_and_intervals.notes_and_intervals import last_layer
+from .notes_and_intervals.note_stuff import _NOTE, _return_NOTE_name, _return_NOTE_ColorMusic_description
+from .notes_and_intervals.interval_stuff import _INTERVAL, _return_INTERVAL_halfsteps, _return_INTERVAL_name, _return_INTERVAL_abbreviation
 
 from .LL_node_stuff import *
-# from .note_stuff import *
-# from .interval_stuff import *
 from .input_methods import *
 from .user_shortcuts import *
 from .programmer_shortcuts import *
+from .musical_operations import *
 
 def clear_screen() -> None:
     """Clears the screen using the OS's clear function ('cls' for windows, 'clear' for linux)."""
     os.system('cls' if os.name == 'nt' else 'clear')
-
-def last_layer(node: _LL_node, orientation="horizontal") -> str:
-    """Returns the string from the bottom of the '_LL_node' layers (permutation layers)."""
-    node = _return_second_to_last_layer(node);
-    if isinstance(node.content, _NOTE): return _return_NOTE_name(node.content);
-    elif isinstance(node.content, _INTERVAL):
-        if orientation == "horizontal": return _return_INTERVAL_abbreviation(node);
-        elif orientation == "vertical": return _return_INTERVAL_name(node);
-    else: print("neither note nor interval!");
-
-def display_list(LL_nodes: list):
-    for LL_node in LL_nodes:
-        print(f"{empty_indent} {last_layer(LL_node)}");
 
 class _ring:
     def __init__(self, namespace: dict[str, object], name: str, circular_LL: _LL_node, source_pattern = None):
@@ -85,19 +73,31 @@ class _ring:
         if starting_position == None: starting_position = self.access;
         else: starting_position = self._search(starting_position);
         # ^^--> These lines translate between all involved permutation layers
-        element_LL_nodes = []
+        LL_nodes = []
         for i in range(self.cardinality):
-            element_LL_nodes.append(_return_second_to_last_layer(starting_position));
+            # LL_nodes.append(_return_second_to_last_layer(starting_position));
+            LL_nodes.append(starting_position);
             starting_position = starting_position.next;
-        return element_LL_nodes;
+        return LL_nodes;
 
     def loop(self, starting_position: _LL_node = None, orientation = "horizontal"):
         """Display the content of the ring by cycling through it once."""
-        element_LL_nodes = self._list_starting_at(starting_position, orientation);
-        output_str = ""
-        for element_LL_node in element_LL_nodes:
-            if orientation == "vertical": output_str += f"{empty_indent} {last_layer(element_LL_node)}\n"
-            elif orientation == "horizontal": output_str += f"{last_layer(element_LL_node)}, ";
+        if starting_position == None: starting_position = self.access;
+        else:
+            cursor = self.access; i = 0;
+            while cursor != starting_position and i < self.cardinality:
+                """ we try to find it in the current cll """
+                i += 1; cursor = cursor.next;
+            if i == self.cardinality:
+                """ if it's not in the current cll we let _search find an element in the current cll which is equivalent in terms of last_layer() """
+                starting_position = _search(starting_position)
+
+        cursor = starting_position;
+        output_str = "";
+        while cursor.next != starting_position:
+            if orientation == "vertical": output_str += f"{empty_indent} {last_layer(cursor)}\n"
+            elif orientation == "horizontal": output_str += f"{last_layer(cursor)}, ";
+            cursor = cursor.next;
         if orientation == "horizontal":
             output_str = f"{empty_indent} <{output_str[:-2]}>";
         else: output_str = output_str[:-1];
@@ -200,12 +200,6 @@ class _melody(_ring):
             output_str += f"{last_layer(y)}{x}, "
         print(output_str[:-2])
 
-def chord(ring: _ring):
-    note_one   = last_layer(_traverse_cLL(ring.access, 0));
-    note_two   = last_layer(_traverse_cLL(ring.access, 2));
-    note_three = last_layer(_traverse_cLL(ring.access, 4));
-    print(f"the first chord is: {note_one} + {note_two} + {note_three}");
-
 def _ring_from_CLL(namespace: dict[str, object], name: str, CLL: _LL_node, source_pattern = None) -> None:
     """ wrapper function for '_ring'. returns void, but the value retrieved by '_ring()' is stored in 'namespace' """
     namespace[name] = _ring(namespace, name, CLL, source_pattern);
@@ -217,9 +211,6 @@ def _scale_ring_from_CLL(namespace, name: str, key: _LL_node, mode: str, CLL: _L
 def _melody_ring_from_CLL(namespace: dict[str, object], name: str, CLL: _LL_node, source_pattern = None) -> _melody:
     """ wrapper function for the class '_melody' """
     return _melody(namespace, name, CLL, source_pattern);
-
-def _apply_interval(starting_note: _LL_node, interval) -> _LL_node:
-    return _traverse_cLL(starting_note, _return_INTERVAL_halfsteps(interval));
 
 def _initialize_notes_and_chromatic_scale(namespace: dict[str, object]) -> None:
     notes = [_NOTE.c, _NOTE.c_sharp, _NOTE.d, _NOTE.d_sharp, _NOTE.e, _NOTE.f, 
@@ -277,14 +268,6 @@ def initialize_everything(namespace: dict[str, object]) -> None:
     _initialize_interval_scale(namespace);
     _initialize_scales_for_every_mode_key_combo(namespace);
     print(f"{indent} setup complete!");
-
-def list_of_notes(root_note: _LL_node, mode: _LL_node) -> list:
-    ret_val = [root_note]; note_cursor = root_note;
-    old_interval_scale_head = interval_scale.access; interval_scale.access = mode;
-    for i, CURRENT_INTERVAL in enumerate(interval_scale):
-        if i == interval_scale.cardinality - 1: break;
-        new = _apply_interval(note_cursor, CURRENT_INTERVAL); ret_val.append(new); note_cursor = new;
-    interval_scale.access = old_interval_scale_head; return ret_val;
 
 def scale_ring_from_list(namespace, name: str, key: _LL_node, mode: str, list: list, source_pattern: _ring = None) -> _scale:
     return _scale_ring_from_CLL(namespace, name, key, mode, _CLL_from_list(list), source_pattern);

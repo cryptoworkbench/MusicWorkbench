@@ -19,6 +19,7 @@ def _CLL_from_list_of_unlinked_LL_nodes(list_of_LL_nodes: list) -> _LL_node:
 
 def _traverse_cLL(starting_position: _LL_node, distance: int) -> _LL_node:
     """Traverses a (cyclical) linked list and returns the node at the Nth chain."""
+    if isinstance(distance, int) == False: print("_traverse_cLL didn't get the as distance as an int!");
     traversed_cLL = starting_position;
     for i in range(distance): traversed_cLL = traversed_cLL.next;
     return traversed_cLL;
@@ -37,5 +38,9 @@ def _CLL_from_list(list_to_process: list) -> _LL_node:
     for i in range(1, len(list_to_process)):
         head = _add_to_cLL(head, list_to_process[i]);
     return head.next;
+
+def display_list(LL_nodes: list):
+    for LL_node in LL_nodes:
+        print(f"{empty_indent} {last_layer(LL_node)}");
 
 __all__ = [name for name in globals()]
