@@ -1,21 +1,15 @@
-import time
-import os
-import importlib
+import time, importlib
 _self = importlib.import_module(__name__)
 
 from .notes_and_intervals.notes_and_intervals import last_layer
 from .notes_and_intervals.note_stuff import _NOTE, _return_NOTE_name, _return_NOTE_ColorMusic_description
 from .notes_and_intervals.interval_stuff import _INTERVAL, _return_INTERVAL_halfsteps, _return_INTERVAL_name, _return_INTERVAL_abbreviation
-
+from .utilities import *
 from .LL_node_stuff import *
 from .input_methods import *
 from .user_shortcuts import *
 from .programmer_shortcuts import *
 from .musical_operations import *
-
-def clear_screen() -> None:
-    """Clears the screen using the OS's clear function ('cls' for windows, 'clear' for linux)."""
-    os.system('cls' if os.name == 'nt' else 'clear')
 
 class _ring:
     def __init__(self, namespace: dict[str, object], name: str, circular_LL: _LL_node, source_pattern = None):
@@ -25,11 +19,9 @@ class _ring:
         self.name = name; self.access = circular_LL; self.source_pattern = source_pattern; self.cardinality = 1;
         cursor = circular_LL; cursor = cursor.next;
         while cursor != circular_LL: cursor = cursor.next; self.cardinality += 1;
-
     def __iter__(self):
         current = self.access; count = 0;
         while count < self.cardinality: yield current.content; current = current.next; count += 1;
-
     def _info_header(self):
         header_str = f"{indent} INFO ABOUT ";
         match(self):
@@ -38,7 +30,6 @@ class _ring:
             case _self._ring(): header_str += "SOURCE PATTERN";
         header_str += ":";
         return header_str
-
     def info(self):
         print(self._info_header());
         print(f"{empty_indent} Name            :  {self.name}");
@@ -46,7 +37,6 @@ class _ring:
         print(f"{empty_indent} Source pattern  :  ", end = "")
         if self.source_pattern == None: print("None")
         else: print(f"{self.source_pattern.name}")
-
     def extend_with(self, value):
         """Add a new node with a given value at the end of the circular list."""
         # _add_to_cLL(self.access, 
@@ -61,14 +51,12 @@ class _ring:
         current.next = new_node;
         new_node.next = self.access;
         self.cardinality += 1;
-
     def _search(self, starting_position: _LL_node):
         LL_node_to_match_against = _return_second_to_last_layer(starting_position); original_ring_LL_cursor = self.access;
         for iterator in range(self.cardinality):
             if _return_second_to_last_layer(original_ring_LL_cursor) == LL_node_to_match_against: return original_ring_LL_cursor
             original_ring_LL_cursor = original_ring_LL_cursor.next
         raise ValueError(f"Error, object  '{starting_position}' is not in this ring ! (and neither is a different object containing the same exact value!)");
-
     def _list_starting_at(self, starting_position: _LL_node, orientation="vertical"):
         if starting_position == None: starting_position = self.access;
         else: starting_position = self._search(starting_position);
@@ -79,7 +67,6 @@ class _ring:
             LL_nodes.append(starting_position);
             starting_position = starting_position.next;
         return LL_nodes;
-
     def loop(self, starting_position: _LL_node = None, orientation = "horizontal"):
         """Display the content of the ring by cycling through it once."""
         if starting_position == None: starting_position = self.access;
@@ -102,7 +89,6 @@ class _ring:
             output_str = f"{empty_indent} <{output_str[:-2]}>";
         else: output_str = output_str[:-1];
         print(output_str);
-
     def auto_loop(self, orientation="horizontal", complete_cycles=10, frequency=0.9):
         """Calls 'self.loop()' iteratively in combination with 'clear_screen()' in order to give 'self.loop()' a dynamic touch."""
         cursor = self.access; 
@@ -112,17 +98,14 @@ class _ring:
                 print(f'\nOffset from starting element: {j}');
                 print(  f'Remaining cycles            : {remaining_cycles}');
                 print(  f'Current speed               : {frequency}s');
-                print("\nTo exit press '<ctrl> + c'.");
+                print("\n'<ctrl> + c' to exit.");
                 time.sleep(frequency);
-
     def auto_loop_vertically(self, complete_cycles=10, frequency=0.9):
         """Calls 'self.autoloop()' with the orientation set to 'vertical'."""
         self.auto_loop("vertical", complete_cycles, frequency);
-
     def auto_loop_horizontally(self, complete_cycles=10, frequency=0.9):
         """Calls 'self.autoloop()' with the orientation set to 'horizontal'."""
         self.auto_loop("horizontal", complete_cycles, frequency);
-
     def melody(self, list_of_scale_degrees, name_for_new_melody: str = None):
         """Returns a ring containing the melody specified by the scale degrees."""
         notes_in_melody = [];
@@ -134,11 +117,6 @@ class _ring:
         self.original_namespace[name_for_new_melody].octave_info = octave_information;
         print(      f"{indent} The melody '{name_for_new_melody}' has been saved, access it like:");
         print(f"{empty_indent} {indent} {name_for_new_melody}.content()");
-def _ring_from_CLL(namespace: dict[str, object], name: str, CLL: _LL_node, source_pattern = None) -> None:
-    """ wrapper function for '_ring'. returns void, but the value retrieved by '_ring()' is stored in 'namespace' """
-    namespace[name] = _ring(namespace, name, CLL, source_pattern);
-# ^^^ ALL CODE WHICH HAS TO DO WITH RINGS ('_ring') ^^^
-
 class _scale(_ring):
     def __init__(self, namespace: dict[str, object], name: str, key: _LL_node, mode: str, circular_LL: _LL_node, source_pattern = None):
         super().__init__(namespace, name, circular_LL, source_pattern);
@@ -171,13 +149,6 @@ class _scale(_ring):
             current_string = f"The {number_adjective} chord is: ";
             for j in range(0, len(current_chord)): current_string += last_layer(current_chord[j]) + " + ";
             print(current_string[:-3]);
-def _scale_ring_from_CLL(namespace, name: str, key: _LL_node, mode: str, CLL: _LL_node, source_pattern = None) -> _scale:
-    """ wrapper function for the class '_scale' """
-    return _scale(namespace, name, key, mode, CLL, source_pattern);
-def scale_ring_from_list(namespace, name: str, key: _LL_node, mode: str, list: list, source_pattern: _ring = None) -> _scale:
-    return _scale_ring_from_CLL(namespace, name, key, mode, _CLL_from_list(list), source_pattern);
-# ^^^ ALL CODE WHICH HAS TO DO WITH SCALES ('_scale') ^^^
-
 class _melody(_ring):
     def __init__(self, namespace, name: str, circular_LL: _LL_node, source_pattern = None, octaves: list = None):
         super().__init__(namespace, name, circular_LL, source_pattern);
@@ -209,6 +180,16 @@ class _melody(_ring):
         for x, y in zip(self.octave_info, self):
             output_str += f"{last_layer(y)}{x}, "
         print(output_str[:-2])
+# ^^^ MAIN DATATYPES ^^^
+
+def _ring_from_CLL(namespace: dict[str, object], name: str, CLL: _LL_node, source_pattern = None) -> None:
+    """ wrapper function for '_ring'. returns void, but the value retrieved by '_ring()' is stored in 'namespace' """
+    namespace[name] = _ring(namespace, name, CLL, source_pattern);
+def _scale_ring_from_CLL(namespace, name: str, key: _LL_node, mode: str, CLL: _LL_node, source_pattern = None) -> _scale:
+    """ wrapper function for the class '_scale' """
+    return _scale(namespace, name, key, mode, CLL, source_pattern);
+def scale_ring_from_list(namespace, name: str, key: _LL_node, mode: str, list: list, source_pattern: _ring = None) -> _scale:
+    return _scale_ring_from_CLL(namespace, name, key, mode, _CLL_from_list(list), source_pattern);
 def _melody_ring_from_CLL(namespace: dict[str, object], name: str, CLL: _LL_node, source_pattern = None) -> _melody:
     """ wrapper function for the class '_melody' """
     return _melody(namespace, name, CLL, source_pattern);
@@ -216,6 +197,4 @@ def melody_from_list(namespace: dict[str, object], list_of_notes: list, name: st
     """ gets a '_melody' class using '_melody_ring_from_CLL'. returns void, but the value retrieved by '_melody_ring_from_CLL()' is stored in 'namespace' """
     if name == None: name = get_name("melody")
     namespace[name] = _melody_ring_from_CLL(namespace, name, _CLL_from_list(list_of_notes), source_pattern);
-# ^^^ ALL CODE WHICH HAS TO DO WITH MELODIES ('_melody') ^^^
-
-# __all__ = [name for name in globals() if not name.startswith('_')]
+# ^^^ FUNCTIONS FOR WORKING WITH THOSE DATATYPES ^^^
