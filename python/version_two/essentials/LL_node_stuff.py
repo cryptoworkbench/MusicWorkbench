@@ -1,22 +1,37 @@
 """ THIS MODULE IS SUPPOSED TO CONTAIN ONLY '_LL_node' STUFF """
+from .programmer_shortcuts import REFERENCE_OCTAVE
 
 class _LL_node:
     """ Typedef for the datatype that will be used as the basic linked list structure. """
     def __init__(self, content, next_node=None):
-        self.content = content; self.next = next_node;
+        self.content = content
+        self.next = next_node
+
+class _extended(_LL_node):
+    def __init__(self, content, extension: int, next_node: _LL_node = None):
+        super.__init__(self, content, next_node)
+        self.added_attribute = extension
 # ^^^ MAIN DATATYPE ^^^
 
 def _create_LL_node(content, next_node: _LL_node = None) -> _LL_node:
     """Returns an instance of the class _LL_node."""
     return _LL_node(content, next_node);
+def _create_extended_LL_node(content, extension: int, next_node: _extended = None) -> _extended:
+    """Returns an instance of the class _extended(_LL_node)."""
+    return _extended(content, extension, next_node)
 def _add_to_cLL(LL_element_already_in_LL: _LL_node, element_to_add: _LL_node) -> _LL_node:
     """A function for inserting into a (circular) linked list. Returns the new element in order to be able to update the cursor in the calling loop."""
     old_next = LL_element_already_in_LL.next; LL_element_already_in_LL.next = _create_LL_node(element_to_add); LL_element_already_in_LL = LL_element_already_in_LL.next;
     LL_element_already_in_LL.next = old_next; return LL_element_already_in_LL;
-def _CLL_from_list_of_unlinked_LL_nodes(list_of_LL_nodes: list) -> _LL_node:
+def _CLL_from_list_of_unlinked_LL_nodes(list_of_LL_nodes: list) -> _LL_node: # or an _extended(_LL_node) (I think, didn't test)
     """Links a list of LL nodes to each other. Intended to be used with a list of entirely unlinked LL nodes."""
-    for i in range(len(list_of_LL_nodes)): list_of_LL_nodes[i].next = list_of_LL_nodes[(i + 1) % len(list_of_LL_nodes)]
+    for i in range(len(list_of_LL_nodes)):
+        list_of_LL_nodes[i].next = list_of_LL_nodes[(i + 1) % len(list_of_LL_nodes)]
     return list_of_LL_nodes[0];
+def _LL_from_list_of_unlinked_extended_LL_nodes(list_of_extended_LL_nodes: list) -> _extended:
+    for i in range(len(list_of_extended_LL_nodes) - 1):
+        list_of_extended_LL_nodes[i].next = list_of_extended_LL_nodes[i + 1];
+    # list_of_extended_LL_nodes[len(list_of_extended_LL_nodes) - 1] = None: # not necessary since __init__ of _LL_node
 def _traverse_cLL(starting_position: _LL_node, distance: int) -> _LL_node:
     """Traverses a (cyclical) linked list and returns the node at the Nth chain."""
     if isinstance(distance, int) == False: print("_traverse_cLL didn't get the as distance as an int!");
