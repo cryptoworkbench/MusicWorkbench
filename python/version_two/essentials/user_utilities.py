@@ -1,5 +1,6 @@
 """ This module is supposed to only contain functions like 'clear_screen' (cls/clear), and shortcuts like 'hor', 'horizontal', 'ver', and 'vertical'. """
-import os
+import os # not needed for filename but needed for access to OS tools like 'cls' (on Windows) and 'clear' (on Linux)
+from .notes_and_intervals.notes_and_intervals import _return_last_layer
 
 def _startup_message(mains_filename: str) -> None:
     print(f"Start this program as \"python3 -i {mains_filename}\" if you want to get anything useful out of it. Once in interactive mode, you can use 'show_help()' to learn about available functions.\n");
@@ -40,6 +41,10 @@ def show_help() -> None:
     print("##    But to get the note sequence C -> D -> E -> F# into a ring using the 'melody' method, you'd have to use:");
     print("##    'modeless_melody = chromatic_scale.melody([0, 2, 4, 6])'       (since there is no mode with contains four consecutive wholesteps).");
     print("##");
+def display_list(LL_nodes: list):
+    """ this function is to inspect the contents of a list of LL_nodes """
+    for LL_node in LL_nodes:
+        print(f"{empty_indent} {_return_last_layer(LL_node)}");
 # ^^^ FUNCTIONS FOR USER CONVENIENCE ^^^
 
 h = H = hor = horizontal = horizontally = "horizontal"; v = V = ver = vert = vertical   = vertically   = "vertical"; # for _ring.loop()

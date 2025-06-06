@@ -1,3 +1,5 @@
+""" THIS MODULE IS SUPPOSED TO CONTAIN ONLY '_LL_node' STUFF """
+
 class _LL_node:
     """ Typedef for the datatype that will be used as the basic linked list structure. """
     def __init__(self, content, next_node=None):
@@ -41,10 +43,6 @@ def _search_CLL(access_node: _LL_node, CLL_length: int, mark_node: _LL_node) -> 
         i += 1; cursor = cursor.next;
     if i == CLL_length: return None;
     return cursor;
-
-def display_list(LL_nodes: list):
-    for LL_node in LL_nodes:
-        print(f"{empty_indent} {_return_last_layer(LL_node)}");
 # ^^^ FUNCTIONS FOR WORKING WITH THAT DATATYPE ^^^
 
 __all__ = [name for name in globals()]
