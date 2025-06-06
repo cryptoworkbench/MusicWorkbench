@@ -8,15 +8,20 @@ class _LL_node:
         self.content = content
         self.next = next_node
         self.previous = previous_node
+    def read(self):
+        return self.content
 def _create_LL_node(content, next_node: _LL_node = None, previous_node: _LL_node = None) -> _LL_node:
     """Returns an instance of the class _LL_node."""
     return _LL_node(content, next_node, previous_node);
 # ^^^ ALL '_LL_node' STUFF ^^^
 
 class _extended(_LL_node):
-    def __init__(self, content, extension: int, next_node: _LL_node = None):
-        super.__init__(self, content, next_node)
+    def __init__(self, content, extension: int, next_node: _LL_node = None, previous_node: _LL_node = None):
+        super().__init__(content, next_node, previous_node)
         self.added_attribute = extension
+    def extension(self):
+        return self.added_attribute
+
 def _create_extended_LL_node(content, extension: int, next_node: _extended = None, previous_node: _extended = None) -> _extended:
     """Returns an instance of the class _extended(_LL_node)."""
     return _extended(content, extension, next_node)

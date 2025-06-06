@@ -2,7 +2,8 @@ import os; mains_filename = os.path.basename(__file__);
 from essentials.user_utilities import *
 from essentials.initialization import initialize_data_structures
 from essentials.musical_operations import list_of_notes
-from essentials.LL_node_stuff import _CLL_from_list, _length_of_CLL
+from essentials.notes_and_intervals.notes_and_intervals import _return_last_layer
+from essentials.LL_node_stuff import _LL_node, _extended, _CLL_from_list, _length_of_CLL
 
 def initialize_ode_to_joy(namespace: dict[str, object]) -> None:
     c_major.melody([2, 2, 3, 4, 4, 3, 2, 1, 0, 0, 1, 2, 2, 1, 1], "ode_to_joy");

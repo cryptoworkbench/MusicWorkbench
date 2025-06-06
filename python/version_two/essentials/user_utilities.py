@@ -47,6 +47,11 @@ def display_list(LL_nodes: list):
     for LL_node in LL_nodes:
         print(f"{empty_indent} {_return_last_layer(LL_node)}");
 # ^^^ FUNCTIONS FOR USER CONVENIENCE ^^^
+def test_piano(namespace) -> None:
+    cursor = first_piano_note = namespace["c1"]
+    while cursor:
+        print(f"{_return_last_layer(cursor)}{cursor.extension()}");
+        cursor = cursor.next
 
 h = H = hor = horizontal = horizontally = "horizontal"; v = V = ver = vert = vertical   = vertically   = "vertical"; # for _ring.loop()
 # ^^^ SHORTCUTS FOR USER CONVENIENCE ^^^

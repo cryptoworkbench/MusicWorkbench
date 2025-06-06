@@ -1,9 +1,9 @@
 import time
+from .programmer_shortcuts import LIST_OF_NOTE_NAMES, OCTAVE_AMOUNT, indent, empty_indent
 from .notes_and_intervals.note_stuff import _NOTE
 from .notes_and_intervals.interval_stuff import _INTERVAL
 from .notes_and_intervals.notes_and_intervals import _return_last_layer
-from .programmer_shortcuts import LIST_OF_NOTE_NAMES, OCTAVE_AMOUNT, indent, empty_indent
-from .LL_node_stuff import _create_LL_node, _CLL_from_unlinked_LL_nodes, _length_of_CLL, _length_of_LL, _add_to_cLL, _link_unlinked_LL_nodes
+from .LL_node_stuff import _create_LL_node, _CLL_from_unlinked_LL_nodes, _length_of_CLL, _link_unlinked_LL_nodes, _create_extended_LL_node, _extended
 from .ring_classes import _ring_from_CLL, scale_ring_from_list
 from .musical_operations import list_of_notes
 
@@ -46,18 +46,30 @@ def _initialize_scales_for_every_mode_key_combo(namespace) -> None:
     # print("--> all synonyms have been set up as well (like \"c_major = c_ionian\", \"g_sharp_minor = g_sharp_aeolian\", etc).");
     print(f"{indent} created the 84 rings for all possible key-mode combinations, that's 7 modes * 12 keys = 84 scales in total !");
     print(f"{empty_indent} {indent} access them like 'c_major.loop()', 'g_dorian.loop()', 'f_locrian()', etc ...");
-"""
+def __initialize_piano_octave(namespace: dict[str, object], current_octave: int, continuation_point: _extended = None) -> _extended:
+    created_octave_nodes = []
+    for i, note_name in enumerate(LIST_OF_NOTE_NAMES):
+        created_octave_nodes.append(_create_extended_LL_node(namespace[note_name], current_octave))
+        var_name_zero = f"{note_name.upper()}{current_octave}"
+        var_name_one  = f"{note_name}{current_octave}"
+        namespace[var_name_zero] = namespace[var_name_one] = created_octave_nodes[i];
+        _link_unlinked_LL_nodes(created_octave_nodes);
+    if continuation_point != None:
+        continuation_point.next = created_octave_nodes[0]
+    return created_octave_nodes[len(LIST_OF_NOTE_NAMES) - 1] # return the last element
 def _initialize_piano(namespace) -> None:
-    '''initializes a piano'''
+    '''initializes a piano model'''
+    last_note_of_current_octave = None;
     for current_octave in range(OCTAVE_AMOUNT):
-        for note_name in LIST_OF_NOTE_NAMES:
-            octave_included_note = _create_extended_LL_node(note_name, current_octave)
-"""
+        last_note_of_current_octave = __initialize_piano_octave(namespace, current_octave, last_note_of_current_octave);
+    print(f"{indent} created a piano computer model !");
+
 def initialize_data_structures(namespace: dict[str, object]) -> None:
     print("Initializing program:");
     _initialize_notes_and_chromatic_scale(namespace);
     _initialize_interval_scale(namespace);
     _initialize_scales_for_every_mode_key_combo(namespace);
+    _initialize_piano(namespace);
     print(f"{indent} setup complete!");
 
 __all__ = ["initialize_data_structures"]
