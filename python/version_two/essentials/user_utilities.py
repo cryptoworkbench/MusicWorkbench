@@ -1,6 +1,7 @@
 """ This module is supposed to only contain functions like 'clear_screen' (cls/clear), and shortcuts like 'hor', 'horizontal', 'ver', and 'vertical'. """
 import os # not needed for filename but needed for access to OS tools like 'cls' (on Windows) and 'clear' (on Linux)
 from .notes_and_intervals.notes_and_intervals import _return_last_layer
+from .programmer_shortcuts import empty_indent
 
 def _startup_message(mains_filename: str) -> None:
     print(f"Start this program as \"python3 -i {mains_filename}\" if you want to get anything useful out of it. Once in interactive mode, you can use 'show_help()' to learn about available functions.\n");
@@ -8,7 +9,7 @@ def clear_screen() -> None:
     """Clears the screen using the OS's clear function ('cls' for windows, 'clear' for linux)."""
     os.system('cls' if os.name == 'nt' else 'clear')
 def initialize_screen(mains_filename: str) -> None:
-    # clear_screen();
+    clear_screen();
     _startup_message(mains_filename);
 def show_help() -> None:
     print("### Help menu ( help() ):");
