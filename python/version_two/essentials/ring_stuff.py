@@ -99,28 +99,15 @@ class _ring:
     def auto_loop_horizontally(self, complete_cycles=10, frequency=0.9) -> None:
         """Calls 'self.autoloop()' with the orientation set to 'horizontal'."""
         self.auto_loop("horizontal", complete_cycles, frequency);
-    def melody(self, list_of_scale_degrees, name_for_new_melody: str = None) -> None:
-        """Creates a _melody ring containing the melody specified by the scale degrees. The instance is not returned but updated."""
-        notes_in_melody = [];
-        octave_information = [];
-        for scale_degree in list_of_scale_degrees: # updates 'notes_in_melody' and 'octave_information' at the same time
-            notes_in_melody.append(_traverse_cLL(self.access, scale_degree % self.cardinality));
-            octave_information.append( REFERENCE_OCTAVE + (scale_degree - scale_degree % self.cardinality) // self.cardinality ) 
-        melody_from_list(self.original_namespace, notes_in_melody, name_for_new_melody, self);
-        self.original_namespace[name_for_new_melody].octave_info = octave_information;
-        print(      f"{indent} The melody '{name_for_new_melody}' has been saved, access it like:");
-        print(f"{empty_indent} {indent} {name_for_new_melody}.content()");
 class _scale(_ring):
     def __init__(self, namespace: dict[str, object], name: str, key: _LL_node, mode: str, circular_LL: _LL_node, source_pattern = None):
         super().__init__(namespace, name, circular_LL, source_pattern);
         self.key  = key;
         self.mode = mode;
-
     def info(self):
         super().info();
         print(f"{empty_indent} Key / root-note :  {_return_last_layer(self.key)}");
         print(f"{empty_indent} Mode            :  {self.mode}");
-
     def _chord(self, chord_number):
         notes_in_primary_chord = [];
         index_of_root_note = chord_number % self.cardinality;
@@ -128,13 +115,11 @@ class _scale(_ring):
         for i in range(index_of_root_note, 2 * 3 + index_of_root_note, 2):
             notes_in_primary_chord.append(_traverse_cLL(cursor, i))
         return notes_in_primary_chord;
-
     def chord(self, chord_number: int) -> list:
         chord_to_print = self._chord(chord_number - 1); current_string = "";
         for j in range(0, len(chord_to_print)): current_string += _return_last_layer(chord_to_print[j]) + " + ";
         print(current_string[:-3]);
         return chord_to_print;
-
     def chords(self):
         number_adjectives = ['first', 'second', 'third', 'fourth', 'fifth', 'sixth', 'seventh'];
         for i, number_adjective in enumerate(number_adjectives):
@@ -142,12 +127,21 @@ class _scale(_ring):
             current_string = f"The {number_adjective} chord is: ";
             for j in range(0, len(current_chord)): current_string += _return_last_layer(current_chord[j]) + " + ";
             print(current_string[:-3]);
+    def melody(self, list_of_scale_degrees, name_for_new_melody: str = None) -> None:
+        """Creates a _melody ring containing the melody specified by the scale degrees. The instance is not returned but updated."""
+        notes_in_melody = [];
+        octave_information = [];
+        starting_octave = REFERENCE_OCTAVE
+        root_note_of_scale_in_starting_octave = f"{_return_last_layer(self.key)}{starting_octave}"
+        piano_CLL = self.original_namespace[root_note_of_scale_in_starting_octave]
+        for scale_degree in list_of_scale_degrees: # updates 'notes_in_melody' and 'octave_information' at the same time
+            notes_in_melody.append(_traverse_cLL(piano_CLL, scale_degree));
+        melody_from_list(self.original_namespace, notes_in_melody, name_for_new_melody, self);
+        print(      f"{indent} The melody '{name_for_new_melody}' has been saved, access it like:");
+        print(f"{empty_indent} {indent} {name_for_new_melody}.content()");
 class _melody(_ring):
-    def __init__(self, namespace, name: str, circular_LL: _LL_node, source_pattern = None, octaves: list = None):
+    def __init__(self, namespace, name: str, circular_LL: _extended, source_pattern = None):
         super().__init__(namespace, name, circular_LL, source_pattern);
-        self.octave_info = []
-        if octaves == None:
-            for x in self: self.octave_info.append(REFERENCE_OCTAVE);
     def info(self):
         super().info();
         if self.source_pattern and isinstance(self.source_pattern, _scale):
@@ -166,9 +160,13 @@ class _melody(_ring):
         print(      f"{indent} The transposition '{name}' has been saved, access it like:");
         print(f"{empty_indent} {indent} {name}.loop()");
     def content(self):
-        output_str = ""
-        for x, y in zip(self.octave_info, self):
-            output_str += f"{_return_last_layer(y)}{x}, "
+        output_str = f"{_return_last_layer(self.access)}{self.access.content.added_attribute}, "
+        cursor = self.access.next
+        i = 0;
+        while cursor and i < self.cardinality:
+            output_str += f"{_return_last_layer(cursor)}{cursor.content.added_attribute}, "
+            cursor = cursor.next
+            i += 1
         print(output_str[:-2])
 # ^^^ MAIN DATATYPES ^^^
 

@@ -1,6 +1,7 @@
 """ This module is supposed to only contain functions like 'clear_screen' (cls/clear), and shortcuts like 'hor', 'horizontal', 'ver', and 'vertical'. """
 import os # not needed for filename but needed for access to OS tools like 'cls' (on Windows) and 'clear' (on Linux)
 from .notes_and_intervals.notes_and_intervals import _return_last_layer
+from .LL_node_stuff import _traverse_cLL
 from .programmer_shortcuts import empty_indent
 
 def _startup_message(mains_filename: str) -> None:
@@ -52,6 +53,16 @@ def test_piano(namespace) -> None:
     while cursor:
         print(f"{_return_last_layer(cursor)}{cursor.extension()}");
         cursor = cursor.next
+def test_piano_backwards(namespace) -> None:
+    cursor = first_piano_note = namespace["b7"]
+    while cursor:
+        print(f"{_return_last_layer(cursor)}{cursor.extension()}");
+        cursor = cursor.previous
+
+def test(namespace) -> None:
+    for x in range(-10, 10):
+        piano_note = _traverse_cLL(namespace['c4'], x);
+        print(f"note c4 + {x} = {_return_last_layer(piano_note)}{piano_note.added_attribute}")
 
 h = H = hor = horizontal = horizontally = "horizontal"; v = V = ver = vert = vertical   = vertically   = "vertical"; # for _ring.loop()
 # ^^^ SHORTCUTS FOR USER CONVENIENCE ^^^

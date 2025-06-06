@@ -78,15 +78,21 @@ def _LL_from_list_of_unlinked_extended_LL_nodes(list_of_extended_LL_nodes: list)
     # list_of_extended_LL_nodes[len(list_of_extended_LL_nodes) - 1] = None: # not necessary since __init__ of _LL_node
 def _traverse_cLL(starting_position: _LL_node, distance: int) -> _LL_node:
     """Traverses a (cyclical) linked list and returns the node at the Nth chain."""
-    if isinstance(distance, int) == False: print("_traverse_cLL didn't get the as distance as an int!");
-    traversed_cLL = starting_position;
-    for i in range(distance): traversed_cLL = traversed_cLL.next;
+    if isinstance(distance, int) == False: print("_traverse_cLL didn't get the as distance as an int!")
+    elif distance == 0: return starting_position
+
+    traversed_cLL = starting_position
+    if distance > 0:
+        for _ in range(distance):
+            traversed_cLL = traversed_cLL.next
+    else:
+        for _ in range(-distance):
+            traversed_cLL = traversed_cLL.previous;
     return traversed_cLL;
 def _return_second_to_last_layer(node: _LL_node) -> _LL_node:
     while isinstance(node.content, _LL_node): node = node.content;
     return node;
 def _CLL_from_list(list_to_process: list) -> _LL_node:
-
     """ This function wraps the values contained in the list 'list_to_process' into a circular linked list. """
     if not list_to_process:
         raise ValueError("Cannot create a cyclical linked list (or any linked list for that matter), from a list with no items inside of it");
@@ -95,6 +101,16 @@ def _CLL_from_list(list_to_process: list) -> _LL_node:
         return head;
     for i in range(1, len(list_to_process)):
         head = _add_to_cLL(head, _create_LL_node(list_to_process[i]));
+    return head.next;
+def _extended_CLL_from_list(list_to_process: list) -> _LL_node:
+    """ This function wraps the values contained in the list 'list_to_process' into a circular linked list. """
+    if not list_to_process:
+        raise ValueError("Cannot create a cyclical linked list (or any linked list for that matter), from a list with no items inside of it");
+    head = _create_LL_node(list_to_process[0]); head.next = head;
+    if len(list_to_process) == 1:
+        return head;
+    for i in range(1, len(list_to_process)):
+        head = _add_to_cLL(head, _create_extended_LL_node(list_to_process[i]));
     return head.next;
 def _search_CLL(access_node: _LL_node, CLL_length: int, mark_node: _LL_node) -> _LL_node:
     """ searches the linked list for node 'mark_node', returns it's position upon finding it. if not found returns None """

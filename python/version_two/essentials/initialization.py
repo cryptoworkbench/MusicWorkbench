@@ -4,7 +4,7 @@ from .notes_and_intervals.note_stuff import _NOTE
 from .notes_and_intervals.interval_stuff import _INTERVAL
 from .notes_and_intervals.notes_and_intervals import _return_last_layer
 from .LL_node_stuff import _create_LL_node, _CLL_from_unlinked_LL_nodes, _length_of_CLL, _link_unlinked_LL_nodes, _create_extended_LL_node, _extended
-from .ring_classes import _ring_from_CLL, scale_ring_from_list
+from .ring_stuff import _ring_from_CLL, scale_ring_from_list
 from .musical_operations import list_of_notes
 
 def _initialize_notes_and_chromatic_scale(namespace: dict[str, object]) -> None:
@@ -56,6 +56,7 @@ def __initialize_piano_octave(namespace: dict[str, object], current_octave: int,
         _link_unlinked_LL_nodes(created_octave_nodes);
     if continuation_point != None:
         continuation_point.next = created_octave_nodes[0]
+        created_octave_nodes[0].previous = continuation_point
     return created_octave_nodes[len(LIST_OF_NOTE_NAMES) - 1] # return the last element
 def _initialize_piano(namespace) -> None:
     '''initializes a piano model'''
