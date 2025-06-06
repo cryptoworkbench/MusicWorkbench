@@ -34,6 +34,14 @@ def _CLL_from_list(list_to_process: list) -> _LL_node:
     for i in range(1, len(list_to_process)):
         head = _add_to_cLL(head, list_to_process[i]);
     return head.next;
+def _search_CLL(access_node: _LL_node, CLL_length: int, mark_node: _LL_node) -> _LL_node:
+    """ searches the linked list for node 'mark_node', returns it's position upon finding it. if not found returns None """
+    cursor = access_node; i = 0;
+    while cursor != mark_node and i < CLL_length:
+        i += 1; cursor = cursor.next;
+    if i == CLL_length: return None;
+    return cursor;
+
 def display_list(LL_nodes: list):
     for LL_node in LL_nodes:
         print(f"{empty_indent} {_return_last_layer(LL_node)}");

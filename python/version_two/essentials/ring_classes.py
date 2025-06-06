@@ -68,16 +68,10 @@ class _ring:
         return LL_nodes;
     def loop(self, starting_position: _LL_node = None, orientation = "horizontal"):
         """Display the content of the ring by cycling through it once."""
+        cursor = starting_position;
         if starting_position == None: starting_position = self.access;
-        else:
-            cursor = self.access; i = 0;
-            while cursor != starting_position and i < self.cardinality:
-                """ we try to find it in the current cll """
-                i += 1; cursor = cursor.next;
-            if i == self.cardinality:
-                """ if it's not in the current cll we let _search find an element in the current cll which is equivalent in terms of _return_last_layer() """
-                starting_position = self._search(starting_position)
-
+        else: cursor = _search_CLL(self.access, self.cardinality, starting_position);
+        if cursor == None: starting_position = self._search(starting_position);
         cursor = starting_position;
         output_str = "";
         while cursor.next != starting_position:
