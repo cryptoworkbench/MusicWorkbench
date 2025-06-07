@@ -8,10 +8,10 @@ from essentials.LL_node_stuff import * # _LL_node, _extended, _CLL_from_list, _l
 FRERE_JACKQUES = [0, 1, 2, 0, 0, 1, 2, 0, 2, 3, 4, 2, 3, 4, 4, 5, 4, 3, 2, 0, 4, 5, 4, 3, 2, 0, 0, -3, 0, 0, -3, 0]
 
 def initialize_ode_to_joy(namespace: dict[str, object]) -> None:
-    C_IONIAN.melody([2, 2, 3, 4, 4, 3, 2, 1, 0, 0, 1, 2, 2, 1, 1], "ode_to_joy");
+    C_IONIAN.melody([2, 2, 3, 4, 4, 3, 2, 1, 0, 0, 1, 2, 2, 1, 1], REFERENCE_OCTAVE, "ode_to_joy");
 
 def initialize_frere_jackques(namespace: dict[str, object]) -> None:
-    C_IONIAN.melody(FRERE_JACKQUES, "frere_jackques");
+    C_IONIAN.melody(FRERE_JACKQUES, REFERENCE_OCTAVE, "frere_jackques");
 
 initialize_screen(mains_filename);
 initialize_data_structures(globals());

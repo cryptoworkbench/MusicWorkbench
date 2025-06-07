@@ -127,18 +127,23 @@ class _scale(_ring):
             current_string = f"The {number_adjective} chord is: ";
             for j in range(0, len(current_chord)): current_string += _return_last_layer(current_chord[j]) + " + ";
             print(current_string[:-3]);
-    def melody(self, list_of_scale_degrees, name_for_new_melody: str = None) -> None:
-        """Creates a _melody ring containing the melody specified by the scale degrees. The instance is not returned but updated."""
-        notes_in_melody = [];
+    def melody(self, list_of_scale_degrees, relative_octave: int, name_for_new_melody: str = None) -> None:
+        """Creates a _melody ring containing the melody specified by the scale degrees. The instance is not returned but updated.
+        This code is now writtern in such a way that 'C_IONIAN.melody' work.
+
+        Now write it in such a way that c_major.melody works."""
+        reduced_scale = f"{((_return_last_layer(self.key)).lower())}_{self.mode}"
+
+        notes_in_melody = []
         name_of_piano_scale = f"{_return_last_layer(self.key)}_{(self.mode).upper()}"
-        piano_CLL = self.original_namespace[name_of_piano_scale].access
-        print(f"current note in piano_CLL (before traversing to next octave): {piano_CLL}")
-        for _ in range(7):
-            piano_CLL = piano_CLL.next
-        print(f"current note in piano_CLL: {piano_CLL}")
+        print(f"name_of_piano_scale: {name_of_piano_scale}")
+        print(f"name_of_reduced_scale: {reduced_scale}")
+        piano_CLL = self.original_namespace[reduced_scale.upper()].access
+        for _ in range(relative_octave):
+            for _ in range(self.original_namespace[reduced_scale].cardinality):
+                piano_CLL = piano_CLL.next
         for scale_degree in list_of_scale_degrees: # updates 'notes_in_melody' and 'octave_information' at the same time
             notes_in_melody.append(_traverse_cLL(piano_CLL, scale_degree));
-        print(f"CREATING A NEW MELODY: mode = {self.mode}")
         melody_from_list(self.original_namespace, notes_in_melody, name_for_new_melody, self.mode, self);
         print(      f"{indent} The melody '{name_for_new_melody}' has been saved, access it like:");
         print(f"{empty_indent} {indent} {name_for_new_melody}.content()");
