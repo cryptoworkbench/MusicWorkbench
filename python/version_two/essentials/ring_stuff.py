@@ -4,7 +4,7 @@ _self = importlib.import_module(__name__)
 from .notes_and_intervals.note_stuff import _NOTE
 from .notes_and_intervals.interval_stuff import _INTERVAL
 from .user_utilities import *
-from .LL_node_stuff import _LL_node, _extended, _CLL_from_list, _search_CLL, _get_piano_note_str
+from .LL_node_stuff import _LL_node, _extended, _CLL_from_list, _search_CLL
 from .input_methods import *
 from .programmer_shortcuts import *
 from .musical_operations import *
@@ -175,11 +175,11 @@ class _melody(_ring):
         print(      f"{indent} The transposition '{name}' has been saved, access it like:");
         print(f"{empty_indent} {indent} {name}.loop()");
     def content(self):
-        output_str = f"{_get_piano_note_str(self.access)}, "
+        output_str = f"{self.access.get_piano_note_str()}, "
         cursor = self.access.next
         i = 0
         while cursor and i < self.cardinality:
-            output_str += f"{_get_piano_note_str(cursor)}, "
+            output_str += f"{cursor.get_piano_note_str()}, "
             cursor = cursor.next
             i += 1
         print(output_str[:-2])

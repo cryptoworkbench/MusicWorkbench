@@ -14,6 +14,8 @@ class _LL_node:
         return self.content
     def return_last_layer(self, orientation: str = None):
         return _return_last_layer(self, orientation)
+    def get_piano_note_str(self):
+        return _get_piano_note_str(self)
 
 def _create_LL_node(content, next_node: _LL_node = None, previous_node: _LL_node = None) -> _LL_node:
     """Returns an instance of the class _LL_node."""
