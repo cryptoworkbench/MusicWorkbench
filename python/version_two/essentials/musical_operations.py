@@ -1,4 +1,5 @@
 from .LL_node_stuff import _LL_node, _traverse_cLL, _return_second_to_last_layer
+from .programmer_shortcuts import OCTAVE_AMOUNT
 from .notes_and_intervals.interval_stuff import _INTERVAL, _return_INTERVAL_halfsteps
 
 def _apply_interval(starting_note: _LL_node, interval: _INTERVAL) -> _LL_node:
@@ -18,6 +19,30 @@ def list_of_notes(root_note: _LL_node, first_MODE_node: _LL_node) -> list:
         ret_val.append(derived_note);
         NOTE_node_cursor = derived_note;
     return ret_val;
+
+def _list_of_intervals(mode_node: _LL_node) -> list:
+    list_of_intervals = []
+    list_of_intervals.append(_return_INTERVAL_halfsteps(_return_second_to_last_layer(mode_node).content))
+    cursor = mode_node.next
+    while cursor != mode_node:
+        list_of_intervals.append(_return_INTERVAL_halfsteps(_return_second_to_last_layer(cursor).content))
+        cursor = cursor.next
+    return list_of_intervals
+
+def _apply_interval_pattern_to_piano(piano_node_cursor: _LL_node, list_of_interval_degrees: list = None) -> list:
+    """this method returns all piano notes which fit a certain mode (given an given root_note)"""
+    multiplied_list_of_interval_degrees = []
+    for i in range(OCTAVE_AMOUNT):
+        multiplied_list_of_interval_degrees.extend(list_of_interval_degrees)
+
+    collected_notes = [piano_node_cursor]
+    for interval_degree in multiplied_list_of_interval_degrees:
+        derived_note = _traverse_cLL(piano_node_cursor, interval_degree)
+        if derived_note:
+            collected_notes.append(derived_note)
+            piano_node_cursor = derived_note
+        else: break;
+    return collected_notes
 
 """ WORK IN PROGRESS !!!
 def _scale_from_interval_degrees(root_note: _LL_node, list_of_interval_degrees: list) -> _scale:

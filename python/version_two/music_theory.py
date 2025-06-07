@@ -1,7 +1,7 @@
 import os; mains_filename = os.path.basename(__file__);
 from essentials.user_utilities import *
-from essentials.initialization import initialize_data_structures
-from essentials.musical_operations import list_of_notes
+from essentials.initialization import initialize_data_structures, _collect_piano_notes_for_mode
+from essentials.musical_operations import list_of_notes, _list_of_intervals
 from essentials.notes_and_intervals.notes_and_intervals import _return_last_layer
 from essentials.LL_node_stuff import _LL_node, _extended, _CLL_from_list, _length_of_CLL
 

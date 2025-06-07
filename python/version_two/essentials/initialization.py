@@ -3,9 +3,9 @@ from .programmer_shortcuts import LIST_OF_NOTE_NAMES, OCTAVE_AMOUNT, indent, emp
 from .notes_and_intervals.note_stuff import _NOTE
 from .notes_and_intervals.interval_stuff import _INTERVAL
 from .notes_and_intervals.notes_and_intervals import _return_last_layer
-from .LL_node_stuff import _create_LL_node, _CLL_from_unlinked_LL_nodes, _length_of_CLL, _link_unlinked_LL_nodes, _create_extended_LL_node, _extended
+from .LL_node_stuff import _create_LL_node, _CLL_from_unlinked_LL_nodes, _length_of_CLL, _link_unlinked_LL_nodes, _create_extended_LL_node, _extended, _LL_node
 from .ring_stuff import _ring_from_CLL, scale_ring_from_list
-from .musical_operations import list_of_notes
+from .musical_operations import list_of_notes, _apply_interval_pattern_to_piano, _list_of_intervals
 
 def _initialize_notes_and_chromatic_scale(namespace: dict[str, object]) -> None:
     notes = [_NOTE.c, _NOTE.c_sharp, _NOTE.d, _NOTE.d_sharp, _NOTE.e, _NOTE.f, _NOTE.f_sharp, _NOTE.g, _NOTE.g_sharp, _NOTE.a, _NOTE.a_sharp, _NOTE.b]
@@ -65,12 +65,26 @@ def _initialize_piano(namespace) -> None:
         last_note_of_current_octave = __initialize_piano_octave(namespace, current_octave, last_note_of_current_octave);
     print(f"{indent} created a piano computer model !");
 
+def _collect_piano_notes_for_mode(piano_node_cursor: _LL_node, mode_node: _LL_node) -> list:
+    return _apply_interval_pattern_to_piano(piano_node_cursor, _list_of_intervals(mode_node));
+
+def _initialize_piano_scales(namespace) -> None:
+    modes = [("ionian", namespace['ionian']), ("dorian", namespace['dorian']), ("phrygian", namespace['phrygian']), ("lydian", namespace['lydian']), ("mixolydian", namespace['mixolydian']), ("aeolian", namespace['aeolian']), ("locrian", namespace['locrian'])]
+    notes = ['c0', 'c_sharp0', 'd0', 'd_sharp0']
+    for note_name in LIST_OF_NOTE_NAMES:
+        for j in range(len(modes)):
+            first_octave_name = f"{note_name}0"
+            var_name_normal      = f"{note_name}_{modes[j][0]}"
+            var_name_piano_case  = var_name_normal.upper()
+            namespace[var_name_piano_case] = _collect_piano_notes_for_mode(namespace[first_octave_name], modes[j][1])
+
 def initialize_data_structures(namespace: dict[str, object]) -> None:
     print("Initializing program:");
     _initialize_notes_and_chromatic_scale(namespace);
     _initialize_interval_scale(namespace);
     _initialize_scales_for_every_mode_key_combo(namespace);
     _initialize_piano(namespace);
+    _initialize_piano_scales(namespace)
     print(f"{indent} setup complete!");
 
 __all__ = ["initialize_data_structures"]

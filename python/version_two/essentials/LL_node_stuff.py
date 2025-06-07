@@ -72,10 +72,6 @@ def _CLL_from_unlinked_LL_nodes(list_of_LL_nodes: list) -> _LL_node: # or an _ex
     list_of_LL_nodes[0].previous = list_of_LL_nodes[-1] # make the LL circular
     list_of_LL_nodes[-1].next = list_of_LL_nodes[0]
     return list_of_LL_nodes[0];
-def _LL_from_list_of_unlinked_extended_LL_nodes(list_of_extended_LL_nodes: list) -> _extended:
-    for i in range(len(list_of_extended_LL_nodes) - 1):
-        list_of_extended_LL_nodes[i].next = list_of_extended_LL_nodes[i + 1];
-    # list_of_extended_LL_nodes[len(list_of_extended_LL_nodes) - 1] = None: # not necessary since __init__ of _LL_node
 def _traverse_cLL(starting_position: _LL_node, distance: int) -> _LL_node:
     """Traverses a (cyclical) linked list and returns the node at the Nth chain."""
     if isinstance(distance, int) == False: print("_traverse_cLL didn't get the as distance as an int!")
@@ -84,10 +80,14 @@ def _traverse_cLL(starting_position: _LL_node, distance: int) -> _LL_node:
     traversed_cLL = starting_position
     if distance > 0:
         for _ in range(distance):
-            traversed_cLL = traversed_cLL.next
+            if traversed_cLL.next:
+                traversed_cLL = traversed_cLL.next
+            else: return None
     else:
         for _ in range(-distance):
-            traversed_cLL = traversed_cLL.previous;
+            if traversed_cLL.previous:
+                traversed_cLL = traversed_cLL.previous;
+            else: return None
     return traversed_cLL;
 def _return_second_to_last_layer(node: _LL_node) -> _LL_node:
     while isinstance(node.content, _LL_node): node = node.content;
