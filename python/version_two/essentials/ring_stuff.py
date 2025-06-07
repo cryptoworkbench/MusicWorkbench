@@ -4,7 +4,7 @@ _self = importlib.import_module(__name__)
 from .notes_and_intervals.note_stuff import _NOTE
 from .notes_and_intervals.interval_stuff import _INTERVAL
 from .user_utilities import *
-from .LL_node_stuff import _LL_node, _extended, _CLL_from_list, _search_CLL
+from .LL_node_stuff import _LL_node, _extended, _CLL_from_list
 from .input_methods import *
 from .programmer_shortcuts import *
 from .musical_operations import *
@@ -49,6 +49,8 @@ class _ring:
         current.next = new_node;
         new_node.next = self.access;
         self.cardinality += 1;
+    def search_through_CLL(self, mark_node):
+        return self.access.search_CLL(mark_node, self.cardinality)
     def _search(self, starting_position: _LL_node) -> _LL_node:
         LL_node_to_match_against = starting_position.return_second_to_last_layer()
         original_ring_LL_cursor = self.access
@@ -69,7 +71,7 @@ class _ring:
         """Display the content of the ring by cycling through it once."""
         cursor = starting_position;
         if starting_position == None: starting_position = self.access;
-        else: cursor = _search_CLL(self.access, self.cardinality, starting_position);
+        else: cursor = self.search_through_CLL(starting_position);
         if cursor == None: starting_position = self._search(starting_position);
 
         indent_to_use = ""
