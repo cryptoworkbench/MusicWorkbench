@@ -1,5 +1,5 @@
 from .LL_node_stuff import _LL_node
-from .programmer_shortcuts import OCTAVE_AMOUNT
+from .programmer_utilities import OCTAVE_AMOUNT
 from .notes_and_intervals import _INTERVAL
 
 def _apply_interval(starting_note: _LL_node, interval: _INTERVAL) -> _LL_node:

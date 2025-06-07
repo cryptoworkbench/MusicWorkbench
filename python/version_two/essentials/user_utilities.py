@@ -1,7 +1,7 @@
 """ This module is supposed to only contain functions like 'clear_screen' (cls/clear), and shortcuts like 'hor', 'horizontal', 'ver', and 'vertical'. """
 import os # not needed for filename but needed for access to OS tools like 'cls' (on Windows) and 'clear' (on Linux)
 from .LL_node_stuff import _extended, _LL_node
-from .programmer_shortcuts import empty_indent
+from .programmer_utilities import empty_indent
 
 def _startup_message(mains_filename: str) -> None:
     print(f"Start this program as \"python3 -i {mains_filename}\" if you want to get anything useful out of it. Once in interactive mode, you can use 'show_help()' to learn about available functions.\n");

@@ -1,7 +1,7 @@
 """ THIS MODULE IS SUPPOSED TO CONTAIN ONLY '_LL_node' STUFF """
 import time
 from .notes_and_intervals import _NOTE, _INTERVAL
-from .programmer_shortcuts import REFERENCE_OCTAVE
+from .programmer_utilities import REFERENCE_OCTAVE
 
 class _LL_node:
     """ Typedef for the datatype that will be used as the basic linked list structure. """

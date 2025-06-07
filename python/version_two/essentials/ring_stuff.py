@@ -5,7 +5,7 @@ from .notes_and_intervals import _NOTE, _INTERVAL
 from .user_utilities import *
 from .LL_node_stuff import _LL_node, _extended, _CLL_from_list
 from .input_methods import *
-from .programmer_shortcuts import *
+from .programmer_utilities import *
 from .musical_operations import *
 
 class _ring:
