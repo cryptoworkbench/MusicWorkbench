@@ -19,9 +19,9 @@ class _LL_node:
         self = self.return_second_to_last_layer();
         if isinstance(self.content, _NOTE): return self.content.return_NOTE_name();
         elif isinstance(self.content, _INTERVAL):
-            if orientation == "horizontal":
+            if orientation == "horizontally":
                 return self.content.return_INTERVAL_abbreviation()
-            elif orientation == "vertical": return self.content.return_INTERVAL_name()
+            elif orientation == "vertically": return self.content.return_INTERVAL_name()
         else: print("neither note nor interval!");
     def return_second_to_last_layer(self):
         while isinstance(self.content, _LL_node) and not isinstance(self.content, _extended): self = self.content;

@@ -16,8 +16,8 @@ initialize_screen(mains_filename);
 initialize_data_structures(globals());
 initialize_ode_to_joy(globals());
 initialize_frere_jackques(globals());
-chromatic_scale.loop()
-f_locrian.loop()
-interval_scale.loop()
-interval_scale.loop(dorian)
+chromatic_scale.loop_horizontally()
+f_locrian.loop_horizontally()
+interval_scale.loop_horizontally()
+interval_scale.loop_horizontally(dorian)
 frere_jackques.content()

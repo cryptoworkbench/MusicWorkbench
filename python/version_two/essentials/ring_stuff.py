@@ -50,53 +50,62 @@ class _ring:
         self.cardinality += 1;
     def search_through_CLL(self, mark_node):
         return self.access.search_CLL(mark_node, self.cardinality)
-    def _search(self, starting_position: _LL_node) -> _LL_node:
+    def _loop_search(self, starting_position: _LL_node) -> _LL_node:
         LL_node_to_match_against = starting_position.return_second_to_last_layer()
         original_ring_LL_cursor = self.access
         for iterator in range(self.cardinality):
-            if original_ring_LL_cursor.return_second_to_last_layer() == LL_node_to_match_against: return original_ring_LL_cursor
+            if original_ring_LL_cursor.return_second_to_last_layer() == LL_node_to_match_against:
+                return original_ring_LL_cursor
             original_ring_LL_cursor = original_ring_LL_cursor.next
         raise ValueError(f"Error, object  '{starting_position}' is not in this ring ! (and neither is a different object containing the same exact value!)");
-    def _list_starting_at(self, starting_position: _LL_node, orientation="vertical") -> list: # NOT IN USE !!!
-        if starting_position == None: starting_position = self.access;
-        else: starting_position = self._search(starting_position);
-        # ^^--> These lines translate between all involved permutation layers
-        LL_nodes = []
-        for i in range(self.cardinality):
-            LL_nodes.append(starting_position);
-            starting_position = starting_position.next;
-        return LL_nodes;
-    def loop(self, starting_position: _LL_node = None, orientation = "horizontal") -> None:
+    def loop(self, orientation = "horizontally", starting_position: _LL_node = None) -> None:
         """Display the content of the ring by cycling through it once."""
         cursor = starting_position;
-        if starting_position == None: starting_position = self.access;
-        else: cursor = self.search_through_CLL(starting_position);
-        if cursor == None: starting_position = self._search(starting_position);
-
+        if starting_position == None:
+            starting_position = self.access
+        else:
+            cursor = self.search_through_CLL(starting_position);
+        if cursor == None:
+            starting_position = self._loop_search(starting_position);
+        # ChatGPT suggested alternative to the above:
+        # if starting_position is None:
+        #     print("message from 'loop': starting_position == None!")
+        #     starting_position = self.access
+        #     cursor = self.access
+        # else:
+        #     cursor = self.search_through_CLL(starting_position)
+        #     if cursor is None:
+        #         startiing_position = self._loop_search(starting_position)
+        #         cursor = starting_position
         indent_to_use = ""
         end = ""
-        if orientation == "horizontal":
+        if orientation == "horizontally":
             end += ", "
-        if orientation == "vertical":
-            indent_to_use = f"{empty_indent} "
+        if orientation == "vertically":
+            indent_to_use += f"{empty_indent} "
             end += "\n"
-            orientation_str = vertical
-
         output_str = f"{indent_to_use}{starting_position.return_last_layer(orientation)}{end}"
         cursor = starting_position.next
         while cursor != starting_position:
             output_str += f"{indent_to_use}{cursor.return_last_layer(orientation)}{end}"
             cursor = cursor.next;
-        if orientation == "horizontal":
+        if orientation == "horizontally":
             output_str = f"{empty_indent} <{output_str[:-2]}>";
-        else: output_str = output_str[:-1];
+        elif orientation == "vertical":
+            output_str = output_str[:-1];
         print(output_str);
-    def auto_loop(self, orientation="horizontal", complete_cycles=10, frequency=0.8) -> None:
+    def loop_vertically(self, starting_position: _LL_node = None) -> None:
+        """wrapper method for method 'loop'"""
+        self.loop("vertically", starting_position)
+    def loop_horizontally(self, starting_position: _LL_node = None) -> None:
+        """wrapper method for method 'loop'"""
+        self.loop("horizontally", starting_position)
+    def auto_loop(self, orientation="horizontally", complete_cycles=10, frequency=0.8) -> None:
         """Calls 'self.loop()' iteratively in combination with 'clear_screen()' in order to give 'self.loop()' a dynamic touch."""
         cursor = self.access; 
         for i in range(complete_cycles):
             for j in range(self.cardinality):
-                clear_screen(); self.loop(cursor, orientation); cursor = cursor.next; remaining_cycles = complete_cycles - i;
+                clear_screen(); self.loop(orientation, cursor); cursor = cursor.next; remaining_cycles = complete_cycles - i;
                 print(f'\nOffset from starting element: {j}');
                 print(  f'Remaining cycles            : {remaining_cycles}');
                 print(  f'Current speed               : {frequency}s');
@@ -104,10 +113,10 @@ class _ring:
                 time.sleep(frequency);
     def auto_loop_vertically(self, complete_cycles=10, frequency=0.9) -> None:
         """Calls 'self.autoloop()' with the orientation set to 'vertical'."""
-        self.auto_loop("vertical", complete_cycles, frequency);
+        self.auto_loop("vertically", complete_cycles, frequency);
     def auto_loop_horizontally(self, complete_cycles=10, frequency=0.9) -> None:
         """Calls 'self.autoloop()' with the orientation set to 'horizontal'."""
-        self.auto_loop("horizontal", complete_cycles, frequency);
+        self.auto_loop("horizontally", complete_cycles, frequency);
 class _scale(_ring):
     def __init__(self, namespace: dict[str, object], name: str, key: _LL_node, mode: str, circular_LL: _LL_node, source_pattern = None):
         super().__init__(namespace, name, circular_LL, source_pattern);

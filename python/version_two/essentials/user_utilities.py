@@ -61,7 +61,7 @@ def test_piano_backwards(namespace) -> None:
         print(f"{cursor.return_last_layer()}{cursor.extension()}");
         cursor = cursor.previous
 
-h = H = hor = horizontal = horizontally = "horizontal"; v = V = ver = vert = vertical   = vertically   = "vertical"; # for _ring.loop()
+h = H = hor = horizontal = horizontally = "horizontally"; v = V = ver = vert = vertical   = vertically   = "vertically"; # for _ring.loop()
 # ^^^ SHORTCUTS FOR USER CONVENIENCE ^^^
 
 __all__ = [name for name in globals() if not name.startswith('_')]
