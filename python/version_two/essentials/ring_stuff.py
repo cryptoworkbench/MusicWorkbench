@@ -130,23 +130,27 @@ class _scale(_ring):
     def melody(self, list_of_scale_degrees, name_for_new_melody: str = None) -> None:
         """Creates a _melody ring containing the melody specified by the scale degrees. The instance is not returned but updated."""
         notes_in_melody = [];
-        octave_information = [];
-        starting_octave = REFERENCE_OCTAVE
-        root_note_of_scale_in_starting_octave = f"{_return_last_layer(self.key)}{starting_octave}"
-        piano_CLL = self.original_namespace[root_note_of_scale_in_starting_octave]
+        name_of_piano_scale = f"{_return_last_layer(self.key)}_{(self.mode).upper()}"
+        piano_CLL = self.original_namespace[name_of_piano_scale].access
+        print(f"current note in piano_CLL (before traversing to next octave): {piano_CLL}")
+        for _ in range(7):
+            piano_CLL = piano_CLL.next
+        print(f"current note in piano_CLL: {piano_CLL}")
         for scale_degree in list_of_scale_degrees: # updates 'notes_in_melody' and 'octave_information' at the same time
             notes_in_melody.append(_traverse_cLL(piano_CLL, scale_degree));
-        melody_from_list(self.original_namespace, notes_in_melody, name_for_new_melody, self);
+        print(f"CREATING A NEW MELODY: mode = {self.mode}")
+        melody_from_list(self.original_namespace, notes_in_melody, name_for_new_melody, self.mode, self);
         print(      f"{indent} The melody '{name_for_new_melody}' has been saved, access it like:");
         print(f"{empty_indent} {indent} {name_for_new_melody}.content()");
 class _melody(_ring):
-    def __init__(self, namespace, name: str, circular_LL: _extended, source_pattern = None):
+    def __init__(self, namespace, name: str, mode: str, circular_LL: _extended, source_pattern = None):
         super().__init__(namespace, name, circular_LL, source_pattern);
+        self.mode = mode
     def info(self):
         super().info();
         if self.source_pattern and isinstance(self.source_pattern, _scale):
             print(f"{empty_indent} Key             :  {_return_last_layer(self.source_pattern.key)}");
-            print(f"{empty_indent} Mode            :  {self.source_pattern.mode}");
+            print(f"{empty_indent} Mode            :  {self.mode}");
     def transpose(self, half_steps: int = None, name: str = None): 
         """Returns the melody transposed with the supplied interval."""
         if (half_steps == None): half_steps = get_half_steps();
@@ -156,7 +160,7 @@ class _melody(_ring):
             new_note      = _traverse_cLL(original_note, half_steps);
             transposed_melody.append(new_note);
         if (name == None): name = get_name()
-        melody_from_list(self.original_namespace, transposed_melody, name, self);
+        melody_from_list(self.original_namespace, transposed_melody, name, self.mode, self);
         print(      f"{indent} The transposition '{name}' has been saved, access it like:");
         print(f"{empty_indent} {indent} {name}.loop()");
     def content(self):
@@ -178,11 +182,11 @@ def _scale_ring_from_CLL(namespace, name: str, key: _LL_node, mode: str, CLL: _L
     return _scale(namespace, name, key, mode, CLL, source_pattern);
 def scale_ring_from_list(namespace, name: str, key: _LL_node, mode: str, list_to_process: list, source_pattern: _ring = None) -> _scale:
     return _scale_ring_from_CLL(namespace, name, key, mode, _CLL_from_list(list_to_process), source_pattern);
-def _melody_ring_from_CLL(namespace: dict[str, object], name: str, CLL: _LL_node, source_pattern = None) -> _melody:
+def _melody_ring_from_CLL(namespace: dict[str, object], name: str, mode: str, CLL: _LL_node, source_pattern = None) -> _melody:
     """ wrapper function for the class '_melody' """
-    return _melody(namespace, name, CLL, source_pattern);
-def melody_from_list(namespace: dict[str, object], list_of_notes: list, name: str = None, source_pattern: _ring = None) -> None:
+    return _melody(namespace, name, mode, CLL, source_pattern);
+def melody_from_list(namespace: dict[str, object], list_of_notes: list, name: str, mode: str = None, source_pattern: _ring = None) -> None:
     """ gets a '_melody' class using '_melody_ring_from_CLL'. returns void, but the value retrieved by '_melody_ring_from_CLL()' is stored in 'namespace' """
     if name == None: name = get_name("melody")
-    namespace[name] = _melody_ring_from_CLL(namespace, name, _CLL_from_list(list_of_notes), source_pattern);
+    namespace[name] = _melody_ring_from_CLL(namespace, name, mode, _CLL_from_list(list_of_notes), source_pattern);
 # ^^^ FUNCTIONS FOR WORKING WITH THOSE DATATYPES ^^^

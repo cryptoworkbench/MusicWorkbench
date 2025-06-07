@@ -45,7 +45,7 @@ def _initialize_scales_for_every_mode_key_combo(namespace) -> None:
         namespace[f"{note_name}_minor"] = namespace[f"{note_name}_aeolian"];
     # print("--> all synonyms have been set up as well (like \"c_major = c_ionian\", \"g_sharp_minor = g_sharp_aeolian\", etc).");
     print(f"{indent} created the 84 rings for all possible key-mode combinations, that's 7 modes * 12 keys = 84 scales in total !");
-    print(f"{empty_indent} {indent} access them like 'c_major.loop()', 'g_dorian.loop()', 'f_locrian()', etc ...");
+    print(f"{empty_indent} {indent} access them like 'c_major.loop()', 'g_dorian.loop()', 'f_locrian.loop()', etc ...");
 def __initialize_piano_octave(namespace: dict[str, object], current_octave: int, continuation_point: _extended = None) -> _extended:
     created_octave_nodes = []
     for i, note_name in enumerate(LIST_OF_NOTE_NAMES):
@@ -70,13 +70,21 @@ def _collect_piano_notes_for_mode(piano_node_cursor: _LL_node, mode_node: _LL_no
 
 def _initialize_piano_scales(namespace) -> None:
     modes = [("ionian", namespace['ionian']), ("dorian", namespace['dorian']), ("phrygian", namespace['phrygian']), ("lydian", namespace['lydian']), ("mixolydian", namespace['mixolydian']), ("aeolian", namespace['aeolian']), ("locrian", namespace['locrian'])]
-    notes = ['c0', 'c_sharp0', 'd0', 'd_sharp0']
     for note_name in LIST_OF_NOTE_NAMES:
         for j in range(len(modes)):
-            first_octave_name = f"{note_name}0"
-            var_name_normal      = f"{note_name}_{modes[j][0]}"
-            var_name_piano_case  = var_name_normal.upper()
-            namespace[var_name_piano_case] = _collect_piano_notes_for_mode(namespace[first_octave_name], modes[j][1])
+            SCALE_NAME             = f"{note_name}0"
+            var_name_normal        = f"{note_name}_{modes[j][0]}"
+            var_name_piano_case    = var_name_normal.upper()
+            list_of_notes_in_scale = _collect_piano_notes_for_mode(namespace[SCALE_NAME], modes[j][1])
+            namespace[var_name_piano_case] = scale_ring_from_list(namespace,
+                                                                  SCALE_NAME,
+                                                                  namespace[note_name],
+                                                                  modes[j][0],
+                                                                  list_of_notes_in_scale,
+                                                                  namespace[var_name_normal])
+
+    print(f"{indent} created the 84 rings for all possible key-mode combinations, that's 7 modes * 12 keys = 84 scales in total !");
+    print(f"{empty_indent} {indent} access them like 'C_MAJOR.loop()', 'G_DORIAN.loop()', 'F_LOCRIAN.loop()', etc ...");
 
 def initialize_data_structures(namespace: dict[str, object]) -> None:
     print("Initializing program:");

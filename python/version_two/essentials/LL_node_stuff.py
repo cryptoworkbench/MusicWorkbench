@@ -90,18 +90,16 @@ def _traverse_cLL(starting_position: _LL_node, distance: int) -> _LL_node:
             else: return None
     return traversed_cLL;
 def _return_second_to_last_layer(node: _LL_node) -> _LL_node:
-    while isinstance(node.content, _LL_node): node = node.content;
+    while isinstance(node.content, _LL_node) and not isinstance(node.content, _extended): node = node.content;
+    return node;
+def _return_last_LL_layer(node: _LL_node) -> _LL_node:
+    while isinstance(node, _LL_node) and not isinstance(node, _extended): node = node.content;
     return node;
 def _CLL_from_list(list_to_process: list) -> _LL_node:
     """ This function wraps the values contained in the list 'list_to_process' into a circular linked list. """
     if not list_to_process:
         raise ValueError("Cannot create a cyclical linked list (or any linked list for that matter), from a list with no items inside of it");
-    head = _create_LL_node(list_to_process[0]); head.next = head;
-    if len(list_to_process) == 1:
-        return head;
-    for i in range(1, len(list_to_process)):
-        head = _add_to_cLL(head, _create_LL_node(list_to_process[i]));
-    return head.next;
+    return _CLL_from_unlinked_LL_nodes([_create_LL_node(item) for item in list_to_process])
 def _extended_CLL_from_list(list_to_process: list) -> _LL_node:
     """ This function wraps the values contained in the list 'list_to_process' into a circular linked list. """
     if not list_to_process:

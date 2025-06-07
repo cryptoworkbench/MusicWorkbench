@@ -1,7 +1,7 @@
 """ This module is supposed to only contain functions like 'clear_screen' (cls/clear), and shortcuts like 'hor', 'horizontal', 'ver', and 'vertical'. """
 import os # not needed for filename but needed for access to OS tools like 'cls' (on Windows) and 'clear' (on Linux)
 from .notes_and_intervals.notes_and_intervals import _return_last_layer
-from .LL_node_stuff import _traverse_cLL, _extended
+from .LL_node_stuff import _return_second_to_last_layer, _traverse_cLL, _extended, _return_last_LL_layer, _LL_node
 from .programmer_shortcuts import empty_indent
 
 def _startup_message(mains_filename: str) -> None:
@@ -10,7 +10,7 @@ def clear_screen() -> None:
     """Clears the screen using the OS's clear function ('cls' for windows, 'clear' for linux)."""
     os.system('cls' if os.name == 'nt' else 'clear')
 def initialize_screen(mains_filename: str) -> None:
-    clear_screen();
+    # clear_screen();
     _startup_message(mains_filename);
 def show_help() -> None:
     print("### Help menu ( help() ):");
@@ -43,13 +43,20 @@ def show_help() -> None:
     print("##    But to get the note sequence C -> D -> E -> F# into a ring using the 'melody' method, you'd have to use:");
     print("##    'modeless_melody = chromatic_scale.melody([0, 2, 4, 6])'       (since there is no mode with contains four consecutive wholesteps).");
     print("##");
+def get_piano_note_str(LL_node: _LL_node):
+    if LL_node == None: print("Error, argument is None.")
+    accessed_element = _return_last_LL_layer(LL_node)
+    name = f"{_return_last_layer(accessed_element)}"
+    if isinstance(accessed_element, _extended):
+        name += f"{accessed_element.extension()}"
+    return name
+
 def display_list(LL_nodes: list):
     """ this function is to inspect the contents of a list of LL_nodes """
-    for LL_node in LL_nodes:
-        name = f"{_return_last_layer(LL_node)}"
-        if isinstance(LL_node, _extended):
-            name += f"{LL_node.extension()}"
-        print(f"{empty_indent} {name}");
+    for i, LL_node in enumerate(LL_nodes):
+        name = get_piano_note_str(LL_node)
+        print(f"{name}");
+        # print(f"{empty_indent} {name}");
 # ^^^ FUNCTIONS FOR USER CONVENIENCE ^^^
 
 def test_piano(namespace) -> None:
