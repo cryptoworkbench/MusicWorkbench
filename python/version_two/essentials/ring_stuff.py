@@ -1,8 +1,7 @@
 import time, importlib
 _self = importlib.import_module(__name__)
 
-from .note_stuff import _NOTE
-from .interval_stuff import _INTERVAL
+from .notes_and_intervals import _NOTE, _INTERVAL
 from .user_utilities import *
 from .LL_node_stuff import _LL_node, _extended, _CLL_from_list
 from .input_methods import *

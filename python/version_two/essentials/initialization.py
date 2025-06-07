@@ -1,7 +1,6 @@
 import time
 from .programmer_shortcuts import LIST_OF_NOTE_NAMES, OCTAVE_AMOUNT, indent, empty_indent
-from .note_stuff import _NOTE
-from .interval_stuff import _INTERVAL
+from .notes_and_intervals import _NOTE, _INTERVAL
 from .LL_node_stuff import _create_LL_node, _CLL_from_unlinked_LL_nodes, __link_unlinked_LL_nodes, _create_extended_LL_node, _extended, _LL_node
 from .ring_stuff import _ring_from_CLL, scale_ring_from_list
 from .musical_operations import list_of_notes, _apply_interval_pattern_to_piano, _list_of_intervals
