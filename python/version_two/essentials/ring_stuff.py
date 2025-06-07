@@ -3,7 +3,7 @@ _self = importlib.import_module(__name__)
 
 from .notes_and_intervals import _NOTE, _INTERVAL
 from .user_utilities import *
-from .LL_node_stuff import _LL_node, _extended, _CLL_from_list
+from .LL_node_stuff import _LL_node, _extended, _CLL_from_list, _CLL_from_unlinked_LL_nodes
 from .input_methods import *
 from .programmer_utilities import *
 from .musical_operations import *
@@ -133,9 +133,15 @@ class _ring:
     def auto_loop_horizontally(self, complete_cycles=10, frequency=0.9) -> None:
         """Calls 'self.autoloop()' with the orientation set to 'horizontal'."""
         self.auto_loop("horizontally", complete_cycles, frequency);
-def _ring_from_CLL(namespace: dict[str, object], name: str, CLL: _LL_node, source_pattern = None) -> None:
+def _ring_from_CLL(namespace: dict[str, object], name: str, CLL: _LL_node, source_pattern = None) -> _ring:
     """wrapper function for '_ring'."""
     return _ring(namespace, name, CLL, source_pattern);
+def ring_from_list(namespace: dict[str, object], name: str, list_to_process: list, source_pattern = None) -> _ring: # NOT IN USE!
+    """wrapper function for '_ring_from_CLL'. makes use of '_CLL_from_list'."""
+    return _ring_from_CLL(namespace, name, _CLL_from_list(list_to_process), source_pattern)
+def ring_from_list_of_prepared_nodes(namespace: dict[str, object], name: str, list_of_prepared_nodes: list, source_pattern = None) -> _ring:
+    """wrapper function for '_ring_from_CLL'. doesn't make use of '_CLL_fromlist'."""
+    return _ring_from_CLL(namespace, name, _CLL_from_unlinked_LL_nodes(list_of_prepared_nodes), source_pattern)
 # ^^^ ALL '_ring' STUFF ^^^ 
 
 class _scale(_ring):
@@ -171,7 +177,7 @@ def _scale_ring_from_CLL(namespace, name: str, key: _LL_node, mode: str, CLL: _L
     """wrapper function for '_scale'"""
     return _scale(namespace, name, key, mode, CLL, source_pattern);
 def scale_ring_from_list(namespace, name: str, key: _LL_node, mode: str, list_to_process: list, source_pattern: _ring = None) -> _scale:
-    """wrapper function for '_scale_ring_from_CLL'"""
+    """wrapper function for '_scale_ring_from_CLL'. makes use of '_CLL_from_list'."""
     return _scale_ring_from_CLL(namespace, name, key, mode, _CLL_from_list(list_to_process), source_pattern);
 # ^^^ ALL '_scale' STUFF ^^^
 
@@ -209,8 +215,8 @@ class _melody(_ring):
 def _melody_ring_from_CLL(namespace: dict[str, object], name: str, mode: str, CLL: _LL_node, source_pattern = None) -> _melody:
     """wrapper function for '_melody'"""
     return _melody(namespace, name, mode, CLL, source_pattern);
-def melody_from_list(namespace: dict[str, object], list_of_notes: list, name: str, mode: str = None, source_pattern: _ring = None) -> None:
-    """wrapper function for '_melody_ring_from_CLL'"""
+def melody_from_list(namespace: dict[str, object], list_of_notes: list, name: str, mode: str = None, source_pattern: _ring = None) -> _melody:
+    """wrapper function for '_melody_ring_fron_CLL'. makes use of '_CLL_from_list'."""
     if name == None: name = get_name("melody")
     return _melody_ring_from_CLL(namespace, name, mode, _CLL_from_list(list_of_notes), source_pattern)
 # ^^^ ALL '_melody' STUFF ^^^
