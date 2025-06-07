@@ -9,6 +9,7 @@ from .programmer_utilities import *
 from .musical_operations import *
 
 class _ring:
+    """a class to work with cyclical linked lists"""
     def __init__(self, namespace: dict[str, object], name: str, circular_LL: _LL_node, source_pattern = None):
         self.original_namespace = namespace;
         if name == None: name = get_name()
@@ -50,6 +51,21 @@ class _ring:
         self.cardinality += 1;
     def search_through_CLL(self, mark_node):
         return self.access.search_CLL(mark_node, self.cardinality)
+    def melody(self, list_of_scale_degrees, relative_octave: int, name_for_new_melody: str = None) -> None:
+        """Creates a _melody ring containing the melody specified by the scale degrees. The instance is not returned but updated."""
+        reduced_scale = f"{((self.key.return_last_layer()).lower())}_{self.mode}"
+
+        notes_in_melody = []
+        name_of_piano_scale = f"{self.key.return_last_layer()}_{(self.mode).upper()}"
+        piano_CLL = self.original_namespace[reduced_scale.upper()].access
+        for _ in range(relative_octave):
+            for _ in range(self.original_namespace[reduced_scale].cardinality):
+                piano_CLL = piano_CLL.next
+        for scale_degree in list_of_scale_degrees: # updates 'notes_in_melody' and 'octave_information' at the same time
+            notes_in_melody.append(piano_CLL.traverse_cLL(scale_degree));
+        self.original_namespace[name_for_new_melody] = melody_from_list(self.original_namespace, notes_in_melody, name_for_new_melody, self.mode, self);
+        print(      f"{indent} The melody '{name_for_new_melody}' has been saved, access it like:");
+        print(f"{empty_indent} {indent} {name_for_new_melody}.content()");
     def _loop_search(self, starting_position: _LL_node) -> _LL_node:
         LL_node_to_match_against = starting_position.return_second_to_last_layer()
         original_ring_LL_cursor = self.access
@@ -117,7 +133,13 @@ class _ring:
     def auto_loop_horizontally(self, complete_cycles=10, frequency=0.9) -> None:
         """Calls 'self.autoloop()' with the orientation set to 'horizontal'."""
         self.auto_loop("horizontally", complete_cycles, frequency);
+def _ring_from_CLL(namespace: dict[str, object], name: str, CLL: _LL_node, source_pattern = None) -> None:
+    """wrapper function for '_ring'."""
+    return _ring(namespace, name, CLL, source_pattern);
+# ^^^ ALL '_ring' STUFF ^^^ 
+
 class _scale(_ring):
+    """a class for working with musical scales."""
     def __init__(self, namespace: dict[str, object], name: str, key: _LL_node, mode: str, circular_LL: _LL_node, source_pattern = None):
         super().__init__(namespace, name, circular_LL, source_pattern);
         self.key  = key;
@@ -145,25 +167,16 @@ class _scale(_ring):
             current_string = f"The {number_adjective} chord is: ";
             for j in range(0, len(current_chord)): current_string += current_chord[j].return_last_layer() + " + ";
             print(current_string[:-3]);
-    def melody(self, list_of_scale_degrees, relative_octave: int, name_for_new_melody: str = None) -> None:
-        """Creates a _melody ring containing the melody specified by the scale degrees. The instance is not returned but updated.
-        This code is now writtern in such a way that 'C_IONIAN.melody' work.
+def _scale_ring_from_CLL(namespace, name: str, key: _LL_node, mode: str, CLL: _LL_node, source_pattern = None) -> _scale:
+    """wrapper function for '_scale'"""
+    return _scale(namespace, name, key, mode, CLL, source_pattern);
+def scale_ring_from_list(namespace, name: str, key: _LL_node, mode: str, list_to_process: list, source_pattern: _ring = None) -> _scale:
+    """wrapper function for '_scale_ring_from_CLL'"""
+    return _scale_ring_from_CLL(namespace, name, key, mode, _CLL_from_list(list_to_process), source_pattern);
+# ^^^ ALL '_scale' STUFF ^^^
 
-        Now write it in such a way that c_major.melody works."""
-        reduced_scale = f"{((self.key.return_last_layer()).lower())}_{self.mode}"
-
-        notes_in_melody = []
-        name_of_piano_scale = f"{self.key.return_last_layer()}_{(self.mode).upper()}"
-        piano_CLL = self.original_namespace[reduced_scale.upper()].access
-        for _ in range(relative_octave):
-            for _ in range(self.original_namespace[reduced_scale].cardinality):
-                piano_CLL = piano_CLL.next
-        for scale_degree in list_of_scale_degrees: # updates 'notes_in_melody' and 'octave_information' at the same time
-            notes_in_melody.append(piano_CLL.traverse_cLL(scale_degree));
-        melody_from_list(self.original_namespace, notes_in_melody, name_for_new_melody, self.mode, self);
-        print(      f"{indent} The melody '{name_for_new_melody}' has been saved, access it like:");
-        print(f"{empty_indent} {indent} {name_for_new_melody}.content()");
 class _melody(_ring):
+    """a class for working with melodies (which can be derived from a '_scale' CLL)."""
     def __init__(self, namespace, name: str, mode: str, circular_LL: _extended, source_pattern = None):
         super().__init__(namespace, name, circular_LL, source_pattern);
         self.mode = mode
@@ -193,21 +206,11 @@ class _melody(_ring):
             cursor = cursor.next
             i += 1
         print(output_str[:-2])
-# ^^^ MAIN DATATYPES ^^^
-
-def _ring_from_CLL(namespace: dict[str, object], name: str, CLL: _LL_node, source_pattern = None) -> None:
-    """ wrapper function for '_ring'. returns void, but the value retrieved by '_ring()' is stored in 'namespace' """
-    namespace[name] = _ring(namespace, name, CLL, source_pattern);
-def _scale_ring_from_CLL(namespace, name: str, key: _LL_node, mode: str, CLL: _LL_node, source_pattern = None) -> _scale:
-    """ wrapper function for the class '_scale' """
-    return _scale(namespace, name, key, mode, CLL, source_pattern);
-def scale_ring_from_list(namespace, name: str, key: _LL_node, mode: str, list_to_process: list, source_pattern: _ring = None) -> _scale:
-    return _scale_ring_from_CLL(namespace, name, key, mode, _CLL_from_list(list_to_process), source_pattern);
 def _melody_ring_from_CLL(namespace: dict[str, object], name: str, mode: str, CLL: _LL_node, source_pattern = None) -> _melody:
-    """ wrapper function for the class '_melody' """
+    """wrapper function for '_melody'"""
     return _melody(namespace, name, mode, CLL, source_pattern);
 def melody_from_list(namespace: dict[str, object], list_of_notes: list, name: str, mode: str = None, source_pattern: _ring = None) -> None:
-    """ gets a '_melody' class using '_melody_ring_from_CLL'. returns void, but the value retrieved by '_melody_ring_from_CLL()' is stored in 'namespace' """
+    """wrapper function for '_melody_ring_from_CLL'"""
     if name == None: name = get_name("melody")
-    namespace[name] = _melody_ring_from_CLL(namespace, name, mode, _CLL_from_list(list_of_notes), source_pattern);
-# ^^^ FUNCTIONS FOR WORKING WITH THOSE DATATYPES ^^^
+    return _melody_ring_from_CLL(namespace, name, mode, _CLL_from_list(list_of_notes), source_pattern)
+# ^^^ ALL '_melody' STUFF ^^^

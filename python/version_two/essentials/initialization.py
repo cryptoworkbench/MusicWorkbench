@@ -14,7 +14,7 @@ def _initialize_notes_and_chromatic_scale(namespace: dict[str, object]) -> None:
 
     # Also add the full chromatic scale ring
     name = "chromatic_scale"
-    _ring_from_CLL(namespace, name, _CLL_from_unlinked_LL_nodes([_create_LL_node(n) for n in inner_nodes]))
+    namespace[name] = _ring_from_CLL(namespace, name, _CLL_from_unlinked_LL_nodes([_create_LL_node(n) for n in inner_nodes]))
     print(f"{indent} created the ring '{name}', which represents the notes within an octave (C, C#, D, etc).");
 def _initialize_interval_scale(namespace: dict[str, object]) -> None:
     namespace[ 'half_step'] = _create_LL_node( _INTERVAL.half_step) # create the inner nodes
@@ -26,7 +26,7 @@ def _initialize_interval_scale(namespace: dict[str, object]) -> None:
     mixolydian = namespace['mixolydian'] = _create_LL_node(namespace['whole_step']) # create the outer nodes
     aeolian    = namespace[   'aeolian'] = _create_LL_node(namespace['whole_step']) # create the outer nodes
     locrian    = namespace[   'locrian'] = _create_LL_node(namespace[ 'half_step']) # create the outer nodes
-    _ring_from_CLL(namespace, "interval_scale", _CLL_from_unlinked_LL_nodes([ionian, dorian, phrygian, lydian, mixolydian, aeolian, locrian]))
+    namespace["interval_scale"] = _ring_from_CLL(namespace, "interval_scale", _CLL_from_unlinked_LL_nodes([ionian, dorian, phrygian, lydian, mixolydian, aeolian, locrian]))
     globals()['interval_scale'] = namespace['interval_scale']
     print(f"{indent} created the ring 'interval_scale', which represents all modes (ionian, dorian, etc).");
 def _initialize_scales_for_every_mode_key_combo(namespace) -> None:
