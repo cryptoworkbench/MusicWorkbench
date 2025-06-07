@@ -1,7 +1,7 @@
 """ THIS MODULE IS SUPPOSED TO CONTAIN ONLY '_LL_node' STUFF """
 import time
-from .notes_and_intervals.note_stuff import _NOTE
-from .notes_and_intervals.interval_stuff import _INTERVAL
+from .note_stuff import _NOTE
+from .interval_stuff import _INTERVAL
 from .programmer_shortcuts import REFERENCE_OCTAVE
 
 class _LL_node:
