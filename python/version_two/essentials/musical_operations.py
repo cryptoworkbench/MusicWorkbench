@@ -1,9 +1,9 @@
 from .LL_node_stuff import _LL_node, _traverse_cLL, _return_second_to_last_layer
 from .programmer_shortcuts import OCTAVE_AMOUNT
-from .notes_and_intervals.interval_stuff import _INTERVAL, _return_INTERVAL_halfsteps
+from .notes_and_intervals.interval_stuff import _INTERVAL
 
 def _apply_interval(starting_note: _LL_node, interval: _INTERVAL) -> _LL_node:
-    return _traverse_cLL(starting_note, _return_INTERVAL_halfsteps(interval));
+    return _traverse_cLL(starting_note, interval.return_INTERVAL_halfsteps());
 
 def list_of_notes(root_note: _LL_node, first_MODE_node: _LL_node) -> list:
     """This function currently creates all instances of the '_scale' classes. It makes use of the 'interval_scale' '_ring' class. """
@@ -22,10 +22,10 @@ def list_of_notes(root_note: _LL_node, first_MODE_node: _LL_node) -> list:
 
 def _list_of_intervals(mode_node: _LL_node) -> list:
     list_of_intervals = []
-    list_of_intervals.append(_return_INTERVAL_halfsteps(_return_second_to_last_layer(mode_node).content))
+    list_of_intervals.append(_return_second_to_last_layer(mode_node).content.return_INTERVAL_halfsteps())
     cursor = mode_node.next
     while cursor != mode_node:
-        list_of_intervals.append(_return_INTERVAL_halfsteps(_return_second_to_last_layer(cursor).content))
+        list_of_intervals.append(_return_second_to_last_layer(cursor).content.return_INTERVAL_halfsteps())
         cursor = cursor.next
     return list_of_intervals
 

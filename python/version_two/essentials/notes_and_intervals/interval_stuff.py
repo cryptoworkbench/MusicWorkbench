@@ -12,19 +12,11 @@ class _INTERVAL(Enum):
     major_sixth = (9, "major sixth", "M6");
     minor_seventh = (10, "minor seventh", "m7");
     major_seventh = (11, "major seventh", "M7");
+    def return_INTERVAL_halfsteps(self):
+        return self.value[0]
     def return_INTERVAL_name(self):
         return self.value[1]
     def return_INTERVAL_abbreviation(self):
         return self.value[2]
-# ^^^ MAIN DATATYPE ^^^
 
-def _return_INTERVAL_halfsteps(interval: _INTERVAL) -> str:
-    """Returns the amount of halfsteps that in specified interval."""
-    return interval.value[0];
-def _return_INTERVAL_name(interval: _INTERVAL) -> str:
-    """Returns the name of specified interval."""
-    return interval.value[1];
-def _return_INTERVAL_abbreviation(interval: _INTERVAL) -> str:
-    """Returns the abbreviated name for the specified interval."""
-    return interval.value[2];
-# ^^^ FUNCTIONS FOR WORKING WITH THAT DATATYPE ^^^
+__all__ = [name for name in globals()]

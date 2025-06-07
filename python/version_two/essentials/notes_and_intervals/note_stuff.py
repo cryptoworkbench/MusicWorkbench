@@ -15,14 +15,7 @@ class _NOTE(Enum):
     b = ("B", "yellow/green circle");
     def return_NOTE_name(self):
         return self.value[0]
-# ^^^ MAIN DATATYPE ^^^
-
-def _return_NOTE_name(note: _NOTE) -> str:
-    """Returns the name of a note as string."""
-    return note.value[0];
-def _return_NOTE_ColorMusic_description(note: _NOTE) -> str:
-    """Returns a description of the symbol ColorMusic by Mike George uses to depict this note."""
-    return note.value[1];
-# ^^^ FUNCTIONS FOR WORKING WITH THAT DATATYPE ^^^
+    def return_NOTE_ColorMusic_description(self):
+        return self.value[1]
 
 __all__ = [name for name in globals()]

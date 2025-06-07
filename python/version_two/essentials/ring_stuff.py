@@ -1,8 +1,8 @@
 import time, importlib
 _self = importlib.import_module(__name__)
 
-from .notes_and_intervals.note_stuff import _NOTE, _return_NOTE_name, _return_NOTE_ColorMusic_description
-from .notes_and_intervals.interval_stuff import _INTERVAL, _return_INTERVAL_halfsteps, _return_INTERVAL_name, _return_INTERVAL_abbreviation
+from .notes_and_intervals.note_stuff import _NOTE
+from .notes_and_intervals.interval_stuff import _INTERVAL
 from .user_utilities import *
 from .LL_node_stuff import _return_last_layer, _LL_node, _extended, _CLL_from_list, _search_CLL, _get_piano_note_str
 from .input_methods import *
@@ -146,8 +146,6 @@ class _scale(_ring):
 
         notes_in_melody = []
         name_of_piano_scale = f"{_return_last_layer(self.key)}_{(self.mode).upper()}"
-        print(f"name_of_piano_scale: {name_of_piano_scale}")
-        print(f"name_of_reduced_scale: {reduced_scale}")
         piano_CLL = self.original_namespace[reduced_scale.upper()].access
         for _ in range(relative_octave):
             for _ in range(self.original_namespace[reduced_scale].cardinality):
