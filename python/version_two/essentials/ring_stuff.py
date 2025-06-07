@@ -1,11 +1,10 @@
 import time, importlib
 _self = importlib.import_module(__name__)
 
-from .notes_and_intervals.notes_and_intervals import _return_last_layer
 from .notes_and_intervals.note_stuff import _NOTE, _return_NOTE_name, _return_NOTE_ColorMusic_description
 from .notes_and_intervals.interval_stuff import _INTERVAL, _return_INTERVAL_halfsteps, _return_INTERVAL_name, _return_INTERVAL_abbreviation
 from .user_utilities import *
-from .LL_node_stuff import *
+from .LL_node_stuff import _return_last_layer, _LL_node, _extended, _CLL_from_list, _search_CLL
 from .input_methods import *
 from .programmer_shortcuts import *
 from .musical_operations import *
@@ -72,11 +71,22 @@ class _ring:
         if starting_position == None: starting_position = self.access;
         else: cursor = _search_CLL(self.access, self.cardinality, starting_position);
         if cursor == None: starting_position = self._search(starting_position);
-        output_str = f"{_return_last_layer(starting_position)}, "
+
+        indent_to_use = ""
+        orientation_str = None
+        end = ""
+        if orientation == "horizontal":
+            end += ", "
+        if orientation == "vertical":
+            indent_to_use = f"{empty_indent} "
+            end += "\n"
+            orientation_str = vertical
+
+        output_str = f"{indent_to_use}{_return_last_layer(starting_position, orientation_str)}{end}"
         cursor = starting_position.next
         while cursor != starting_position:
-            if orientation == "horizontal": output_str += f"{_return_last_layer(cursor)}, ";
-            if orientation == "vertical": output_str += f"{empty_indent} {_return_last_layer(cursor, 'vertical')}\n"
+            # item_str_to_append = _return_last_layer(cursor
+            output_str += f"{indent_to_use}{_return_last_layer(cursor, orientation_str)}{end}"
             cursor = cursor.next;
         if orientation == "horizontal":
             output_str = f"{empty_indent} <{output_str[:-2]}>";

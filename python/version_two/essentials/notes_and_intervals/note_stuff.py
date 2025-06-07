@@ -13,6 +13,8 @@ class _NOTE(Enum):
     a = ("A", "orange/yellow circle");
     a_sharp = ("A#", "purple square");
     b = ("B", "yellow/green circle");
+    def return_NOTE_name(self):
+        return self.value[0]
 # ^^^ MAIN DATATYPE ^^^
 
 def _return_NOTE_name(note: _NOTE) -> str:

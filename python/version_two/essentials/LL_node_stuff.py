@@ -1,5 +1,7 @@
 """ THIS MODULE IS SUPPOSED TO CONTAIN ONLY '_LL_node' STUFF """
 import time
+from .notes_and_intervals.note_stuff import _NOTE
+from .notes_and_intervals.interval_stuff import _INTERVAL
 from .programmer_shortcuts import REFERENCE_OCTAVE
 
 class _LL_node:
@@ -21,12 +23,26 @@ class _extended(_LL_node):
         self.added_attribute = extension
     def extension(self):
         return self.added_attribute
-
 def _create_extended_LL_node(content, extension: int, next_node: _extended = None, previous_node: _extended = None) -> _extended:
     """Returns an instance of the class _extended(_LL_node)."""
     return _extended(content, extension, next_node)
 # ^^^ ALL '_extended(_LL_node)' STUFF ^^^
 
+def _return_last_layer(node: _LL_node, orientation="horizontal") -> str:
+    """Returns the string from the bottom of the '_LL_node' layers (permutation layers)."""
+    node = _return_second_to_last_layer(node);
+    if isinstance(node.content, _NOTE): return node.content.return_NOTE_name();
+    elif isinstance(node.content, _INTERVAL):
+        if orientation == "horizontal": return node.content.return_INTERVAL_abbreviation()
+        elif orientation == "vertical": return node.content.return_INTERVAL_name()
+    else: print("neither note nor interval!");
+def _get_piano_note_str(LL_node: _LL_node):
+    if LL_node == None: print("Error, argument is None.")
+    accessed_element = _return_last_LL_layer(LL_node)
+    name = f"{_return_last_layer(accessed_element)}"
+    if isinstance(accessed_element, _extended):
+        name += f"{accessed_element.extension()}"
+    return name
 def _add_to_cLL(node: _LL_node, new_node: _LL_node) -> _LL_node:
     """A function for inserting into a (circular) linked list. Returns the new element in order to be able to update the cursor in the calling loop."""
     next_node = node.next
