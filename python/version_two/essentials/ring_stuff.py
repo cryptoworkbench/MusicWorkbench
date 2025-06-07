@@ -21,7 +21,7 @@ class _ring:
         current = self.access; count = 0;
         while count < self.cardinality: yield current.content; current = current.next; count += 1;
     def _info_header(self):
-        header_str = f"{indent} INFO ABOUT ";
+        header_str = f"{indent} INFO ABOUT "
         match(self):
             case _self._scale(): header_str += "SCALE";
             case _self._melody(): header_str += "MELODY";
@@ -50,9 +50,10 @@ class _ring:
         new_node.next = self.access;
         self.cardinality += 1;
     def _search(self, starting_position: _LL_node) -> _LL_node:
-        LL_node_to_match_against = _return_second_to_last_layer(starting_position); original_ring_LL_cursor = self.access;
+        LL_node_to_match_against = starting_position.return_second_to_last_layer()
+        original_ring_LL_cursor = self.access
         for iterator in range(self.cardinality):
-            if _return_second_to_last_layer(original_ring_LL_cursor) == LL_node_to_match_against: return original_ring_LL_cursor
+            if original_ring_LL_cursor.return_second_to_last_layer() == LL_node_to_match_against: return original_ring_LL_cursor
             original_ring_LL_cursor = original_ring_LL_cursor.next
         raise ValueError(f"Error, object  '{starting_position}' is not in this ring ! (and neither is a different object containing the same exact value!)");
     def _list_starting_at(self, starting_position: _LL_node, orientation="vertical") -> list: # NOT IN USE !!!
@@ -61,7 +62,6 @@ class _ring:
         # ^^--> These lines translate between all involved permutation layers
         LL_nodes = []
         for i in range(self.cardinality):
-            # LL_nodes.append(_return_second_to_last_layer(starting_position));
             LL_nodes.append(starting_position);
             starting_position = starting_position.next;
         return LL_nodes;
@@ -118,10 +118,10 @@ class _scale(_ring):
         print(f"{empty_indent} Mode            :  {self.mode}");
     def _chord(self, chord_number):
         notes_in_primary_chord = [];
-        index_of_root_note = chord_number % self.cardinality;
-        cursor = _traverse_cLL(self.access, index_of_root_note);
+        index_of_root_note = chord_number % self.cardinality
+        cursor = self.access.traverse_cLL(index_of_root_note)
         for i in range(index_of_root_note, 2 * 3 + index_of_root_note, 2):
-            notes_in_primary_chord.append(_traverse_cLL(cursor, i))
+            notes_in_primary_chord.append(cursor.traverse_cLL(i))
         return notes_in_primary_chord;
     def chord(self, chord_number: int) -> list:
         chord_to_print = self._chord(chord_number - 1); current_string = "";
@@ -149,7 +149,7 @@ class _scale(_ring):
             for _ in range(self.original_namespace[reduced_scale].cardinality):
                 piano_CLL = piano_CLL.next
         for scale_degree in list_of_scale_degrees: # updates 'notes_in_melody' and 'octave_information' at the same time
-            notes_in_melody.append(_traverse_cLL(piano_CLL, scale_degree));
+            notes_in_melody.append(piano_CLL.traverse_cLL(scale_degree));
         melody_from_list(self.original_namespace, notes_in_melody, name_for_new_melody, self.mode, self);
         print(      f"{indent} The melody '{name_for_new_melody}' has been saved, access it like:");
         print(f"{empty_indent} {indent} {name_for_new_melody}.content()");
@@ -167,8 +167,8 @@ class _melody(_ring):
         if (half_steps == None): half_steps = get_half_steps();
         transposed_melody = []
         for i, LL_node in enumerate(self):
-            original_note = _return_second_to_last_layer(LL_node);
-            new_note      = _traverse_cLL(original_note, half_steps);
+            original_note = LL_node.return_second_to_last_layer();
+            new_note      = original_note.traverse_cLL(half_steps);
             transposed_melody.append(new_note);
         if (name == None): name = get_name()
         melody_from_list(self.original_namespace, transposed_melody, name, self.mode, self);

@@ -14,8 +14,12 @@ class _LL_node:
         return self.content
     def return_last_layer(self, orientation: str = None):
         return _return_last_layer(self, orientation)
+    def return_second_to_last_layer(self):
+        return _return_second_to_last_layer(self)
     def get_piano_note_str(self):
         return _get_piano_note_str(self)
+    def traverse_cLL(self, distance: int):
+        return _traverse_cLL(self, distance)
 
 def _create_LL_node(content, next_node: _LL_node = None, previous_node: _LL_node = None) -> _LL_node:
     """Returns an instance of the class _LL_node."""
@@ -28,6 +32,7 @@ class _extended(_LL_node):
         self.added_attribute = extension
     def extension(self):
         return self.added_attribute
+
 def _create_extended_LL_node(content, extension: int, next_node: _extended = None, previous_node: _extended = None) -> _extended:
     """Returns an instance of the class _extended(_LL_node)."""
     return _extended(content, extension, next_node)
@@ -35,7 +40,7 @@ def _create_extended_LL_node(content, extension: int, next_node: _extended = Non
 
 def _return_last_layer(node: _LL_node, orientation="horizontal") -> str:
     """Returns the string from the bottom of the '_LL_node' layers (permutation layers)."""
-    node = _return_second_to_last_layer(node);
+    node = node.return_second_to_last_layer();
     if isinstance(node.content, _NOTE): return node.content.return_NOTE_name();
     elif isinstance(node.content, _INTERVAL):
         if orientation == "horizontal":
@@ -94,9 +99,9 @@ def _CLL_from_unlinked_LL_nodes(list_of_LL_nodes: list) -> _LL_node: # or an _ex
     list_of_LL_nodes[0].previous = list_of_LL_nodes[-1] # make the LL circular
     list_of_LL_nodes[-1].next = list_of_LL_nodes[0]
     return list_of_LL_nodes[0];
-def _traverse_cLL(starting_position: _LL_node, distance: int) -> _LL_node:
+def _traverse_cLL(starting_position: _LL_node, distance: int) -> _LL_node: # METHODIZED !!!
     """Traverses a (cyclical) linked list and returns the node at the Nth chain."""
-    if isinstance(distance, int) == False: print("_traverse_cLL didn't get the as distance as an int!")
+    if isinstance(distance, int) == False: print("didn't get the as distance as an int!")
     elif distance == 0: return starting_position
 
     traversed_cLL = starting_position

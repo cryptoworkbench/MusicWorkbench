@@ -1,9 +1,9 @@
-from .LL_node_stuff import _LL_node, _traverse_cLL, _return_second_to_last_layer
+from .LL_node_stuff import _LL_node
 from .programmer_shortcuts import OCTAVE_AMOUNT
 from .notes_and_intervals.interval_stuff import _INTERVAL
 
 def _apply_interval(starting_note: _LL_node, interval: _INTERVAL) -> _LL_node:
-    return _traverse_cLL(starting_note, interval.return_INTERVAL_halfsteps());
+    return starting_note.traverse_cLL(interval.return_INTERVAL_halfsteps())
 
 def list_of_notes(root_note: _LL_node, first_MODE_node: _LL_node) -> list:
     """This function currently creates all instances of the '_scale' classes. It makes use of the 'interval_scale' '_ring' class. """
@@ -22,10 +22,10 @@ def list_of_notes(root_note: _LL_node, first_MODE_node: _LL_node) -> list:
 
 def _list_of_intervals(mode_node: _LL_node) -> list:
     list_of_intervals = []
-    list_of_intervals.append(_return_second_to_last_layer(mode_node).content.return_INTERVAL_halfsteps())
+    list_of_intervals.append(mode_node.return_second_to_last_layer().content.return_INTERVAL_halfsteps())
     cursor = mode_node.next
     while cursor != mode_node:
-        list_of_intervals.append(_return_second_to_last_layer(cursor).content.return_INTERVAL_halfsteps())
+        list_of_intervals.append(cursor.return_second_to_last_layer().content.return_INTERVAL_halfsteps())
         cursor = cursor.next
     return list_of_intervals
 
@@ -37,21 +37,11 @@ def _apply_interval_pattern_to_piano(piano_node_cursor: _LL_node, list_of_interv
 
     collected_notes = [piano_node_cursor]
     for interval_degree in multiplied_list_of_interval_degrees:
-        derived_note = _traverse_cLL(piano_node_cursor, interval_degree)
+        derived_note = piano_node_cursor.traverse_cLL(interval_degree)
         if derived_note:
             collected_notes.append(derived_note)
             piano_node_cursor = derived_note
         else: break;
     return collected_notes
-
-""" WORK IN PROGRESS !!!
-def _scale_from_interval_degrees(root_note: _LL_node, list_of_interval_degrees: list) -> _scale:
-    notes_in_melody = [];
-    octave_information = [];
-    for scale_degree in list_of_scale_degrees: # updates 'notes_in_melody' and 'octave_information' at the same time
-        notes_in_melody.append(_traverse_cLL(self.access, scale_degree % self.cardinality));
-        octave_information.append( REFERENCE_OCTAVE + (scale_degree - scale_degree % self.cardinality) // self.cardinality ) 
-    melody_from_list(self.original_namespace, notes_in_melody, name_for_new_melody, self);
-"""
 
 __all__ = [name for name in globals()]
