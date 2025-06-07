@@ -4,7 +4,7 @@ _self = importlib.import_module(__name__)
 from .notes_and_intervals.note_stuff import _NOTE
 from .notes_and_intervals.interval_stuff import _INTERVAL
 from .user_utilities import *
-from .LL_node_stuff import _return_last_layer, _LL_node, _extended, _CLL_from_list, _search_CLL, _get_piano_note_str
+from .LL_node_stuff import _LL_node, _extended, _CLL_from_list, _search_CLL, _get_piano_note_str
 from .input_methods import *
 from .programmer_shortcuts import *
 from .musical_operations import *
@@ -73,7 +73,6 @@ class _ring:
         if cursor == None: starting_position = self._search(starting_position);
 
         indent_to_use = ""
-        orientation_str = None
         end = ""
         if orientation == "horizontal":
             end += ", "
@@ -82,11 +81,10 @@ class _ring:
             end += "\n"
             orientation_str = vertical
 
-        output_str = f"{indent_to_use}{_return_last_layer(starting_position, orientation_str)}{end}"
+        output_str = f"{indent_to_use}{starting_position.return_last_layer(orientation)}{end}"
         cursor = starting_position.next
         while cursor != starting_position:
-            # item_str_to_append = _return_last_layer(cursor
-            output_str += f"{indent_to_use}{_return_last_layer(cursor, orientation_str)}{end}"
+            output_str += f"{indent_to_use}{cursor.return_last_layer(orientation)}{end}"
             cursor = cursor.next;
         if orientation == "horizontal":
             output_str = f"{empty_indent} <{output_str[:-2]}>";
@@ -116,7 +114,7 @@ class _scale(_ring):
         self.mode = mode;
     def info(self):
         super().info();
-        print(f"{empty_indent} Key / root-note :  {_return_last_layer(self.key)}");
+        print(f"{empty_indent} Key / root-note :  {self.key.return_last_layer()}");
         print(f"{empty_indent} Mode            :  {self.mode}");
     def _chord(self, chord_number):
         notes_in_primary_chord = [];
@@ -127,7 +125,7 @@ class _scale(_ring):
         return notes_in_primary_chord;
     def chord(self, chord_number: int) -> list:
         chord_to_print = self._chord(chord_number - 1); current_string = "";
-        for j in range(0, len(chord_to_print)): current_string += _return_last_layer(chord_to_print[j]) + " + ";
+        for j in range(0, len(chord_to_print)): current_string += chord_to_print[j].return_last_layer() + " + ";
         print(current_string[:-3]);
         return chord_to_print;
     def chords(self):
@@ -135,17 +133,17 @@ class _scale(_ring):
         for i, number_adjective in enumerate(number_adjectives):
             current_chord = self._chord(i);
             current_string = f"The {number_adjective} chord is: ";
-            for j in range(0, len(current_chord)): current_string += _return_last_layer(current_chord[j]) + " + ";
+            for j in range(0, len(current_chord)): current_string += current_chord[j].return_last_layer() + " + ";
             print(current_string[:-3]);
     def melody(self, list_of_scale_degrees, relative_octave: int, name_for_new_melody: str = None) -> None:
         """Creates a _melody ring containing the melody specified by the scale degrees. The instance is not returned but updated.
         This code is now writtern in such a way that 'C_IONIAN.melody' work.
 
         Now write it in such a way that c_major.melody works."""
-        reduced_scale = f"{((_return_last_layer(self.key)).lower())}_{self.mode}"
+        reduced_scale = f"{((self.key.return_last_layer()).lower())}_{self.mode}"
 
         notes_in_melody = []
-        name_of_piano_scale = f"{_return_last_layer(self.key)}_{(self.mode).upper()}"
+        name_of_piano_scale = f"{self.key.return_last_layer()}_{(self.mode).upper()}"
         piano_CLL = self.original_namespace[reduced_scale.upper()].access
         for _ in range(relative_octave):
             for _ in range(self.original_namespace[reduced_scale].cardinality):
@@ -162,7 +160,7 @@ class _melody(_ring):
     def info(self):
         super().info();
         if self.source_pattern and isinstance(self.source_pattern, _scale):
-            print(f"{empty_indent} Key             :  {_return_last_layer(self.source_pattern.key)}");
+            print(f"{empty_indent} Key             :  {self.source_pattern.key.return_last_layer()}");
             print(f"{empty_indent} Mode            :  {self.mode}");
     def transpose(self, half_steps: int = None, name: str = None): 
         """Returns the melody transposed with the supplied interval."""

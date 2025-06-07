@@ -12,6 +12,9 @@ class _LL_node:
         self.previous = previous_node
     def read(self):
         return self.content
+    def return_last_layer(self, orientation: str = None):
+        return _return_last_layer(self, orientation)
+
 def _create_LL_node(content, next_node: _LL_node = None, previous_node: _LL_node = None) -> _LL_node:
     """Returns an instance of the class _LL_node."""
     return _LL_node(content, next_node, previous_node);
@@ -33,13 +36,14 @@ def _return_last_layer(node: _LL_node, orientation="horizontal") -> str:
     node = _return_second_to_last_layer(node);
     if isinstance(node.content, _NOTE): return node.content.return_NOTE_name();
     elif isinstance(node.content, _INTERVAL):
-        if orientation == "horizontal": return node.content.return_INTERVAL_abbreviation()
+        if orientation == "horizontal":
+            return node.content.return_INTERVAL_abbreviation()
         elif orientation == "vertical": return node.content.return_INTERVAL_name()
     else: print("neither note nor interval!");
 def _get_piano_note_str(LL_node: _LL_node):
     if LL_node == None: print("Error, argument is None.")
     accessed_element = _return_last_LL_layer(LL_node)
-    name = f"{_return_last_layer(accessed_element)}"
+    name = f"{accessed_element.return_last_layer()}"
     if isinstance(accessed_element, _extended):
         name += f"{accessed_element.extension()}"
     return name

@@ -1,6 +1,6 @@
 """ This module is supposed to only contain functions like 'clear_screen' (cls/clear), and shortcuts like 'hor', 'horizontal', 'ver', and 'vertical'. """
 import os # not needed for filename but needed for access to OS tools like 'cls' (on Windows) and 'clear' (on Linux)
-from .LL_node_stuff import _return_second_to_last_layer, _traverse_cLL, _extended, _return_last_LL_layer, _LL_node, _get_piano_note_str, _return_last_layer
+from .LL_node_stuff import _return_second_to_last_layer, _traverse_cLL, _extended, _return_last_LL_layer, _LL_node, _get_piano_note_str
 from .programmer_shortcuts import empty_indent
 
 def _startup_message(mains_filename: str) -> None:
@@ -53,12 +53,12 @@ def display_list(LL_nodes: list):
 def test_piano(namespace) -> None:
     cursor = first_piano_note = namespace["c1"]
     while cursor:
-        print(f"{_return_last_layer(cursor)}{cursor.extension()}");
+        print(f"{cursor.return_last_layer()}{cursor.extension()}");
         cursor = cursor.next
 def test_piano_backwards(namespace) -> None:
     cursor = first_piano_note = namespace["b7"]
     while cursor:
-        print(f"{_return_last_layer(cursor)}{cursor.extension()}");
+        print(f"{cursor.return_last_layer()}{cursor.extension()}");
         cursor = cursor.previous
 
 h = H = hor = horizontal = horizontally = "horizontal"; v = V = ver = vert = vertical   = vertically   = "vertical"; # for _ring.loop()
