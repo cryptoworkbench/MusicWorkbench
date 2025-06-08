@@ -7,4 +7,8 @@ def _multiply_list(list_to_multiply: list, multiplier: int) -> list:
     for _ in range(multiplier):
         ret_val.extend(list_to_multiply)
     return ret_val
-    
+
+class methodized_dictionary(dict):
+    def show(self):
+        for key, value in self.items():
+            print(f"{key}: {value}")

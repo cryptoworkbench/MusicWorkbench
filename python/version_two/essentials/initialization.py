@@ -5,7 +5,7 @@ from .notes_and_intervals import _NOTE, _INTERVAL
 from .LL_node_stuff import _create_LL_node, _CLL_from_unlinked_LL_nodes, __link_unlinked_LL_nodes, _create_extended_LL_node, _extended, _LL_node, _wrap_into_LL_nodes
 from .ring_stuff import ring_from_list, ring_from_list_of_prepared_nodes, _ring_from_CLL, scale_ring_from_list
 from .musical_operations import _new_permutation_layer_from_interval_sequence, _list_of_intervals
-from .list_stuff import _multiply_list
+from .list_stuff import _multiply_list, methodized_dictionary
 
 modes = ["ionian", "dorian", "phrygian", "lydian", "mixolydian", "aeolian", "locrian"]
 
@@ -44,9 +44,11 @@ def _initialize_mode_definition_dictionary(namespace) -> None:
     mode_definition["mixolydian"] = _list_of_intervals(namespace["mixolydian"])
     mode_definition["aeolian"] = _list_of_intervals(namespace["aeolian"])
     mode_definition["locrian"] = _list_of_intervals(namespace["locrian"])
-    namespace["mode_definition"] = mode_definition
+
+    namespace["mode_definition"] = methodized_dictionary(mode_definition)
     print(f"{indent} initialized the dictionary 'mode_definition' !")
-def _initialize_scales_for_every_mode_key_combo(namespace) -> None:
+    print(f"{empty_indent} {indent} try 'mode_definition.show()' !")
+def _initialize_scales_for_every_mode_key_combo(namespace) -> None: # requires the dictionary "mode_definition" to be initialized !
     notes = [("c", namespace['c']), ("c_sharp", namespace['c_sharp']), ("d", namespace['d']), ("d_sharp", namespace['d_sharp']), ("e", namespace['e']), ("f", namespace['f']), ("f_sharp", namespace['f_sharp']), ("g", namespace['g']), ("g_sharp", namespace['g_sharp']), ("a", namespace['a']), ("a_sharp", namespace['a_sharp']), ("b", namespace['b']) ]
     modes = ["ionian", "dorian", "phrygian", "lydian", "mixolydian", "aeolian", "locrian"]
     mode_definition = namespace["mode_definition"]
