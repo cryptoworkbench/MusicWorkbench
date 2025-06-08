@@ -4,6 +4,7 @@ from essentials.programmer_utilities import indent
 from essentials.initialization import * # initialize_data_structures, _collect_piano_notes_for_mode
 from essentials.musical_operations import * # list_of_notes, _list_of_intervals
 from essentials.LL_node_stuff import * # _LL_node, _extended, _CLL_from_list
+from essentials.list_stuff import _multiply_list # _LL_node, _extended, _CLL_from_list
 
 class interval_pattern(dict):
     def show_titles(self):

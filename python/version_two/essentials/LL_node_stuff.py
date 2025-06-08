@@ -58,6 +58,17 @@ class _LL_node:
             i += 1; cursor = cursor.next;
         if i == CLL_length: return None;
         return cursor;
+    def length(self) -> int:
+        if not self:
+            raise ValueError("non existing ll does not have a length!")
+        else:
+            ret_val = 1
+            visited = [self]
+            cursor = self.next
+            while cursor != self:
+                cursor = cursor.next
+                ret_val += 1
+            return ret_val
 def _create_LL_node(content, next_node: _LL_node = None, previous_node: _LL_node = None) -> _LL_node:
     """Returns an instance of the class _LL_node."""
     return _LL_node(content, next_node, previous_node);

@@ -6,38 +6,46 @@ from .ring_stuff import ring_from_list, ring_from_list_of_prepared_nodes, _ring_
 from .musical_operations import _new_permutation_layer_from_interval_sequence, _list_of_intervals
 from .list_stuff import _multiply_list
 
+modes = ["ionian", "dorian", "phrygian", "lydian", "mixolydian", "aeolian", "locrian"]
+
+def _initialize_interval_scale(namespace: dict[str, object]) -> None:
+    namespace[ 'half_step'] = _create_LL_node( _INTERVAL.half_step) # create the inner nodes
+    namespace['whole_step'] = _create_LL_node(_INTERVAL.whole_step) # create the inner nodes
+    ionian     = namespace[modes[0]] = _create_LL_node(namespace['whole_step']) # create the outer nodes
+    dorian     = namespace[modes[1]] = _create_LL_node(namespace['whole_step']) # create the outer nodes
+    phrygian   = namespace[modes[2]] = _create_LL_node(namespace[ 'half_step']) # create the outer nodes
+    lydian     = namespace[modes[3]] = _create_LL_node(namespace['whole_step']) # create the outer nodes
+    mixolydian = namespace[modes[4]] = _create_LL_node(namespace['whole_step']) # create the outer nodes
+    aeolian    = namespace[modes[5]] = _create_LL_node(namespace['whole_step']) # create the outer nodes
+    locrian    = namespace[modes[6]] = _create_LL_node(namespace[ 'half_step']) # create the outer nodes
+    namespace["interval_scale"] = ring_from_list_of_prepared_nodes(namespace, "interval_scale", [ionian, dorian, phrygian, lydian, mixolydian, aeolian, locrian])
+    globals()['interval_scale'] = namespace['interval_scale']
+    print(f"{indent} created the ring 'interval_scale', which represents all modes (ionian, dorian, etc).");
 def _initialize_notes_and_chromatic_scale(namespace: dict[str, object]) -> None:
-    notes = [_NOTE.c, _NOTE.c_sharp, _NOTE.d, _NOTE.d_sharp, _NOTE.e, _NOTE.f, _NOTE.f_sharp, _NOTE.g, _NOTE.g_sharp, _NOTE.a, _NOTE.a_sharp, _NOTE.b]
-    inner_nodes = _wrap_into_LL_nodes(notes) # [_create_LL_node(note) for note in notes] # create inner nodes
+    inner_nodes = _wrap_into_LL_nodes([_NOTE.c, _NOTE.c_sharp, _NOTE.d, _NOTE.d_sharp, _NOTE.e, _NOTE.f, _NOTE.f_sharp, _NOTE.g, _NOTE.g_sharp, _NOTE.a, _NOTE.a_sharp, _NOTE.b])
     for i, note_name in enumerate(LIST_OF_NOTE_NAMES): # make the inner nodes accessible
         namespace[note_name] = inner_nodes[i]
     _CLL_from_unlinked_LL_nodes(inner_nodes) # link inner nodes
 
     # Also add the full chromatic scale ring
     name = "chromatic_scale"
-    namespace[name] = ring_from_list(namespace, name, _wrap_into_LL_nodes(inner_nodes), None)
+    namespace[name] = ring_from_list(namespace, name, _new_permutation_layer_from_interval_sequence(inner_nodes[0], _multiply_list([1], len(inner_nodes) - 1)), None)
     print(f"{indent} created the ring '{name}', which represents the notes within an octave (C, C#, D, etc).");
-def _initialize_interval_scale(namespace: dict[str, object]) -> None:
-    namespace[ 'half_step'] = _create_LL_node( _INTERVAL.half_step) # create the inner nodes
-    namespace['whole_step'] = _create_LL_node(_INTERVAL.whole_step) # create the inner nodes
-    ionian     = namespace[    'ionian'] = _create_LL_node(namespace['whole_step']) # create the outer nodes
-    dorian     = namespace[    'dorian'] = _create_LL_node(namespace['whole_step']) # create the outer nodes
-    phrygian   = namespace[  'phrygian'] = _create_LL_node(namespace[ 'half_step']) # create the outer nodes
-    lydian     = namespace[    'lydian'] = _create_LL_node(namespace['whole_step']) # create the outer nodes
-    mixolydian = namespace['mixolydian'] = _create_LL_node(namespace['whole_step']) # create the outer nodes
-    aeolian    = namespace[   'aeolian'] = _create_LL_node(namespace['whole_step']) # create the outer nodes
-    locrian    = namespace[   'locrian'] = _create_LL_node(namespace[ 'half_step']) # create the outer nodes
-    namespace["interval_scale"] = ring_from_list_of_prepared_nodes(namespace, "interval_scale", [ionian, dorian, phrygian, lydian, mixolydian, aeolian, locrian])
-    globals()['interval_scale'] = namespace['interval_scale']
-    print(f"{indent} created the ring 'interval_scale', which represents all modes (ionian, dorian, etc).");
-
+"""
+def _initialize_modes(namespace: dict[str, object]) -> None:
+    ret_val = {}
+    for 
+    ret_val += 
+    namespace["modes"] = {
+"""
 def _initialize_scales_for_every_mode_key_combo(namespace) -> None:
     notes = [("c", namespace['c']), ("c_sharp", namespace['c_sharp']), ("d", namespace['d']), ("d_sharp", namespace['d_sharp']), ("e", namespace['e']), ("f", namespace['f']), ("f_sharp", namespace['f_sharp']), ("g", namespace['g']), ("g_sharp", namespace['g_sharp']), ("a", namespace['a']), ("a_sharp", namespace['a_sharp']), ("b", namespace['b']) ]
     modes = [("ionian", namespace['ionian']), ("dorian", namespace['dorian']), ("phrygian", namespace['phrygian']), ("lydian", namespace['lydian']), ("mixolydian", namespace['mixolydian']), ("aeolian", namespace['aeolian']), ("locrian", namespace['locrian'])]
     for note_name, note_node in notes:
         for mode_name, mode_node in modes:
-            var_name = f"{note_name}_{mode_name}"
-            namespace[var_name] = scale_ring_from_list(namespace, var_name, namespace[note_name], mode_name, _new_permutation_layer_from_interval_sequence(note_node, _list_of_intervals(mode_node)), namespace["chromatic_scale"])
+            var_name   = f"{note_name}_{mode_name}"
+            scale_name = f"{note_name.upper()} {mode_name}"
+            namespace[var_name] = scale_ring_from_list(namespace, scale_name, namespace[note_name], mode_name, _new_permutation_layer_from_interval_sequence(note_node, _list_of_intervals(mode_node)[:-1]), namespace["chromatic_scale"])
         # print(f"--> all {note_name} scales have been initialized ({note_name}_ionian, {note_name}_dorian, {note_name}_phrygian, etc)");
 
     for note_name, _ in notes:
@@ -88,8 +96,8 @@ def _initialize_piano_scales(namespace) -> None:
 
 def initialize_data_structures(namespace: dict[str, object]) -> None:
     print("Initializing program:");
-    _initialize_notes_and_chromatic_scale(namespace);
     _initialize_interval_scale(namespace);
+    _initialize_notes_and_chromatic_scale(namespace);
     _initialize_scales_for_every_mode_key_combo(namespace);
     _initialize_piano(namespace);
     _initialize_piano_scales(namespace)
