@@ -3,7 +3,7 @@ from .programmer_utilities import LIST_OF_NOTE_NAMES, OCTAVE_AMOUNT, indent, emp
 from .notes_and_intervals import _NOTE, _INTERVAL
 from .LL_node_stuff import _create_LL_node, _CLL_from_unlinked_LL_nodes, __link_unlinked_LL_nodes, _create_extended_LL_node, _extended, _LL_node, _wrap_into_LL_nodes
 from .ring_stuff import ring_from_list, ring_from_list_of_prepared_nodes, _ring_from_CLL, scale_ring_from_list
-from .musical_operations import list_of_notes, _new_permutation_layer_from_interval_sequence, _list_of_intervals
+from .musical_operations import _new_permutation_layer_from_interval_sequence, _list_of_intervals
 from .list_stuff import _multiply_list
 
 def _initialize_notes_and_chromatic_scale(namespace: dict[str, object]) -> None:
@@ -37,7 +37,7 @@ def _initialize_scales_for_every_mode_key_combo(namespace) -> None:
     for note_name, note_node in notes:
         for mode_name, mode_node in modes:
             var_name = f"{note_name}_{mode_name}"
-            namespace[var_name] = scale_ring_from_list(namespace, var_name, namespace[note_name], mode_name, list_of_notes(note_node, mode_node), namespace["chromatic_scale"])
+            namespace[var_name] = scale_ring_from_list(namespace, var_name, namespace[note_name], mode_name, _new_permutation_layer_from_interval_sequence(note_node, _list_of_intervals(mode_node)), namespace["chromatic_scale"])
         # print(f"--> all {note_name} scales have been initialized ({note_name}_ionian, {note_name}_dorian, {note_name}_phrygian, etc)");
 
     for note_name, _ in notes:

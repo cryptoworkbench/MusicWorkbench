@@ -22,29 +22,18 @@ def initialize_melodies() -> None:
     melody_dictionary.install("frere_jackques", [0, 1, 2, 0, 0, 1, 2, 0, 2, 3, 4, 2, 3, 4, 4, 5, 4, 3, 2, 0, 4, 5, 4, 3, 2, 0, 0, -3, 0, 0, -3, 0])
     C_IONIAN.melody(melody_dictionary["frere_jackques"], REFERENCE_OCTAVE, list(melody_dictionary.keys())[1]);
 
-def tests_phase():
-    print("starting tests in 2 seconds.");
+def test_everything():
+    print("starting tests in 2 seconds.")
     time.sleep(2)
-
     chromatic_scale.auto_loop_horizontally(1, 0.1)
-    # chromatic_scale.auto_loop_vertically(1, 0.8)
-
     interval_scale.auto_loop_horizontally(1, 0.1)
-    c_major.auto_loop_horizontally(1, 0.1)
-    """
-    print(f"{indent} chromatic_scale.loop_horizontally()")
-    chromatic_scale.loop_horizontally()
-
-    print(f"{indent} f_locrian.loop_horizontally()")
-    f_locrian.loop_horizontally()
-
-    print(f"{indent} interval_scale.loop_horizontally()")
-    interval_scale.loop_horizontally()
-
-    print(f"{indent} interval_scale.loop_horizontally(dorian)")
-    interval_scale.loop_horizontally(dorian)
-    """
-
+    c_ionian.auto_loop_horizontally(1, 0.1)
+    c_dorian.auto_loop_horizontally(1, 0.1)
+    c_phrygian.auto_loop_horizontally(1, 0.1)
+    c_lydian.auto_loop_horizontally(1, 0.1)
+    c_mixolydian.auto_loop_horizontally(1, 0.1)
+    c_aeolian.auto_loop_horizontally(1, 0.1)
+    c_locrian.auto_loop_horizontally(1, 0.1)
     print(f"{indent} frere_jackques.content()")
     frere_jackques.content()
     print(f"{indent} tests complete !")
@@ -52,4 +41,4 @@ def tests_phase():
 initialize_screen(mains_filename)
 initialize_data_structures(globals())
 initialize_melodies()
-tests_phase()
+test_everything()
