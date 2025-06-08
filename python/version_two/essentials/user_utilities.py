@@ -23,7 +23,7 @@ def show_help() -> None:
     print("##    Returns a list containing all the elements that are in the ring (with intact order).");
     print("##    list[0] = ring.access");
     print("##");
-    print("## ring.loop_from(object_in_ring (OPTIONAL), orientation (OPTIONAL))");
+    print("## ring.show_from(object_in_ring (OPTIONAL), orientation (OPTIONAL))");
     print("##    Loops through the entire ring, starting at the object within the ring that is provided as argument, if an argument is provided.");
     print("##    Otherwise just starts at ring.access.");
     print("##");
@@ -56,7 +56,7 @@ def test_piano_backwards(namespace) -> None:
         print(f"{cursor.bottom_layer()}{cursor.extension()}");
         cursor = cursor.previous
 
-h = H = hor = horizontal = horizontally = "horizontally"; v = V = ver = vert = vertical   = vertically   = "vertically"; # for _ring.loop_from()
+h = H = hor = horizontal = horizontally = "horizontally"; v = V = ver = vert = vertical   = vertically   = "vertically"; # for _ring.show_from()
 # ^^^ SHORTCUTS FOR USER CONVENIENCE ^^^
 
 __all__ = [name for name in globals() if not name.startswith('_')]
