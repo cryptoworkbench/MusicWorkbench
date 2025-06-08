@@ -62,7 +62,7 @@ class _ring:
                 return original_ring_LL_cursor
             original_ring_LL_cursor = original_ring_LL_cursor.next
         raise ValueError(f"Error, object  '{starting_position}' is not in this ring ! (and neither is a different object containing the same exact value!)");
-    def loop(self, orientation = "horizontally", starting_position: _LL_node = None) -> None:
+    def loop_from(self, orientation = "horizontally", starting_position: _LL_node = None) -> None:
         """Display the content of the ring by cycling through it once."""
         cursor = starting_position;
         if starting_position == None:
@@ -73,7 +73,7 @@ class _ring:
             starting_position = self._loop_search(starting_position);
         # ChatGPT suggested alternative to the above:
         # if starting_position is None:
-        #     print("message from 'loop': starting_position == None!")
+        #     print("message from 'loop_from': starting_position == None!")
         #     starting_position = self.access
         #     cursor = self.access
         # else:
@@ -98,20 +98,23 @@ class _ring:
         elif orientation == "vertical":
             output_str = output_str[:-1];
         print(output_str);
+    def loop(self) -> None:
+        """wrapper method for 'loop_from'"""
+        self.loop_horizontally(self.access)
     def loop_vertically(self, starting_position: _LL_node = None) -> None:
-        """wrapper method for method 'loop'"""
-        self.loop("vertically", starting_position)
+        """wrapper method for method 'loop_from'"""
+        self.loop_from("vertically", starting_position)
     def loop_horizontally(self, starting_position: _LL_node = None) -> None:
-        """wrapper method for method 'loop'"""
-        self.loop("horizontally", starting_position)
+        """wrapper method for method 'loop_from'"""
+        self.loop_from("horizontally", starting_position)
     def auto_loop(self, orientation="horizontally", complete_cycles=10, frequency=0.8) -> None:
-        """Calls 'self.loop()' iteratively in combination with 'clear_screen()' in order to give 'self.loop()' a dynamic touch."""
+        """Calls 'self.loop_from()' iteratively in combination with 'clear_screen()' in order to give 'self.loop_from()' a dynamic touch."""
         cursor = self.access; 
         for i in range(complete_cycles):
             for j in range(self.cardinality):
                 clear_screen()
                 print(f"Currently looping: {self.name}\n")
-                self.loop(orientation, cursor)
+                self.loop_from(orientation, cursor)
                 cursor = cursor.next
                 remaining_cycles = complete_cycles - i
                 print(f'\nOffset from starting element: {j}');
@@ -197,7 +200,7 @@ class _melody(_ring):
         if (name == None): name = get_name()
         melody_from_list(self.original_namespace, transposed_melody, name, self.mode, self);
         print(      f"{indent} The transposition '{name}' has been saved, access it like:");
-        print(f"{empty_indent} {indent} {name}.loop()");
+        print(f"{empty_indent} {indent} {name}.loop_from()");
     def content(self):
         output_str = f"{empty_indent} {self.access.get_piano_note_str()}, "
         cursor = self.access.next
