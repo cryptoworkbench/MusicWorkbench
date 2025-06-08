@@ -55,10 +55,10 @@ class _ring:
         print(      f"{indent} The melody '{name_for_new_melody}' has been saved, access it like:");
         print(f"{empty_indent} {indent} {name_for_new_melody}.content()");
     def _loop_search(self, starting_position: _LL_node) -> _LL_node:
-        LL_node_to_match_against = starting_position.return_second_to_last_layer()
+        LL_node_to_match_against = starting_position.return_deepest_permutation_layer()
         original_ring_LL_cursor = self.access
         for iterator in range(self.cardinality):
-            if original_ring_LL_cursor.return_second_to_last_layer() == LL_node_to_match_against:
+            if original_ring_LL_cursor.return_deepest_permutation_layer() == LL_node_to_match_against:
                 return original_ring_LL_cursor
             original_ring_LL_cursor = original_ring_LL_cursor.next
         raise ValueError(f"Error, object  '{starting_position}' is not in this ring ! (and neither is a different object containing the same exact value!)");
@@ -191,7 +191,7 @@ class _melody(_ring):
         if (half_steps == None): half_steps = get_half_steps();
         transposed_melody = []
         for i, LL_node in enumerate(self):
-            original_note = LL_node.return_second_to_last_layer();
+            original_note = LL_node.return_deepest_permutation_layer();
             new_note      = original_note.traverse_cLL(half_steps);
             transposed_melody.append(new_note);
         if (name == None): name = get_name()
