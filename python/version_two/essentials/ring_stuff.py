@@ -32,23 +32,11 @@ class _ring:
         print(self._info_header());
         print(f"{empty_indent} Name            :  {self.name}");
         print(f"{empty_indent} Size            :  {self.cardinality} elements")
-        print(f"{empty_indent} Source pattern  :  ", end = "")
-        if self.source_pattern == None: print("None")
-        else: print(f"{self.source_pattern.name}")
-    def extend_with(self, value) -> None:
-        """Add a new node with a given value at the end of the circular list."""
-        # _add_to_cLL(self.access, 
-        new_node = _create_LL_node(value)
-        if not self.access:
-            self.access = new_node;
-            new_node.next = self.access;
-            self.cardinality = 1;
-            return;
-        current = self.access;
-        while current.next != self.access: current = current.next;
-        current.next = new_node;
-        new_node.next = self.access;
-        self.cardinality += 1;
+        print(f"{empty_indent} Source ", end = "")
+        if self.source_pattern:
+            print(f" pattern :  {self.source_pattern.name}")
+        else:
+            print("         :  program initialization")
     def search_through_CLL(self, mark_node):
         return self.access.search_CLL(mark_node, self.cardinality)
     def melody(self, list_of_scale_degrees, relative_octave: int, name_for_new_melody: str = None) -> None:
@@ -121,16 +109,20 @@ class _ring:
         cursor = self.access; 
         for i in range(complete_cycles):
             for j in range(self.cardinality):
-                clear_screen(); self.loop(orientation, cursor); cursor = cursor.next; remaining_cycles = complete_cycles - i;
+                clear_screen()
+                print(f"Currently looping: {self.name}\n")
+                self.loop(orientation, cursor)
+                cursor = cursor.next
+                remaining_cycles = complete_cycles - i
                 print(f'\nOffset from starting element: {j}');
                 print(  f'Remaining cycles            : {remaining_cycles}');
                 print(  f'Current speed               : {frequency}s');
-                print("\n'<ctrl> + c' to exit.");
+                print("\n'<ctrl> + c' to exit");
                 time.sleep(frequency);
-    def auto_loop_vertically(self, complete_cycles=10, frequency=0.9) -> None:
+    def auto_loop_vertically(self, complete_cycles=10, frequency=0.7) -> None:
         """Calls 'self.autoloop()' with the orientation set to 'vertical'."""
         self.auto_loop("vertically", complete_cycles, frequency);
-    def auto_loop_horizontally(self, complete_cycles=10, frequency=0.9) -> None:
+    def auto_loop_horizontally(self, complete_cycles=10, frequency=0.7) -> None:
         """Calls 'self.autoloop()' with the orientation set to 'horizontal'."""
         self.auto_loop("horizontally", complete_cycles, frequency);
 def _ring_from_CLL(namespace: dict[str, object], name: str, CLL: _LL_node, source_pattern = None) -> _ring:
@@ -163,16 +155,19 @@ class _scale(_ring):
         return notes_in_primary_chord;
     def chord(self, chord_number: int) -> list:
         chord_to_print = self._chord(chord_number - 1); current_string = "";
-        for j in range(0, len(chord_to_print)): current_string += chord_to_print[j].return_last_layer() + " + ";
+        for j in range(0, len(chord_to_print)): current_string += f"{chord_to_print[j].return_last_layer()} + ";
         print(current_string[:-3]);
         return chord_to_print;
     def chords(self):
-        number_adjectives = ['first', 'second', 'third', 'fourth', 'fifth', 'sixth', 'seventh'];
-        for i, number_adjective in enumerate(number_adjectives):
+        """gives the chords which are in the scale."""
+        print(f"Chords in the scale '{self.name}':")
+        roman_numerals = ['  I', ' II', 'III', ' IV', '  V', ' VI', 'VII']
+        for i, roman_numeral in enumerate(roman_numerals):
             current_chord = self._chord(i);
-            current_string = f"The {number_adjective} chord is: ";
-            for j in range(0, len(current_chord)): current_string += current_chord[j].return_last_layer() + " + ";
-            print(current_string[:-3]);
+            current_string = f"Chord {roman_numeral}: <"
+            for j in range(0, len(current_chord)):
+                current_string += f"{current_chord[j].return_last_layer()}, "
+            print(f"{current_string[:-2]}>");
 def _scale_ring_from_CLL(namespace, name: str, key: _LL_node, mode: str, CLL: _LL_node, source_pattern = None) -> _scale:
     """wrapper function for '_scale'"""
     return _scale(namespace, name, key, mode, CLL, source_pattern);
@@ -204,7 +199,7 @@ class _melody(_ring):
         print(      f"{indent} The transposition '{name}' has been saved, access it like:");
         print(f"{empty_indent} {indent} {name}.loop()");
     def content(self):
-        output_str = f"{self.access.get_piano_note_str()}, "
+        output_str = f"{empty_indent} {self.access.get_piano_note_str()}, "
         cursor = self.access.next
         i = 0
         while cursor and i < self.cardinality:

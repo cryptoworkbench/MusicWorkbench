@@ -24,7 +24,8 @@ class _LL_node:
             elif orientation == "vertically": return self.content.return_INTERVAL_name()
         else: print("neither note nor interval!");
     def return_second_to_last_layer(self):
-        while isinstance(self.content, _LL_node) and not isinstance(self.content, _extended): self = self.content;
+        while isinstance(self.content, _LL_node):
+            self = self.content
         return self;
     def get_piano_note_str(self):
         if self == None: print("Error, argument is None.")
@@ -60,6 +61,9 @@ class _LL_node:
 def _create_LL_node(content, next_node: _LL_node = None, previous_node: _LL_node = None) -> _LL_node:
     """Returns an instance of the class _LL_node."""
     return _LL_node(content, next_node, previous_node);
+def _wrap_into_LL_nodes(values_to_wrap: list) -> list:
+    """wraps the values contained in 'values_to_wrap' into '_LL_node' classes, and returns a list of all the '_LL_node' classes it created."""
+    return [_create_LL_node(value) for value in values_to_wrap]
 class _extended(_LL_node):
     def __init__(self, content, extension: int, next_node: _LL_node = None, previous_node: _LL_node = None):
         super().__init__(content, next_node, previous_node)
@@ -77,17 +81,17 @@ def __link_unlinked_LL_nodes(list_of_LL_nodes: list) -> _LL_node:
         list_of_LL_nodes[i - 1].next = list_of_LL_nodes[i    ]
         list_of_LL_nodes[i].previous = list_of_LL_nodes[i - 1]
     return list_of_LL_nodes[0]
-def _CLL_from_unlinked_LL_nodes(list_of_LL_nodes: list) -> _LL_node: # or an _extended(_LL_node) (I think, didn't test)
+def _CLL_from_unlinked_LL_nodes(list_of_LL_nodes: list) -> _LL_node:
     """wrapper function for '_link_unlinked_LL_nodes' to automize the creation of circular linked lists."""
     __link_unlinked_LL_nodes(list_of_LL_nodes)
     list_of_LL_nodes[0].previous = list_of_LL_nodes[-1] # make the LL circular
     list_of_LL_nodes[-1].next = list_of_LL_nodes[0]
     return list_of_LL_nodes[0];
-def _CLL_from_list(list_to_process: list) -> _LL_node:
+def _CLL_from_list(list_to_process: list) -> _LL_node: # this is the only function here which actually creates new '_LL_node' instances
     """ This function wraps the values contained in the list 'list_to_process' into a circular linked list. """
     if not list_to_process:
         raise ValueError("Cannot create a cyclical linked list (or any linked list for that matter), from a list with no items inside of it");
-    return _CLL_from_unlinked_LL_nodes([_create_LL_node(item) for item in list_to_process])
-# ^^^ FUNCTIONS FOR WITH listS OF THAT DATATYPE ^^^
+    return _CLL_from_unlinked_LL_nodes(_wrap_into_LL_nodes(list_to_process))
+# ^^^ FUNCTIONS TO WORK WITH listS OF THAT DATATYPE ^^^
 
 __all__ = [name for name in globals()]

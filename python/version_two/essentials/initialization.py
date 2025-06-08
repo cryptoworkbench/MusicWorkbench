@@ -1,20 +1,20 @@
 import time
 from .programmer_utilities import LIST_OF_NOTE_NAMES, OCTAVE_AMOUNT, indent, empty_indent
 from .notes_and_intervals import _NOTE, _INTERVAL
-from .LL_node_stuff import _create_LL_node, _CLL_from_unlinked_LL_nodes, __link_unlinked_LL_nodes, _create_extended_LL_node, _extended, _LL_node
+from .LL_node_stuff import _create_LL_node, _CLL_from_unlinked_LL_nodes, __link_unlinked_LL_nodes, _create_extended_LL_node, _extended, _LL_node, _wrap_into_LL_nodes
 from .ring_stuff import ring_from_list, ring_from_list_of_prepared_nodes, _ring_from_CLL, scale_ring_from_list
 from .musical_operations import list_of_notes, _apply_interval_pattern_to_piano, _list_of_intervals
 
 def _initialize_notes_and_chromatic_scale(namespace: dict[str, object]) -> None:
     notes = [_NOTE.c, _NOTE.c_sharp, _NOTE.d, _NOTE.d_sharp, _NOTE.e, _NOTE.f, _NOTE.f_sharp, _NOTE.g, _NOTE.g_sharp, _NOTE.a, _NOTE.a_sharp, _NOTE.b]
-    inner_nodes = [_create_LL_node(note) for note in notes] # create inner nodes
-    _CLL_from_unlinked_LL_nodes(inner_nodes) # link inner nodes
+    inner_nodes = _wrap_into_LL_nodes(notes) # [_create_LL_node(note) for note in notes] # create inner nodes
     for i, note_name in enumerate(LIST_OF_NOTE_NAMES): # make the inner nodes accessible
         namespace[note_name] = inner_nodes[i]
+    _CLL_from_unlinked_LL_nodes(inner_nodes) # link inner nodes
 
     # Also add the full chromatic scale ring
     name = "chromatic_scale"
-    namespace[name] = ring_from_list(namespace, name, [_create_LL_node(n) for n in inner_nodes], None)
+    namespace[name] = ring_from_list(namespace, name, _wrap_into_LL_nodes(inner_nodes), None)
     print(f"{indent} created the ring '{name}', which represents the notes within an octave (C, C#, D, etc).");
 def _initialize_interval_scale(namespace: dict[str, object]) -> None:
     namespace[ 'half_step'] = _create_LL_node( _INTERVAL.half_step) # create the inner nodes
