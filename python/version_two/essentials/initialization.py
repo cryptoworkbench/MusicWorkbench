@@ -1,4 +1,5 @@
 import time
+from .user_utilities import clear_screen
 from .programmer_utilities import LIST_OF_NOTE_NAMES, OCTAVE_AMOUNT, indent, empty_indent
 from .notes_and_intervals import _NOTE, _INTERVAL
 from .LL_node_stuff import _create_LL_node, _CLL_from_unlinked_LL_nodes, __link_unlinked_LL_nodes, _create_extended_LL_node, _extended, _LL_node, _wrap_into_LL_nodes
@@ -8,6 +9,9 @@ from .list_stuff import _multiply_list
 
 modes = ["ionian", "dorian", "phrygian", "lydian", "mixolydian", "aeolian", "locrian"]
 
+def initialize_screen(mains_filename: str) -> None:
+    clear_screen();
+    print(f"Start this program as \"python3 -i {mains_filename}\" if you want to get anything useful out of it. Once in interactive mode, you can use 'show_help()' to learn about available functions.\n\nAlso you can try 'showoff()' to make this program show off it's capabilities!\n");
 def _initialize_interval_scale(namespace: dict[str, object]) -> None:
     namespace[ 'half_step'] = _create_LL_node( _INTERVAL.half_step) # create the inner nodes
     namespace['whole_step'] = _create_LL_node(_INTERVAL.whole_step) # create the inner nodes

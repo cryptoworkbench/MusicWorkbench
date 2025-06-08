@@ -1,7 +1,7 @@
 import os; mains_filename = os.path.basename(__file__);
 from essentials.user_utilities import *
 from essentials.programmer_utilities import indent
-from essentials.initialization import * # initialize_data_structures, _collect_piano_notes_for_mode
+from essentials.initialization import initialize_screen, initialize_data_structures # initialize_data_structures, _collect_piano_notes_for_mode
 from essentials.musical_operations import * # list_of_notes, _list_of_intervals
 from essentials.LL_node_stuff import * # _LL_node, _extended, _CLL_from_list
 from essentials.list_stuff import _multiply_list # _LL_node, _extended, _CLL_from_list
@@ -22,6 +22,17 @@ def initialize_melodies() -> None:
 
     melody_dictionary.install("frere_jackques", [0, 1, 2, 0, 0, 1, 2, 0, 2, 3, 4, 2, 3, 4, 4, 5, 4, 3, 2, 0, 4, 5, 4, 3, 2, 0, 0, -3, 0, 0, -3, 0])
     C_IONIAN.melody(melody_dictionary["frere_jackques"], REFERENCE_OCTAVE, list(melody_dictionary.keys())[1]);
+
+def showoff():
+    chromatic_scale.auto_loop_horizontally(1, 0.1)
+    interval_scale.auto_loop_horizontally(1, 0.1)
+    c_ionian.auto_loop_horizontally(1, 0.1)
+    c_dorian.auto_loop_horizontally(1, 0.1)
+    c_phrygian.auto_loop_horizontally(1, 0.1)
+    c_lydian.auto_loop_horizontally(1, 0.1)
+    c_mixolydian.auto_loop_horizontally(1, 0.1)
+    c_aeolian.auto_loop_horizontally(1, 0.1)
+    c_locrian.auto_loop_horizontally(1, 0.1)
 
 def test_everything():
     print("starting tests in 10 seconds ('<ctrl> + v' to prevent).")
@@ -45,15 +56,7 @@ def test_everything():
     time.sleep(1)
     print("1 ...")
     time.sleep(1)
-    chromatic_scale.auto_loop_horizontally(1, 0.1)
-    interval_scale.auto_loop_horizontally(1, 0.1)
-    c_ionian.auto_loop_horizontally(1, 0.1)
-    c_dorian.auto_loop_horizontally(1, 0.1)
-    c_phrygian.auto_loop_horizontally(1, 0.1)
-    c_lydian.auto_loop_horizontally(1, 0.1)
-    c_mixolydian.auto_loop_horizontally(1, 0.1)
-    c_aeolian.auto_loop_horizontally(1, 0.1)
-    c_locrian.auto_loop_horizontally(1, 0.1)
+    showoff()
     print(f"{indent} frere_jackques.content()")
     frere_jackques.content()
     print(f"{indent} tests complete !")
