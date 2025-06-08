@@ -7,10 +7,10 @@ def _apply_interval(starting_note: _LL_node, interval: _INTERVAL) -> _LL_node:
 
 def _list_of_intervals(mode_node: _LL_node) -> list:
     list_of_intervals = []
-    list_of_intervals.append(mode_node.return_deepest_permutation_layer().content.return_INTERVAL_halfsteps())
+    list_of_intervals.append(mode_node.deepest_permutation_layer().content.return_INTERVAL_halfsteps())
     cursor = mode_node.next
     while cursor != mode_node:
-        list_of_intervals.append(cursor.return_deepest_permutation_layer().content.return_INTERVAL_halfsteps())
+        list_of_intervals.append(cursor.deepest_permutation_layer().content.return_INTERVAL_halfsteps())
         cursor = cursor.next
     return list_of_intervals
 

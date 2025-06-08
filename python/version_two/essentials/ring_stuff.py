@@ -41,10 +41,10 @@ class _ring:
         return self.access.search_CLL(mark_node, self.cardinality)
     def melody(self, list_of_scale_degrees, relative_octave: int, name_for_new_melody: str = None) -> None:
         """Creates a _melody ring containing the melody specified by the scale degrees. The instance is not returned but updated."""
-        reduced_scale = f"{((self.key.return_last_layer()).lower())}_{self.mode}"
+        reduced_scale = f"{((self.key.bottom_layer()).lower())}_{self.mode}"
 
         notes_in_melody = []
-        name_of_piano_scale = f"{self.key.return_last_layer()}_{(self.mode).upper()}"
+        name_of_piano_scale = f"{self.key.bottom_layer()}_{(self.mode).upper()}"
         piano_CLL = self.original_namespace[reduced_scale.upper()].access
         for _ in range(relative_octave):
             for _ in range(self.original_namespace[reduced_scale].cardinality):
@@ -55,10 +55,10 @@ class _ring:
         print(      f"{indent} The melody '{name_for_new_melody}' has been saved, access it like:");
         print(f"{empty_indent} {indent} {name_for_new_melody}.content()");
     def _loop_search(self, starting_position: _LL_node) -> _LL_node:
-        LL_node_to_match_against = starting_position.return_deepest_permutation_layer()
+        LL_node_to_match_against = starting_position.deepest_permutation_layer()
         original_ring_LL_cursor = self.access
         for iterator in range(self.cardinality):
-            if original_ring_LL_cursor.return_deepest_permutation_layer() == LL_node_to_match_against:
+            if original_ring_LL_cursor.deepest_permutation_layer() == LL_node_to_match_against:
                 return original_ring_LL_cursor
             original_ring_LL_cursor = original_ring_LL_cursor.next
         raise ValueError(f"Error, object  '{starting_position}' is not in this ring ! (and neither is a different object containing the same exact value!)");
@@ -88,10 +88,10 @@ class _ring:
         if orientation == "vertically":
             indent_to_use += f"{empty_indent} "
             end += "\n"
-        output_str = f"{indent_to_use}{starting_position.return_last_layer(orientation)}{end}"
+        output_str = f"{indent_to_use}{starting_position.bottom_layer(orientation)}{end}"
         cursor = starting_position.next
         while cursor != starting_position:
-            output_str += f"{indent_to_use}{cursor.return_last_layer(orientation)}{end}"
+            output_str += f"{indent_to_use}{cursor.bottom_layer(orientation)}{end}"
             cursor = cursor.next;
         if orientation == "horizontally":
             output_str = f"{empty_indent} <{output_str[:-2]}>";
@@ -144,7 +144,7 @@ class _scale(_ring):
         self.mode = mode;
     def info(self):
         super().info();
-        print(f"{empty_indent} Key / root-note :  {self.key.return_last_layer()}");
+        print(f"{empty_indent} Key / root-note :  {self.key.bottom_layer()}");
         print(f"{empty_indent} Mode            :  {self.mode}");
     def _chord(self, chord_number):
         notes_in_primary_chord = [];
@@ -155,7 +155,7 @@ class _scale(_ring):
         return notes_in_primary_chord;
     def chord(self, chord_number: int) -> list:
         chord_to_print = self._chord(chord_number - 1); current_string = "";
-        for j in range(0, len(chord_to_print)): current_string += f"{chord_to_print[j].return_last_layer()} + ";
+        for j in range(0, len(chord_to_print)): current_string += f"{chord_to_print[j].bottom_layer()} + ";
         print(current_string[:-3]);
         return chord_to_print;
     def chords(self):
@@ -166,7 +166,7 @@ class _scale(_ring):
             current_chord = self._chord(i);
             current_string = f"Chord {roman_numeral}: <"
             for j in range(0, len(current_chord)):
-                current_string += f"{current_chord[j].return_last_layer()}, "
+                current_string += f"{current_chord[j].bottom_layer()}, "
             print(f"{current_string[:-2]}>");
 def _scale_ring_from_CLL(namespace, name: str, key: _LL_node, mode: str, CLL: _LL_node, source_pattern = None) -> _scale:
     """wrapper function for '_scale'"""
@@ -184,14 +184,14 @@ class _melody(_ring):
     def info(self):
         super().info();
         if self.source_pattern and isinstance(self.source_pattern, _scale):
-            print(f"{empty_indent} Key             :  {self.source_pattern.key.return_last_layer()}");
+            print(f"{empty_indent} Key             :  {self.source_pattern.key.bottom_layer()}");
             print(f"{empty_indent} Mode            :  {self.mode}");
     def transpose(self, half_steps: int = None, name: str = None): 
         """Returns the melody transposed with the supplied interval."""
         if (half_steps == None): half_steps = get_half_steps();
         transposed_melody = []
         for i, LL_node in enumerate(self):
-            original_note = LL_node.return_deepest_permutation_layer();
+            original_note = LL_node.deepest_permutation_layer();
             new_note      = original_note.traverse_cLL(half_steps);
             transposed_melody.append(new_note);
         if (name == None): name = get_name()

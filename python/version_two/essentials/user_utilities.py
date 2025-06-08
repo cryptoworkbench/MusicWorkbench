@@ -53,12 +53,12 @@ def display_list(LL_nodes: list):
 def test_piano(namespace) -> None:
     cursor = first_piano_note = namespace["c1"]
     while cursor:
-        print(f"{cursor.return_last_layer()}{cursor.extension()}");
+        print(f"{cursor.bottom_layer()}{cursor.extension()}");
         cursor = cursor.next
 def test_piano_backwards(namespace) -> None:
     cursor = first_piano_note = namespace["b7"]
     while cursor:
-        print(f"{cursor.return_last_layer()}{cursor.extension()}");
+        print(f"{cursor.bottom_layer()}{cursor.extension()}");
         cursor = cursor.previous
 
 h = H = hor = horizontal = horizontally = "horizontally"; v = V = ver = vert = vertical   = vertically   = "vertically"; # for _ring.loop()

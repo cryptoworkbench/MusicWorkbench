@@ -14,23 +14,23 @@ class _LL_node:
     def _return_first_extended_node_down_the_chain(self):
         while isinstance(self, _LL_node) and not isinstance(self, _extended): self = self.content;
         return self;
-    def return_last_layer(self, orientation: str = None):
+    def bottom_layer(self, orientation: str = None):
         """Returns the string from the bottom of the '_LL_node' layers (permutation layers)."""
-        self = self.return_deepest_permutation_layer();
+        self = self.deepest_permutation_layer();
         if isinstance(self.content, _NOTE): return self.content.return_NOTE_name();
         elif isinstance(self.content, _INTERVAL):
             if orientation == "horizontally":
                 return self.content.return_INTERVAL_abbreviation()
             elif orientation == "vertically": return self.content.return_INTERVAL_name()
         else: print("neither note nor interval!");
-    def return_deepest_permutation_layer(self):
+    def deepest_permutation_layer(self):
         while isinstance(self.content, _LL_node):
             self = self.content
         return self;
     def get_piano_note_str(self):
         if self == None: print("Error, argument is None.")
         accessed_element = self._return_first_extended_node_down_the_chain()
-        name = f"{accessed_element.return_last_layer()}"
+        name = f"{accessed_element.bottom_layer()}"
         if isinstance(accessed_element, _extended):
             name += f"{accessed_element.extension()}"
         return name
