@@ -24,15 +24,15 @@ def initialize_melodies() -> None:
     C_IONIAN.melody(melody_dictionary["frere_jackques"], REFERENCE_OCTAVE, list(melody_dictionary.keys())[1]);
 
 def showoff():
-    chromatic_scale.auto_loop_horizontally(1, 0.1)
-    interval_scale.auto_loop_horizontally(1, 0.1)
-    c_ionian.auto_loop_horizontally(1, 0.1)
-    c_dorian.auto_loop_horizontally(1, 0.1)
-    c_phrygian.auto_loop_horizontally(1, 0.1)
-    c_lydian.auto_loop_horizontally(1, 0.1)
-    c_mixolydian.auto_loop_horizontally(1, 0.1)
-    c_aeolian.auto_loop_horizontally(1, 0.1)
-    c_locrian.auto_loop_horizontally(1, 0.1)
+    chromatic_scale.loop_horizontally(1, 0.1)
+    interval_scale.loop_horizontally(1, 0.1)
+    c_ionian.loop_horizontally(1, 0.1)
+    c_dorian.loop_horizontally(1, 0.1)
+    c_phrygian.loop_horizontally(1, 0.1)
+    c_lydian.loop_horizontally(1, 0.1)
+    c_mixolydian.loop_horizontally(1, 0.1)
+    c_aeolian.loop_horizontally(1, 0.1)
+    c_locrian.loop_horizontally(1, 0.1)
 
 def test_everything():
     print("starting tests in 10 seconds ('<ctrl> + v' to prevent).")

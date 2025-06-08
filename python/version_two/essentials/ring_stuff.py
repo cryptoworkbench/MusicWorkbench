@@ -107,7 +107,7 @@ class _ring:
     def show_horizontally(self, starting_position: _LL_node = None) -> None:
         """wrapper method for method 'show_from'"""
         self.show_from("horizontally", starting_position)
-    def auto_loop(self, orientation="horizontally", complete_cycles=10, frequency=0.8) -> None:
+    def loop(self, orientation="horizontally", complete_cycles=10, frequency=0.8) -> None:
         """Calls 'self.show_from()' iteratively in combination with 'clear_screen()' in order to give 'self.show_from()' a dynamic touch."""
         cursor = self.access; 
         for i in range(complete_cycles):
@@ -122,12 +122,12 @@ class _ring:
                 print(  f'Current speed               : {frequency}s');
                 print("\n'<ctrl> + c' to exit");
                 time.sleep(frequency);
-    def auto_loop_vertically(self, complete_cycles=10, frequency=0.7) -> None:
+    def loop_vertically(self, complete_cycles=10, frequency=0.7) -> None:
         """Calls 'self.autoloop()' with the orientation set to 'vertical'."""
-        self.auto_loop("vertically", complete_cycles, frequency);
-    def auto_loop_horizontally(self, complete_cycles=10, frequency=0.7) -> None:
+        self.loop("vertically", complete_cycles, frequency);
+    def loop_horizontally(self, complete_cycles=10, frequency=0.7) -> None:
         """Calls 'self.autoloop()' with the orientation set to 'horizontal'."""
-        self.auto_loop("horizontally", complete_cycles, frequency);
+        self.loop("horizontally", complete_cycles, frequency);
 def _ring_from_CLL(namespace: dict[str, object], name: str, CLL: _LL_node, source_pattern = None) -> _ring:
     """wrapper function for '_ring'."""
     return _ring(namespace, name, CLL, source_pattern);
