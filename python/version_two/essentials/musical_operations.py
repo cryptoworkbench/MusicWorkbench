@@ -29,18 +29,16 @@ def _list_of_intervals(mode_node: _LL_node) -> list:
         cursor = cursor.next
     return list_of_intervals
 
-def _apply_interval_pattern_to_piano(piano_node_cursor: _LL_node, list_of_interval_degrees: list = None) -> list:
-    """this method returns all piano notes which fit a certain mode (given an given root_note)"""
-    multiplied_list_of_interval_degrees = []
-    for i in range(OCTAVE_AMOUNT):
-        multiplied_list_of_interval_degrees.extend(list_of_interval_degrees)
-
-    collected_notes = [piano_node_cursor]
-    for interval_degree in multiplied_list_of_interval_degrees:
-        derived_note = piano_node_cursor.traverse_cLL(interval_degree)
+def _new_permutation_layer_from_interval_sequence(mother_permutation_LL_node: _LL_node, interval_sequence: list = None) -> list:
+    """creates a new layer of LL nodes by wrapping elements found using the interval sequence."""
+    if not mother_permutation_LL_node:
+        raise ValueError("must provide a doubly linked LL to traverse upon!")
+    collected_notes = [mother_permutation_LL_node]
+    for interval_degree in interval_sequence:
+        derived_note = mother_permutation_LL_node.traverse_cLL(interval_degree)
         if derived_note:
             collected_notes.append(derived_note)
-            piano_node_cursor = derived_note
+            mother_permutation_LL_node = derived_note
         else: break;
     return collected_notes
 

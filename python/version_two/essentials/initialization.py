@@ -3,7 +3,8 @@ from .programmer_utilities import LIST_OF_NOTE_NAMES, OCTAVE_AMOUNT, indent, emp
 from .notes_and_intervals import _NOTE, _INTERVAL
 from .LL_node_stuff import _create_LL_node, _CLL_from_unlinked_LL_nodes, __link_unlinked_LL_nodes, _create_extended_LL_node, _extended, _LL_node, _wrap_into_LL_nodes
 from .ring_stuff import ring_from_list, ring_from_list_of_prepared_nodes, _ring_from_CLL, scale_ring_from_list
-from .musical_operations import list_of_notes, _apply_interval_pattern_to_piano, _list_of_intervals
+from .musical_operations import list_of_notes, _new_permutation_layer_from_interval_sequence, _list_of_intervals
+from .list_stuff import _multiply_list
 
 def _initialize_notes_and_chromatic_scale(namespace: dict[str, object]) -> None:
     notes = [_NOTE.c, _NOTE.c_sharp, _NOTE.d, _NOTE.d_sharp, _NOTE.e, _NOTE.f, _NOTE.f_sharp, _NOTE.g, _NOTE.g_sharp, _NOTE.a, _NOTE.a_sharp, _NOTE.b]
@@ -64,9 +65,6 @@ def _initialize_piano(namespace) -> None:
         last_note_of_current_octave = __initialize_piano_octave(namespace, current_octave, last_note_of_current_octave);
     print(f"{indent} created a piano computer model !");
 
-def _collect_piano_notes_for_mode(piano_node_cursor: _LL_node, mode_node: _LL_node) -> list:
-    return _apply_interval_pattern_to_piano(piano_node_cursor, _list_of_intervals(mode_node));
-
 def _initialize_piano_scales(namespace) -> None:
     modes = [("ionian", namespace['ionian']), ("dorian", namespace['dorian']), ("phrygian", namespace['phrygian']), ("lydian", namespace['lydian']), ("mixolydian", namespace['mixolydian']), ("aeolian", namespace['aeolian']), ("locrian", namespace['locrian'])]
     for note_name in LIST_OF_NOTE_NAMES:
@@ -74,7 +72,10 @@ def _initialize_piano_scales(namespace) -> None:
             SCALE_NAME             = f"{note_name}0"
             var_name_normal        = f"{note_name}_{modes[j][0]}"
             var_name_piano_case    = var_name_normal.upper()
-            list_of_notes_in_scale = _collect_piano_notes_for_mode(namespace[SCALE_NAME], modes[j][1])
+            list_of_notes_in_scale = _new_permutation_layer_from_interval_sequence(
+                                             namespace[SCALE_NAME],
+                                             _multiply_list(_list_of_intervals(modes[j][1]), OCTAVE_AMOUNT)
+                                             )
             namespace[var_name_piano_case] = scale_ring_from_list(namespace,
                                                                   SCALE_NAME,
                                                                   namespace[note_name],
