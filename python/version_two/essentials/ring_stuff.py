@@ -40,7 +40,7 @@ class _ring:
     def _search_through_CLL(self, mark_node):
         """a wrapper method for the '_LL_node' method 'search_CLL'"""
         return self.access.search_CLL(mark_node, self.cardinality)
-    def melody(self, list_of_scale_degrees, relative_octave: int, name_for_new_melody: str = None) -> None:
+    def apply_scale_degrees(self, list_of_scale_degrees, relative_octave: int, name_for_new_melody: str = None) -> None:
         """Creates a _melody ring containing the melody specified by the scale degrees. The instance is not returned but updated."""
         reduced_scale = f"{((self.key.bottom_layer()).lower())}_{self.mode}"
 
@@ -55,7 +55,7 @@ class _ring:
         self.original_namespace[name_for_new_melody] = melody_from_list(self.original_namespace, notes_in_melody, name_for_new_melody, self.mode, self);
         print(      f"{indent} The melody '{name_for_new_melody}' has been saved, access it like:");
         print(f"{empty_indent} {indent} {name_for_new_melody}.content()");
-    def _loop_search(self, starting_position: _LL_node) -> _LL_node:
+    def __bottom_layer_search(self, starting_position: _LL_node) -> _LL_node:
         LL_node_to_match_against = starting_position._travel_downward()
         original_ring_LL_cursor = self.access
         for iterator in range(self.cardinality):
@@ -71,7 +71,7 @@ class _ring:
         else:
             cursor = self._search_through_CLL(starting_position)
         if not cursor:
-            starting_position = self._loop_search(starting_position)
+            starting_position = self.__bottom_layer_search(starting_position)
         element_prefix = ""
         element_suffix = ""
         if orientation == "horizontally":

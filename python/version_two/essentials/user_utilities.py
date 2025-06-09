@@ -27,11 +27,11 @@ def show_help() -> None:
     print("##    Loops through the entire ring, starting at the object within the ring that is provided as argument, if an argument is provided.");
     print("##    Otherwise just starts at ring.access.");
     print("##");
-    print("## ring.melody(list_of_scale_degrees)");
+    print("## ring.apply_scale_degrees(list_of_scale_degrees)");
     print("##    Returns a ring representing the melody.");
     print("##    The melody has to be specified in 'list_of_scale_degrees' as it's list of scale degrees relative to the correct source ring.");
     print("##");
-    print("##    So 'ode_to_joy = c_major.melody([2, 2, 3, 4, 4, 3, 2, 1, 0, 0, 1, 2, 2, 1, 1])';");
+    print("##    So 'ode_to_joy = c_major.apply_scale_degrees([2, 2, 3, 4, 4, 3, 2, 1, 0, 0, 1, 2, 2, 1, 1])';");
     print("##    for example, would put the memorable 'Ode to Joy' melody in the ring 'ode_to_joy'.");
     print("##");
     print("##    But to get the note sequence C -> D -> E -> F# into a ring using the 'melody' method, you'd have to use:");
