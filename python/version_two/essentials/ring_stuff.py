@@ -42,16 +42,14 @@ class _ring:
         return self.access.search_CLL(mark_node, self.cardinality)
     def apply_scale_degrees(self, list_of_scale_degrees, relative_octave: int, name_for_new_melody: str = None) -> None:
         """Creates a _melody ring containing the melody specified by the scale degrees. The instance is not returned but updated."""
-        reduced_scale = f"{((self.key.bottom_layer()).lower())}_{self.mode}"
-
+        reduced_scale = f"{((self.key._concatenate_strings_downstream()).lower())}_{self.mode}"
         notes_in_melody = []
-        name_of_piano_scale = f"{self.key.bottom_layer()}_{(self.mode).upper()}"
         piano_CLL = self.original_namespace[reduced_scale.upper()].access
         for _ in range(relative_octave):
             for _ in range(self.original_namespace[reduced_scale].cardinality):
                 piano_CLL = piano_CLL.next
-        for scale_degree in list_of_scale_degrees: # updates 'notes_in_melody' and 'octave_information' at the same time
-            notes_in_melody.append(piano_CLL.traverse_cLL(scale_degree));
+        for scale_degree in list_of_scale_degrees: # collect notes in 'notes_in_melody'
+            notes_in_melody.append(piano_CLL.traverse_cLL(scale_degree))
         self.original_namespace[name_for_new_melody] = melody_from_list(self.original_namespace, notes_in_melody, name_for_new_melody, self.mode, self);
         print(      f"{indent} The melody '{name_for_new_melody}' has been saved, access it like:");
         print(f"{empty_indent} {indent} {name_for_new_melody}.content()");
@@ -80,10 +78,10 @@ class _ring:
         if orientation == "vertically":
             element_prefix += f"{empty_indent} "
             element_suffix += "\n"
-        output_str = f"{cursor.bottom_layer(orientation)}{element_suffix}"
+        output_str = f"{cursor._concatenate_strings_downstream(orientation)}{element_suffix}"
         cursor = starting_position.next
         while cursor != starting_position:
-            output_str += f"{element_prefix}{cursor.bottom_layer(orientation)}{element_suffix}"
+            output_str += f"{element_prefix}{cursor._concatenate_strings_downstream(orientation)}{element_suffix}"
             cursor = cursor.next;
         if orientation == "horizontally":
             output_str = f"<{output_str[:-2]}>"
@@ -111,7 +109,7 @@ class _ring:
             for j in range(self.cardinality):
                 clear_screen()
                 print(f"Currently looping: {self.name}\n")
-                print(self._show_from(cursor, orientation))
+                print(_empty_indent(self._show_from(cursor, orientation)))
                 cursor = cursor.next
                 remaining_cycles = complete_cycles - i
                 print(f'\nOffset from starting element: {j}');
@@ -144,7 +142,7 @@ class _scale(_ring):
         self.mode = mode;
     def info(self):
         super().info();
-        print(f"{empty_indent} Key / root-note :  {self.key.bottom_layer()}");
+        print(f"{empty_indent} Key / root-note :  {self.key._concatenate_strings_downstream()}");
         print(f"{empty_indent} Mode            :  {self.mode}");
     def _chord(self, chord_number):
         notes_in_primary_chord = [];
@@ -155,7 +153,7 @@ class _scale(_ring):
         return notes_in_primary_chord;
     def chord(self, chord_number: int) -> list:
         chord_to_print = self._chord(chord_number - 1); current_string = "";
-        for j in range(0, len(chord_to_print)): current_string += f"{chord_to_print[j].bottom_layer()} + ";
+        for j in range(0, len(chord_to_print)): current_string += f"{chord_to_print[j]._concatenate_strings_downstream()} + ";
         print(current_string[:-3]);
         return chord_to_print;
     def chords(self):
@@ -166,7 +164,7 @@ class _scale(_ring):
             current_chord = self._chord(i);
             current_string = f"Chord {roman_numeral}: <"
             for j in range(0, len(current_chord)):
-                current_string += f"{current_chord[j].bottom_layer()}, "
+                current_string += f"{current_chord[j]._concatenate_strings_downstream()}, "
             print(f"{current_string[:-2]}>");
 def _scale_ring_from_CLL(namespace, name: str, key: _LL_node, mode: str, CLL: _LL_node, source_pattern = None) -> _scale:
     """wrapper function for '_scale'"""
@@ -184,7 +182,7 @@ class _melody(_ring):
     def info(self):
         super().info();
         if self.source_pattern and isinstance(self.source_pattern, _scale):
-            print(f"{empty_indent} Key             :  {self.source_pattern.key.bottom_layer()}");
+            print(f"{empty_indent} Key             :  {self.source_pattern.key._concatenate_strings_downstream()}");
             print(f"{empty_indent} Mode            :  {self.mode}");
     def transpose(self, half_steps: int = None, name: str = None): 
         """Returns the melody transposed with the supplied interval."""

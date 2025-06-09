@@ -23,7 +23,7 @@ class _LL_node:
         while isinstance(self.content, _LL_node) and not isinstance(self.content, _extended):
             self = self.content
         return self;
-    def bottom_layer(self, orientation: str = None):
+    def _concatenate_strings_downstream(self, orientation: str = None) -> str:
         """Returns the string from the bottom of the '_LL_node' layers (permutation layers)."""
         cursor = self._travel_downward()
         output_str = ""
@@ -32,13 +32,6 @@ class _LL_node:
             output_str += f"{cursor.extension()}"
         output_str = f"{cursor._travel_downward()._last_unwrap(orientation)}{output_str}"
         return output_str
-    def get_piano_note_str(self):
-        if self == None: print("Error, argument is None.")
-        accessed_element = self._firsty_extended_node_down_the_chain()
-        name = f"{accessed_element.bottom_layer()}"
-        if isinstance(accessed_element, _extended):
-            name += f"{accessed_element.extension()}"
-        return name
     def traverse_cLL(self, distance: int):
         """Traverses a (cyclical) linked list and returns the node at the Nth chain."""
         if isinstance(distance, int) == False: print("didn't get the as distance as an int!")

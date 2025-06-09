@@ -10,8 +10,8 @@ from .list_stuff import _multiply_list, methodized_dictionary
 modes = ["ionian", "dorian", "phrygian", "lydian", "mixolydian", "aeolian", "locrian"]
 
 def initialize_screen(mains_filename: str) -> None:
-    # clear_screen();
-    print(f"Start this program as \"python3 -i {mains_filename}\" if you want to get anything useful out of it. Once in interactive mode, you can use 'show_help()' to learn about available functions.\n\nAlso you can try 'showoff()' to make this program show off it's capabilities!\n");
+    clear_screen();
+    print(f"Start this program as \"python3 -i {mains_filename}\" if you want to get anything useful out of it. Once in interactive mode, you can use 'show_help()' to learn about available functions.\n\nAlso you can try 'flex()' to make this program show off it's capabilities!\n");
 def _initialize_interval_scale(namespace: dict[str, object]) -> None:
     namespace[ 'half_step'] = _create_LL_node( _INTERVAL.half_step) # create the inner nodes
     namespace['whole_step'] = _create_LL_node(_INTERVAL.whole_step) # create the inner nodes

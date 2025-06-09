@@ -19,8 +19,8 @@ def _new_permutation_layer_from_interval_sequence(mother_permutation_LL_node: _L
     if not mother_permutation_LL_node:
         raise ValueError("must provide a doubly linked LL to traverse upon!")
     collected_notes = [mother_permutation_LL_node]
-    for interval_degree in interval_sequence:
-        derived_note = mother_permutation_LL_node.traverse_cLL(interval_degree)
+    for interval in interval_sequence:
+        derived_note = mother_permutation_LL_node.traverse_cLL(interval)
         if derived_note:
             collected_notes.append(derived_note)
             mother_permutation_LL_node = derived_note

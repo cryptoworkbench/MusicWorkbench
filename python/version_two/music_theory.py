@@ -16,6 +16,17 @@ class interval_pattern(dict):
         """for adding a melody (interval pattern) to the catalogue of melodies at the disposal of the user."""
         self[key] = value
 
+def test_piano(namespace) -> None:
+    cursor = first_piano_note = namespace["c1"]
+    while cursor:
+        print(f"{cursor._concatenate_strings_downstream()}");
+        cursor = cursor.next
+def test_piano_backwards(namespace) -> None:
+    cursor = first_piano_note = namespace["b7"]
+    while cursor:
+        print(f"{cursor._concatenate_strings_downstream()}");
+        cursor = cursor.previous
+
 def initialize_melodies() -> None:
     melody_dictionary = interval_pattern({"ode_to_joy": [2, 2, 3, 4, 4, 3, 2, 1, 0, 0, 1, 2, 2, 1, 1]})
     C_IONIAN.apply_scale_degrees(melody_dictionary["ode_to_joy"], REFERENCE_OCTAVE, list(melody_dictionary.keys())[0]);
@@ -23,9 +34,13 @@ def initialize_melodies() -> None:
     melody_dictionary.install("frere_jackques", [0, 1, 2, 0, 0, 1, 2, 0, 2, 3, 4, 2, 3, 4, 4, 5, 4, 3, 2, 0, 4, 5, 4, 3, 2, 0, 0, -3, 0, 0, -3, 0])
     C_IONIAN.apply_scale_degrees(melody_dictionary["frere_jackques"], REFERENCE_OCTAVE, list(melody_dictionary.keys())[1]);
 
-def showoff():
+def flex():
     chromatic_scale.loop_horizontally(1, 0.1)
-    interval_scale.loop_horizontally(1, 0.1)
+    interval_scale.loop_vertically(1, 0.1)
+    test_piano(globals())
+    time.sleep(1)
+    test_piano_backwards(globals())
+    time.sleep(1)
     c_ionian.loop_horizontally(1, 0.1)
     c_dorian.loop_horizontally(1, 0.1)
     c_phrygian.loop_horizontally(1, 0.1)
@@ -35,14 +50,14 @@ def showoff():
     c_locrian.loop_horizontally(1, 0.1)
 
 def count_down(counts: int) -> None:
-    print(f"\nSTARTING TESTS IN {counts} SECONDS      ({keyboard_interrupt_hint} to prevent).")
+    print(f"\nSTARTING TESTS IN {counts}       ({keyboard_interrupt_hint} to prevent).")
     for x in range(counts - 1, 0, -1):
         time.sleep(1)
         print(f"{x} ...")
 
 def test_everything():
     count_down(3)
-    showoff()
+    flex()
     print(f"{indent} frere_jackques.content()")
     frere_jackques.content()
     print(f"{indent} tests complete !")

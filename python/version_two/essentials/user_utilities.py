@@ -37,24 +37,7 @@ def show_help() -> None:
     print("##    But to get the note sequence C -> D -> E -> F# into a ring using the 'melody' method, you'd have to use:");
     print("##    'modeless_melody = chromatic_scale.melody([0, 2, 4, 6])'       (since there is no mode with contains four consecutive wholesteps).");
     print("##");
-
-def display_list(LL_nodes: list):
-    """ this function is to inspect the contents of a list of LL_nodes """
-    for _, LL_node in enumerate(LL_nodes):
-        print(f"{LL_node.get_piano_note_str()}");
-        # print(f"{empty_indent} {name}");
 # ^^^ FUNCTIONS FOR USER CONVENIENCE ^^^
-
-def test_piano(namespace) -> None:
-    cursor = first_piano_note = namespace["c1"]
-    while cursor:
-        print(f"{cursor.bottom_layer()}{cursor.extension()}");
-        cursor = cursor.next
-def test_piano_backwards(namespace) -> None:
-    cursor = first_piano_note = namespace["b7"]
-    while cursor:
-        print(f"{cursor.bottom_layer()}{cursor.extension()}");
-        cursor = cursor.previous
 
 h = H = hor = horizontal = horizontally = "horizontally"; v = V = ver = vert = vertical   = vertically   = "vertically"; # for _ring.show_from()
 # ^^^ SHORTCUTS FOR USER CONVENIENCE ^^^
