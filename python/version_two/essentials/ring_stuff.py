@@ -62,15 +62,15 @@ class _ring:
                 return original_ring_LL_cursor
             original_ring_LL_cursor = original_ring_LL_cursor.next
         raise ValueError(f"Error, object  '{starting_position}' is not in this ring ! (and neither is a different object containing the same exact value!)");
-    def _show_from(self, starting_position: _LL_node = None, orientation = "horizontally") -> None:
+    def _show_from(self, starting_position: _LL_node = None, orientation = "horizontally") -> str:
         """Display the content of the ring by cycling through it once."""
-        cursor = starting_position;
+        cursor = starting_position
         if starting_position is None:
             starting_position = self.access
         else:
-            cursor = self.search_through_CLL(starting_position);
+            cursor = self.search_through_CLL(starting_position)
         if cursor == None:
-            starting_position = self._loop_search(starting_position);
+            starting_position = self._loop_search(starting_position)
         indent_to_use = ""
         end = ""
         if orientation == "horizontally":
@@ -78,22 +78,28 @@ class _ring:
         if orientation == "vertically":
             indent_to_use += f"{empty_indent} "
             end += "\n"
-        output_str = f"{indent_to_use}{starting_position.bottom_layer(orientation)}{end}"
+        output_str = f"{starting_position.bottom_layer(orientation)}{end}"
         cursor = starting_position.next
         while cursor != starting_position:
             output_str += f"{indent_to_use}{cursor.bottom_layer(orientation)}{end}"
             cursor = cursor.next;
         if orientation == "horizontally":
-            output_str = f"{empty_indent} <{output_str[:-2]}>";
+            output_str = f"<{output_str[:-2]}>"
         elif orientation == "vertical":
-            output_str = output_str[:-1];
-        print(output_str);
+            output_str = output_str[:-1]
+        return output_str
+    def _show_vertically(self, starting_position: _LL_node = None) -> str:
+        """wrapper method for method '_show_from'"""
+        return self._show_from(starting_position, "vertically")
     def show_vertically(self, starting_position: _LL_node = None) -> None:
+        """wrapper method for method '_show_vertically'"""
+        print(f"{empty_indent} {self._show_vertically(starting_position)}")
+    def _show_horizontally(self, starting_position: _LL_node = None) -> str:
         """wrapper method for method '_show_from'"""
-        self._show_from(starting_position, "vertically")
-    def show_horizontally(self, starting_position: _LL_node = None) -> None:
-        """wrapper method for method '_show_from'"""
-        self._show_from(starting_position, "horizontally")
+        return self._show_from(starting_position, "horizontally")
+    def show_horizontally(self, starting_position: _LL_node = None):
+        """wrapper method for method '_show_horizontally'"""
+        print(f"{empty_indent} {self._show_horizontally(starting_position)}")
     def _loop(self, complete_cycles=10, frequency=0.8, orientation="horizontally") -> None:
         """Calls 'self._show_from()' iteratively in combination with 'clear_screen()' in order to give 'self._show_from()' a dynamic touch."""
         cursor = self.access; 
@@ -189,7 +195,7 @@ class _melody(_ring):
         print(      f"{indent} The transposition '{name}' has been saved, access it like:");
         print(f"{empty_indent} {indent} {name}._show_from()");
     def content(self):
-        self.show_horizontally()
+        print(f"{empty_indent} {self._show_horizontally()[1:-1]}")
 def _melody_ring_from_CLL(namespace: dict[str, object], name: str, mode: str, CLL: _LL_node, source_pattern = None) -> _melody:
     """wrapper function for '_melody'"""
     return _melody(namespace, name, mode, CLL, source_pattern);
