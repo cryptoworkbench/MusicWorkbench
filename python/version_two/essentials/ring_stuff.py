@@ -37,7 +37,7 @@ class _ring:
             print(f" pattern :  {self.source_pattern.name}")
         else:
             print("         :  program initialization")
-    def search_through_CLL(self, mark_node):
+    def _search_through_CLL(self, mark_node):
         return self.access.search_CLL(mark_node, self.cardinality)
     def melody(self, list_of_scale_degrees, relative_octave: int, name_for_new_melody: str = None) -> None:
         """Creates a _melody ring containing the melody specified by the scale degrees. The instance is not returned but updated."""
@@ -68,38 +68,38 @@ class _ring:
         if starting_position is None:
             starting_position = self.access
         else:
-            cursor = self.search_through_CLL(starting_position)
-        if cursor == None:
+            cursor = self._search_through_CLL(starting_position)
+        if not cursor:
             starting_position = self._loop_search(starting_position)
-        indent_to_use = ""
-        end = ""
+        element_prefix = ""
+        element_suffix = ""
         if orientation == "horizontally":
-            end += ", "
+            element_suffix += ", "
         if orientation == "vertically":
-            indent_to_use += f"{empty_indent} "
-            end += "\n"
-        output_str = f"{starting_position.bottom_layer(orientation)}{end}"
+            element_prefix += f"{empty_indent} "
+            element_suffix += "\n"
+        output_str = f"{starting_position.bottom_layer(orientation)}{element_suffix}"
         cursor = starting_position.next
         while cursor != starting_position:
-            output_str += f"{indent_to_use}{cursor.bottom_layer(orientation)}{end}"
+            output_str += f"{element_prefix}{cursor.bottom_layer(orientation)}{element_suffix}"
             cursor = cursor.next;
         if orientation == "horizontally":
             output_str = f"<{output_str[:-2]}>"
-        elif orientation == "vertical":
-            output_str = output_str[:-1]
+        elif orientation == "vertically":
+            output_str = f"{output_str[:-1]}"
         return output_str
-    def _show_vertically(self, starting_position: _LL_node = None) -> str:
+    def _show_vertically_from(self, starting_position: _LL_node = None) -> str:
         """wrapper method for method '_show_from'"""
         return self._show_from(starting_position, "vertically")
-    def show_vertically(self, starting_position: _LL_node = None) -> None:
+    def show_vertically(self) -> None:
         """wrapper method for method '_show_vertically'"""
-        print(f"{empty_indent} {self._show_vertically(starting_position)}")
-    def _show_horizontally(self, starting_position: _LL_node = None) -> str:
+        print(_empty_indent(self._show_vertically_from(self.access)))
+    def _show_horizontally_from(self, starting_position: _LL_node = None) -> str:
         """wrapper method for method '_show_from'"""
         return self._show_from(starting_position, "horizontally")
-    def show_horizontally(self, starting_position: _LL_node = None):
+    def show_horizontally(self) -> None:
         """wrapper method for method '_show_horizontally'"""
-        print(f"{empty_indent} {self._show_horizontally(starting_position)}")
+        print(_empty_indent(self._show_horizontally_from(self.access)))
     def _loop(self, complete_cycles=10, frequency=0.8, orientation="horizontally") -> None:
         """Calls 'self._show_from()' iteratively in combination with 'clear_screen()' in order to give 'self._show_from()' a dynamic touch."""
         cursor = self.access; 
@@ -107,7 +107,7 @@ class _ring:
             for j in range(self.cardinality):
                 clear_screen()
                 print(f"Currently looping: {self.name}\n")
-                self._show_from(cursor, orientation)
+                print(self._show_from(cursor, orientation))
                 cursor = cursor.next
                 remaining_cycles = complete_cycles - i
                 print(f'\nOffset from starting element: {j}');
@@ -195,7 +195,7 @@ class _melody(_ring):
         print(      f"{indent} The transposition '{name}' has been saved, access it like:");
         print(f"{empty_indent} {indent} {name}._show_from()");
     def content(self):
-        print(f"{empty_indent} {self._show_horizontally()[1:-1]}")
+        print(_empty_indent(self._show_horizontally_from(self.access)[1:-1]))
 def _melody_ring_from_CLL(namespace: dict[str, object], name: str, mode: str, CLL: _LL_node, source_pattern = None) -> _melody:
     """wrapper function for '_melody'"""
     return _melody(namespace, name, mode, CLL, source_pattern);

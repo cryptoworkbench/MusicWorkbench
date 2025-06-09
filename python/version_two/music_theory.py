@@ -36,12 +36,12 @@ def showoff():
 
 def count_down(counts: int) -> None:
     print(f"\nSTARTING TESTS IN {counts} SECONDS      ({keyboard_interrupt_hint} to prevent).")
-    for x in range(counts, 0, -1):
+    for x in range(counts - 1, 0, -1):
         time.sleep(1)
         print(f"{x} ...")
 
 def test_everything():
-    count_down(8)
+    count_down(3)
     showoff()
     print(f"{indent} frere_jackques.content()")
     frere_jackques.content()
