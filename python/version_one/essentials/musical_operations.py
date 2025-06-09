@@ -1,33 +1,30 @@
-from .LL_node_stuff import _LL_node, _traverse_cLL, _return_second_to_last_layer
-from .notes_and_intervals.interval_stuff import _INTERVAL, _return_INTERVAL_halfsteps
+from .LL_node_stuff import _LL_node
+from .programmer_utilities import OCTAVE_AMOUNT
+from .notes_and_intervals import _INTERVAL
 
 def _apply_interval(starting_note: _LL_node, interval: _INTERVAL) -> _LL_node:
-    return _traverse_cLL(starting_note, _return_INTERVAL_halfsteps(interval));
+    return starting_note.traverse_cLL(interval.return_INTERVAL_halfsteps())
 
-def list_of_notes(root_note: _LL_node, first_MODE_node: _LL_node) -> list:
-    """This function currently creates all instances of the '_scale' classes. It makes use of the 'interval_scale' '_ring' class. """
-    ret_val = [root_note]; # list to keep track of subscale
-    visited_MODE_nodes = [first_MODE_node]; # list to keep track of visited MODE nodes
+def _list_of_intervals(mode_node: _LL_node) -> list:
+    list_of_intervals = []
+    list_of_intervals.append(mode_node._travel_downward().content.return_INTERVAL_halfsteps())
+    cursor = mode_node.next
+    while cursor != mode_node:
+        list_of_intervals.append(cursor._travel_downward().content.return_INTERVAL_halfsteps())
+        cursor = cursor.next
+    return list_of_intervals
 
-    MODE_node_cursor = first_MODE_node; # movable MODE node cursor
-    NOTE_node_cursor = root_note;
-
-    while MODE_node_cursor.next != first_MODE_node:
-        derived_note = _apply_interval(NOTE_node_cursor, MODE_node_cursor.content.content);
-        MODE_node_cursor = MODE_node_cursor.next;
-        ret_val.append(derived_note);
-        NOTE_node_cursor = derived_note;
-    ret_val = ret_val[:-1]; # do not include the eight note in the sequence, since that's the same note as the first one
-    return ret_val;
-
-""" WORK IN PROGRESS !!!
-def _scale_from_interval_degrees(root_note: _LL_node, list_of_interval_degrees: list) -> _scale:
-    notes_in_melody = [];
-    octave_information = [];
-    for scale_degree in list_of_scale_degrees: # updates 'notes_in_melody' and 'octave_information' at the same time
-        notes_in_melody.append(_traverse_cLL(self.access, scale_degree % self.cardinality));
-        octave_information.append( REFERENCE_OCTAVE + (scale_degree - scale_degree % self.cardinality) // self.cardinality ) 
-    melody_from_list(self.original_namespace, notes_in_melody, name_for_new_melody, self);
-"""
+def _new_permutation_layer_from_interval_sequence(mother_permutation_LL_node: _LL_node, interval_sequence: list = None) -> list:
+    """creates a new layer of LL nodes by wrapping elements found using the interval sequence."""
+    if not mother_permutation_LL_node:
+        raise ValueError("must provide a doubly linked LL to traverse upon!")
+    collected_notes = [mother_permutation_LL_node]
+    for interval_degree in interval_sequence:
+        derived_note = mother_permutation_LL_node.traverse_cLL(interval_degree)
+        if derived_note:
+            collected_notes.append(derived_note)
+            mother_permutation_LL_node = derived_note
+        else: break;
+    return collected_notes
 
 __all__ = [name for name in globals()]

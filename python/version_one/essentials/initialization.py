@@ -1,45 +1,62 @@
-from .notes_and_intervals.note_stuff import _NOTE
-from .notes_and_intervals.interval_stuff import _INTERVAL
-from .programmer_shortcuts import LIST_OF_NOTE_NAMES, OCTAVE_AMOUNT, indent, empty_indent
-from .LL_node_stuff import _create_LL_node, _CLL_from_list_of_unlinked_LL_nodes
-from .ring_classes import _ring_from_CLL, scale_ring_from_list
-from .musical_operations import list_of_notes
+import time
+from .user_utilities import clear_screen
+from .programmer_utilities import LIST_OF_NOTE_NAMES, OCTAVE_AMOUNT, indent, empty_indent
+from .notes_and_intervals import _NOTE, _INTERVAL
+from .LL_node_stuff import _create_LL_node, _CLL_from_unlinked_LL_nodes, __link_unlinked_LL_nodes, _create_extended_LL_node, _extended, _LL_node, _wrap_into_LL_nodes
+from .ring_stuff import ring_from_list, ring_from_list_of_prepared_nodes, _ring_from_CLL, scale_ring_from_list
+from .musical_operations import _new_permutation_layer_from_interval_sequence, _list_of_intervals
+from .list_stuff import _multiply_list, methodized_dictionary
 
+modes = ["ionian", "dorian", "phrygian", "lydian", "mixolydian", "aeolian", "locrian"]
+
+def initialize_screen(mains_filename: str) -> None:
+    # clear_screen();
+    print(f"Start this program as \"python3 -i {mains_filename}\" if you want to get anything useful out of it. Once in interactive mode, you can use 'show_help()' to learn about available functions.\n\nAlso you can try 'showoff()' to make this program show off it's capabilities!\n");
+def _initialize_interval_scale(namespace: dict[str, object]) -> None:
+    namespace[ 'half_step'] = _create_LL_node( _INTERVAL.half_step) # create the inner nodes
+    namespace['whole_step'] = _create_LL_node(_INTERVAL.whole_step) # create the inner nodes
+    ionian     = namespace[modes[0]] = _create_LL_node(namespace['whole_step']) # create the outer nodes
+    dorian     = namespace[modes[1]] = _create_LL_node(namespace['whole_step']) # create the outer nodes
+    phrygian   = namespace[modes[2]] = _create_LL_node(namespace[ 'half_step']) # create the outer nodes
+    lydian     = namespace[modes[3]] = _create_LL_node(namespace['whole_step']) # create the outer nodes
+    mixolydian = namespace[modes[4]] = _create_LL_node(namespace['whole_step']) # create the outer nodes
+    aeolian    = namespace[modes[5]] = _create_LL_node(namespace['whole_step']) # create the outer nodes
+    locrian    = namespace[modes[6]] = _create_LL_node(namespace[ 'half_step']) # create the outer nodes
+    namespace["interval_scale"] = ring_from_list_of_prepared_nodes(namespace, "interval_scale", [ionian, dorian, phrygian, lydian, mixolydian, aeolian, locrian])
+    globals()['interval_scale'] = namespace['interval_scale']
+    print(f"{indent} created the ring 'interval_scale', which represents all modes (ionian, dorian, etc).");
 def _initialize_notes_and_chromatic_scale(namespace: dict[str, object]) -> None:
-    notes = [_NOTE.c, _NOTE.c_sharp, _NOTE.d, _NOTE.d_sharp, _NOTE.e, _NOTE.f, _NOTE.f_sharp, _NOTE.g, _NOTE.g_sharp, _NOTE.a, _NOTE.a_sharp, _NOTE.b]
-    
-    inner_nodes = [_create_LL_node(note) for note in notes]
-    cll = _CLL_from_list_of_unlinked_LL_nodes(inner_nodes) # cll is not used but '_CLL_from_list_of_unlinked_LL_nodes' needs to be done
-
-    # Assign circular linked list nodes to global variables
-    for i, var_name in enumerate(LIST_OF_NOTE_NAMES):
-        namespace[var_name] = inner_nodes[i]
+    inner_nodes = _wrap_into_LL_nodes([_NOTE.c, _NOTE.c_sharp, _NOTE.d, _NOTE.d_sharp, _NOTE.e, _NOTE.f, _NOTE.f_sharp, _NOTE.g, _NOTE.g_sharp, _NOTE.a, _NOTE.a_sharp, _NOTE.b])
+    for i, note_name in enumerate(LIST_OF_NOTE_NAMES): # make the inner nodes accessible
+        namespace[note_name] = inner_nodes[i]
+    _CLL_from_unlinked_LL_nodes(inner_nodes) # link inner nodes
 
     # Also add the full chromatic scale ring
-    name = "chromatic_scale";
-    _ring_from_CLL(namespace, name, _CLL_from_list_of_unlinked_LL_nodes([_create_LL_node(n) for n in inner_nodes]))
+    name = "chromatic_scale"
+    namespace[name] = ring_from_list(namespace, name, _new_permutation_layer_from_interval_sequence(inner_nodes[0], _multiply_list([1], len(inner_nodes) - 1)), None)
     print(f"{indent} created the ring '{name}', which represents the notes within an octave (C, C#, D, etc).");
-def _initialize_interval_scale(namespace: dict[str, object]) -> None:
-    namespace[ 'half_step']     = _create_LL_node(_INTERVAL.half_step);
-    namespace['whole_step']     = _create_LL_node(_INTERVAL.whole_step);
-    namespace[   'locrian']     = _create_LL_node(namespace[ 'half_step']);
-    namespace[   'aeolian']     = _create_LL_node(namespace['whole_step'], namespace[   'locrian']);
-    namespace['mixolydian']     = _create_LL_node(namespace['whole_step'], namespace[   'aeolian']);
-    namespace[    'lydian']     = _create_LL_node(namespace['whole_step'], namespace['mixolydian']);
-    namespace[  'phrygian']     = _create_LL_node(namespace[ 'half_step'], namespace[    'lydian']);
-    namespace[    'dorian']     = _create_LL_node(namespace['whole_step'], namespace[  'phrygian']);
-    namespace[    'ionian']     = _create_LL_node(namespace['whole_step'], namespace[    'dorian']);
-    namespace['locrian'].next   = namespace['ionian']
-    _ring_from_CLL(namespace, "interval_scale", namespace['ionian'])
-    globals()['interval_scale'] = namespace['interval_scale'];
-    print(f"{indent} created the ring 'interval_scale', which represents all modes (ionian, dorian, etc).");
-def _initialize_scales_for_every_mode_key_combo(namespace) -> None:
+def _initialize_mode_definition_dictionary(namespace) -> None:
+    mode_definition = {}
+    mode_definition["ionian"] = _list_of_intervals(namespace["ionian"])
+    mode_definition["dorian"] = _list_of_intervals(namespace["dorian"])
+    mode_definition["phrygian"] = _list_of_intervals(namespace["phrygian"])
+    mode_definition["lydian"] = _list_of_intervals(namespace["lydian"])
+    mode_definition["mixolydian"] = _list_of_intervals(namespace["mixolydian"])
+    mode_definition["aeolian"] = _list_of_intervals(namespace["aeolian"])
+    mode_definition["locrian"] = _list_of_intervals(namespace["locrian"])
+
+    namespace["mode_definition"] = methodized_dictionary(mode_definition)
+    print(f"{indent} initialized the dictionary 'mode_definition' !")
+    print(f"{empty_indent} {indent} try 'mode_definition.show()' !")
+def _initialize_scales_for_every_mode_key_combo(namespace) -> None: # requires the dictionary "mode_definition" to be initialized !
     notes = [("c", namespace['c']), ("c_sharp", namespace['c_sharp']), ("d", namespace['d']), ("d_sharp", namespace['d_sharp']), ("e", namespace['e']), ("f", namespace['f']), ("f_sharp", namespace['f_sharp']), ("g", namespace['g']), ("g_sharp", namespace['g_sharp']), ("a", namespace['a']), ("a_sharp", namespace['a_sharp']), ("b", namespace['b']) ]
-    modes = [("ionian", namespace['ionian']), ("dorian", namespace['dorian']), ("phrygian", namespace['phrygian']), ("lydian", namespace['lydian']), ("mixolydian", namespace['mixolydian']), ("aeolian", namespace['aeolian']), ("locrian", namespace['locrian'])]
+    modes = ["ionian", "dorian", "phrygian", "lydian", "mixolydian", "aeolian", "locrian"]
+    mode_definition = namespace["mode_definition"]
     for note_name, note_node in notes:
-        for mode_name, mode_node in modes:
-            var_name = f"{note_name}_{mode_name}"
-            namespace[var_name] = scale_ring_from_list(namespace, var_name, namespace[note_name], mode_name, list_of_notes(note_node, mode_node), namespace["chromatic_scale"])
+        for mode_name in modes:
+            var_name   = f"{note_name}_{mode_name}"
+            scale_name = f"{note_name.upper()} {mode_name}"
+            namespace[var_name] = scale_ring_from_list(namespace, scale_name, namespace[note_name], mode_name, _new_permutation_layer_from_interval_sequence(note_node, mode_definition[mode_name][:-1]), namespace["chromatic_scale"])
         # print(f"--> all {note_name} scales have been initialized ({note_name}_ionian, {note_name}_dorian, {note_name}_phrygian, etc)");
 
     for note_name, _ in notes:
@@ -47,19 +64,55 @@ def _initialize_scales_for_every_mode_key_combo(namespace) -> None:
         namespace[f"{note_name}_minor"] = namespace[f"{note_name}_aeolian"];
     # print("--> all synonyms have been set up as well (like \"c_major = c_ionian\", \"g_sharp_minor = g_sharp_aeolian\", etc).");
     print(f"{indent} created the 84 rings for all possible key-mode combinations, that's 7 modes * 12 keys = 84 scales in total !");
-    print(f"{empty_indent} {indent} access them like 'c_major.loop()', 'g_dorian.loop()', 'f_locrian()', etc ...");
-"""
+    print(f"{empty_indent} {indent} access them like 'c_major.show_from()', 'g_dorian.show_from()', 'f_locrian.show_from()', etc ...");
+def __initialize_piano_octave(namespace: dict[str, object], current_octave: int, continuation_point: _extended = None) -> _extended:
+    created_octave_nodes = []
+    for i, note_name in enumerate(LIST_OF_NOTE_NAMES):
+        created_octave_nodes.append(_create_extended_LL_node(namespace[note_name], current_octave))
+        var_name_zero = f"{note_name.upper()}{current_octave}"
+        var_name_one  = f"{note_name}{current_octave}"
+        namespace[var_name_zero] = namespace[var_name_one] = created_octave_nodes[i];
+        __link_unlinked_LL_nodes(created_octave_nodes);
+    if continuation_point != None:
+        continuation_point.next = created_octave_nodes[0]
+        created_octave_nodes[0].previous = continuation_point
+    return created_octave_nodes[len(LIST_OF_NOTE_NAMES) - 1] # return the last element
 def _initialize_piano(namespace) -> None:
-    '''initializes a piano'''
+    '''initializes a piano model'''
+    last_note_of_current_octave = None;
     for current_octave in range(OCTAVE_AMOUNT):
-        for note_name in LIST_OF_NOTE_NAMES:
-            octave_included_note = _create_extended_LL_node(note_name, current_octave)
-"""
+        last_note_of_current_octave = __initialize_piano_octave(namespace, current_octave, last_note_of_current_octave);
+    print(f"{indent} created a piano computer model !");
+
+def _initialize_piano_scales(namespace) -> None:
+    modes = [("ionian", namespace['ionian']), ("dorian", namespace['dorian']), ("phrygian", namespace['phrygian']), ("lydian", namespace['lydian']), ("mixolydian", namespace['mixolydian']), ("aeolian", namespace['aeolian']), ("locrian", namespace['locrian'])]
+    for note_name in LIST_OF_NOTE_NAMES:
+        for j in range(len(modes)):
+            SCALE_NAME             = f"{note_name}0"
+            var_name_normal        = f"{note_name}_{modes[j][0]}"
+            var_name_piano_case    = var_name_normal.upper()
+            list_of_notes_in_scale = _new_permutation_layer_from_interval_sequence(
+                                             namespace[SCALE_NAME],
+                                             _multiply_list(_list_of_intervals(modes[j][1]), OCTAVE_AMOUNT)
+                                             )
+            namespace[var_name_piano_case] = scale_ring_from_list(namespace,
+                                                                  SCALE_NAME,
+                                                                  namespace[note_name],
+                                                                  modes[j][0],
+                                                                  list_of_notes_in_scale,
+                                                                  namespace[var_name_normal])
+
+    print(f"{indent} created the 84 rings for all possible key-mode combinations, that's 7 modes * 12 keys = 84 scales in total !");
+    print(f"{empty_indent} {indent} access them like 'C_MAJOR.show_from()', 'G_DORIAN.show_from()', 'F_LOCRIAN.show_from()', etc ...");
+
 def initialize_data_structures(namespace: dict[str, object]) -> None:
-    print("Initializing program:");
-    _initialize_notes_and_chromatic_scale(namespace);
-    _initialize_interval_scale(namespace);
-    _initialize_scales_for_every_mode_key_combo(namespace);
-    print(f"{indent} setup complete!");
+    print("Initializing program:")
+    _initialize_interval_scale(namespace)
+    _initialize_notes_and_chromatic_scale(namespace)
+    _initialize_mode_definition_dictionary(namespace)
+    _initialize_scales_for_every_mode_key_combo(namespace)
+    _initialize_piano(namespace)
+    _initialize_piano_scales(namespace)
+    print(f"{indent} setup complete!")
 
 __all__ = ["initialize_data_structures"]
