@@ -88,9 +88,6 @@ class _ring:
         elif orientation == "vertical":
             output_str = output_str[:-1];
         print(output_str);
-    def show(self) -> None:
-        """wrapper method for '_show_from'"""
-        self.show_horizontally(self.access)
     def show_vertically(self, starting_position: _LL_node = None) -> None:
         """wrapper method for method '_show_from'"""
         self._show_from(starting_position, "vertically")
@@ -192,14 +189,7 @@ class _melody(_ring):
         print(      f"{indent} The transposition '{name}' has been saved, access it like:");
         print(f"{empty_indent} {indent} {name}._show_from()");
     def content(self):
-        output_str = f"{empty_indent} {self.access.get_piano_note_str()}, "
-        cursor = self.access.next
-        i = 0
-        while cursor and i < self.cardinality:
-            output_str += f"{cursor.get_piano_note_str()}, "
-            cursor = cursor.next
-            i += 1
-        print(output_str[:-2])
+        self.show_horizontally()
 def _melody_ring_from_CLL(namespace: dict[str, object], name: str, mode: str, CLL: _LL_node, source_pattern = None) -> _melody:
     """wrapper function for '_melody'"""
     return _melody(namespace, name, mode, CLL, source_pattern);

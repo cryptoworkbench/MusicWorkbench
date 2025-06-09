@@ -44,7 +44,7 @@ def test_everything():
     count_down(8)
     showoff()
     print(f"{indent} frere_jackques.content()")
-    frere_jackques.show()
+    frere_jackques.content()
     print(f"{indent} tests complete !")
 
 initialize_screen(mains_filename)
