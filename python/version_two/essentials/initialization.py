@@ -49,7 +49,7 @@ def _initialize_mode_definition_dictionary(namespace) -> None:
 
     namespace["mode_definition"] = methodized_dictionary(mode_definition)
     print(f"{indent} initialized the dictionary 'mode_definition' !")
-    print(f"{empty_indent} {indent} try 'mode_definition.show()' !")
+    print(f"{empty_indent} {indent} try 'mode_definition.list()' !")
 def _initialize_scales_for_every_mode_key_combo(namespace) -> None: # requires the dictionary "mode_definition" to be initialized !
     notes = [("c", namespace['c']), ("c_sharp", namespace['c_sharp']), ("d", namespace['d']), ("d_sharp", namespace['d_sharp']), ("e", namespace['e']), ("f", namespace['f']), ("f_sharp", namespace['f_sharp']), ("g", namespace['g']), ("g_sharp", namespace['g_sharp']), ("a", namespace['a']), ("a_sharp", namespace['a_sharp']), ("b", namespace['b']) ]
     modes = ["ionian", "dorian", "phrygian", "lydian", "mixolydian", "aeolian", "locrian"]

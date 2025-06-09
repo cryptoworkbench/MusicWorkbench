@@ -105,7 +105,7 @@ class _ring:
     def show_horizontally(self) -> None:
         """wrapper method for method '_show_horizontally'"""
         print(_empty_indent(self._show_horizontally_from(self.access)))
-    def content(self) -> None:
+    def list(self) -> None:
         print(_empty_indent(self._show_horizontally_from(self.access)[1:-1]))
     def _loop(self, complete_cycles=10, frequency=0.8, orientation="horizontally") -> None:
         """Calls 'self._show_from()' iteratively in combination with 'clear_screen()' in order to give 'self._show_from()' a dynamic touch."""
