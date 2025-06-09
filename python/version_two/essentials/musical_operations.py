@@ -14,7 +14,7 @@ def _list_of_intervals(mode_node: _LL_node) -> list:
         cursor = cursor.next
     return list_of_intervals
 
-def _new_permutation_layer_from_interval_sequence(mother_permutation_LL_node: _LL_node, interval_sequence: list = None) -> list:
+def _permutation_from_interval_sequence(mother_permutation_LL_node: _LL_node, interval_sequence: list = None) -> list:
     """creates a new layer of LL nodes by wrapping elements found using the interval sequence."""
     if not mother_permutation_LL_node:
         raise ValueError("must provide a doubly linked LL to traverse upon!")

@@ -96,7 +96,7 @@ def _CLL_from_unlinked_LL_nodes(list_of_LL_nodes: list) -> _LL_node:
     list_of_LL_nodes[0].previous = list_of_LL_nodes[-1] # make the LL circular
     list_of_LL_nodes[-1].next = list_of_LL_nodes[0]
     return list_of_LL_nodes[0];
-def _CLL_from_list(list_to_process: list) -> _LL_node: # this is the only function here which actually creates new '_LL_node' instances
+def _wrap_into_CLL(list_to_process: list) -> _LL_node: # this is the only function here which actually creates new '_LL_node' instances
     """ This function wraps the values contained in the list 'list_to_process' into a circular linked list. """
     if not list_to_process:
         raise ValueError("Cannot create a cyclical linked list (or any linked list for that matter), from a list with no items inside of it");

@@ -3,7 +3,7 @@ _self = importlib.import_module(__name__)
 
 from .notes_and_intervals import _NOTE, _INTERVAL
 from .user_utilities import *
-from .LL_node_stuff import _LL_node, _extended, _CLL_from_list, _CLL_from_unlinked_LL_nodes
+from .LL_node_stuff import _LL_node, _extended, _wrap_into_CLL, _CLL_from_unlinked_LL_nodes
 from .input_methods import *
 from .programmer_utilities import *
 from .musical_operations import *
@@ -40,13 +40,18 @@ class _ring:
     def _search_through_CLL(self, mark_node):
         """a wrapper method for the '_LL_node' method 'search_CLL'"""
         return self.access.search_CLL(mark_node, self.cardinality)
-    def apply_scale_degrees(self, list_of_scale_degrees, relative_octave: int, name_for_new_melody: str = None) -> None:
+    def apply_scale_degrees(self, list_of_scale_degrees: list, relative_octave: int = 4, name_for_new_melody: str = None) -> None:
         """Creates a _melody ring containing the melody specified by the scale degrees. The instance is not returned but updated."""
-        reduced_scale = f"{((self.key._concatenate_strings_downstream()).lower())}_{self.mode}"
+        if self.name == "chromatic scale":
+            source_scale = "chromatic_scale"
+            piano_CLL = self.original_namespace["C0"]
+        else:
+            source_scale = f"{((self.key._concatenate_strings_downstream()).lower())}_{self.mode}"
+            piano_CLL = self.original_namespace[source_scale.upper()].access
+        cardinality_of_source_pattern = self.original_namespace[source_scale].cardinality
         notes_in_melody = []
-        piano_CLL = self.original_namespace[reduced_scale.upper()].access
-        for _ in range(relative_octave):
-            for _ in range(self.original_namespace[reduced_scale].cardinality):
+        for _ in range(relative_octave): # move to specified place on piano
+            for x in range(cardinality_of_source_pattern):
                 piano_CLL = piano_CLL.next
         for scale_degree in list_of_scale_degrees: # collect notes in 'notes_in_melody'
             notes_in_melody.append(piano_CLL.traverse_cLL(scale_degree))
@@ -127,8 +132,8 @@ def _ring_from_CLL(namespace: dict[str, object], name: str, CLL: _LL_node, sourc
     """wrapper function for '_ring'."""
     return _ring(namespace, name, CLL, source_pattern);
 def ring_from_list(namespace: dict[str, object], name: str, list_to_process: list, source_pattern = None) -> _ring: # NOT IN USE!
-    """wrapper function for '_ring_from_CLL'. makes use of '_CLL_from_list'."""
-    return _ring_from_CLL(namespace, name, _CLL_from_list(list_to_process), source_pattern)
+    """wrapper function for '_ring_from_CLL'. makes use of '_wrap_into_CLL'."""
+    return _ring_from_CLL(namespace, name, _wrap_into_CLL(list_to_process), source_pattern)
 def ring_from_list_of_prepared_nodes(namespace: dict[str, object], name: str, list_of_prepared_nodes: list, source_pattern = None) -> _ring:
     """wrapper function for '_ring_from_CLL'. doesn't make use of '_CLL_fromlist'."""
     return _ring_from_CLL(namespace, name, _CLL_from_unlinked_LL_nodes(list_of_prepared_nodes), source_pattern)
@@ -170,8 +175,8 @@ def _scale_ring_from_CLL(namespace, name: str, key: _LL_node, mode: str, CLL: _L
     """wrapper function for '_scale'"""
     return _scale(namespace, name, key, mode, CLL, source_pattern);
 def scale_ring_from_list(namespace, name: str, key: _LL_node, mode: str, list_to_process: list, source_pattern: _ring = None) -> _scale:
-    """wrapper function for '_scale_ring_from_CLL'. makes use of '_CLL_from_list'."""
-    return _scale_ring_from_CLL(namespace, name, key, mode, _CLL_from_list(list_to_process), source_pattern);
+    """wrapper function for '_scale_ring_from_CLL'. makes use of '_wrap_into_CLL'."""
+    return _scale_ring_from_CLL(namespace, name, key, mode, _wrap_into_CLL(list_to_process), source_pattern);
 # ^^^ ALL '_scale' STUFF ^^^
 
 class _melody(_ring):
@@ -200,7 +205,7 @@ def _melody_ring_from_CLL(namespace: dict[str, object], name: str, mode: str, CL
     """wrapper function for '_melody'"""
     return _melody(namespace, name, mode, CLL, source_pattern);
 def melody_from_list(namespace: dict[str, object], list_of_notes: list, name: str, mode: str = None, source_pattern: _ring = None) -> _melody:
-    """wrapper function for '_melody_ring_fron_CLL'. makes use of '_CLL_from_list'."""
+    """wrapper function for '_melody_ring_fron_CLL'. makes use of '_wrap_into_CLL'."""
     if name == None: name = get_name("melody")
-    return _melody_ring_from_CLL(namespace, name, mode, _CLL_from_list(list_of_notes), source_pattern)
+    return _melody_ring_from_CLL(namespace, name, mode, _wrap_into_CLL(list_of_notes), source_pattern)
 # ^^^ ALL '_melody' STUFF ^^^
