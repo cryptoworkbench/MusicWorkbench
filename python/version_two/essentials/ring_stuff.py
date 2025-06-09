@@ -66,11 +66,11 @@ class _ring:
     def _show_from(self, starting_position: _LL_node = None, orientation = "horizontally") -> str:
         """Display the content of the ring by cycling through it once."""
         cursor = starting_position
-        if starting_position is None:
+        if starting_position is None: # if no starting position is specified; start at the head of the ring
             starting_position = self.access
-        else:
+        else: # if a starting position is specified; try to find it in the CLL we can access through self.access (the CLL the ring gives method for)
             cursor = self._search_through_CLL(starting_position)
-        if not cursor:
+        if not cursor: # if the specified starting position is not found there, then we search at the bottom layer
             starting_position = self.__bottom_layer_search(starting_position)
         element_prefix = ""
         element_suffix = ""
