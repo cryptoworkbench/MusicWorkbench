@@ -56,6 +56,8 @@ class _ring:
         print(      f"{indent} The melody '{name_for_new_melody}' has been saved, access it like:");
         print(f"{empty_indent} {indent} {name_for_new_melody}.content()");
     def __bottom_layer_search(self, starting_position: _LL_node) -> _LL_node:
+        if not isinstance(starting_position, _LL_node):
+            raise ValueError(f"Error, {starting_position} is not a linked list node !")
         LL_node_to_match_against = starting_position._travel_downward()
         original_ring_LL_cursor = self.access
         for iterator in range(self.cardinality):
@@ -65,13 +67,12 @@ class _ring:
         raise ValueError(f"Error, object  '{starting_position}' is not in this ring ! (and neither is a different object containing the same exact value!)");
     def _show_from(self, starting_position: _LL_node = None, orientation = "horizontally") -> str:
         """Display the content of the ring by cycling through it once."""
-        cursor = starting_position
-        if starting_position is None: # if no starting position is specified; start at the head of the ring
-            starting_position = self.access
-        else: # if a starting position is specified; try to find it in the CLL we can access through self.access (the CLL the ring gives method for)
-            cursor = self._search_through_CLL(starting_position)
-        if not cursor: # if the specified starting position is not found there, then we search at the bottom layer
-            starting_position = self.__bottom_layer_search(starting_position)
+        if not starting_position:
+            """complain and refuse when no starting position was specified"""
+            raise ValueError("starting position must be supplied with this function.")
+        elif not (cursor := self._search_through_CLL(starting_position)):
+            """if a starting position was specified, but not found in the rings's attached CLL, then search in the bottom layer."""
+            cursor = starting_position = self.__bottom_layer_search(starting_position)
         element_prefix = ""
         element_suffix = ""
         if orientation == "horizontally":
@@ -79,7 +80,7 @@ class _ring:
         if orientation == "vertically":
             element_prefix += f"{empty_indent} "
             element_suffix += "\n"
-        output_str = f"{starting_position.bottom_layer(orientation)}{element_suffix}"
+        output_str = f"{cursor.bottom_layer(orientation)}{element_suffix}"
         cursor = starting_position.next
         while cursor != starting_position:
             output_str += f"{element_prefix}{cursor.bottom_layer(orientation)}{element_suffix}"
@@ -101,6 +102,8 @@ class _ring:
     def show_horizontally(self) -> None:
         """wrapper method for method '_show_horizontally'"""
         print(_empty_indent(self._show_horizontally_from(self.access)))
+    def content(self) -> None:
+        print(_empty_indent(self._show_horizontally_from(self.access)[1:-1]))
     def _loop(self, complete_cycles=10, frequency=0.8, orientation="horizontally") -> None:
         """Calls 'self._show_from()' iteratively in combination with 'clear_screen()' in order to give 'self._show_from()' a dynamic touch."""
         cursor = self.access; 
@@ -195,8 +198,6 @@ class _melody(_ring):
         melody_from_list(self.original_namespace, transposed_melody, name, self.mode, self);
         print(      f"{indent} The transposition '{name}' has been saved, access it like:");
         print(f"{empty_indent} {indent} {name}._show_from()");
-    def content(self):
-        print(_empty_indent(self._show_horizontally_from(self.access)[1:-1]))
 def _melody_ring_from_CLL(namespace: dict[str, object], name: str, mode: str, CLL: _LL_node, source_pattern = None) -> _melody:
     """wrapper function for '_melody'"""
     return _melody(namespace, name, mode, CLL, source_pattern);
