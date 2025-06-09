@@ -1,6 +1,6 @@
 import os; mains_filename = os.path.basename(__file__);
 from essentials.user_utilities import *
-from essentials.programmer_utilities import indent
+from essentials.programmer_utilities import indent, keyboard_interrupt_hint
 from essentials.initialization import initialize_screen, initialize_data_structures # initialize_data_structures, _collect_piano_notes_for_mode
 from essentials.musical_operations import * # list_of_notes, _list_of_intervals
 from essentials.LL_node_stuff import * # _LL_node, _extended, _CLL_from_list
@@ -34,31 +34,17 @@ def showoff():
     c_aeolian.loop_horizontally(1, 0.1)
     c_locrian.loop_horizontally(1, 0.1)
 
+def count_down(counts: int) -> None:
+    print(f"\nSTARTING TESTS IN {counts} SECONDS      ({keyboard_interrupt_hint} to prevent).")
+    for x in range(counts, 0, -1):
+        time.sleep(1)
+        print(f"{x} ...")
+
 def test_everything():
-    print("starting tests in 10 seconds ('<ctrl> + v' to prevent).")
-    print("10 ...")
-    time.sleep(1)
-    print("9 ...")
-    time.sleep(1)
-    print("8 ...")
-    time.sleep(1)
-    print("7 ...")
-    time.sleep(1)
-    print("6 ...")
-    time.sleep(1)
-    print("5 ...")
-    time.sleep(1)
-    print("4 ...")
-    time.sleep(1)
-    print("3 ...")
-    time.sleep(1)
-    print("2 ...")
-    time.sleep(1)
-    print("1 ...")
-    time.sleep(1)
+    count_down(8)
     showoff()
     print(f"{indent} frere_jackques.content()")
-    frere_jackques.content()
+    frere_jackques.show()
     print(f"{indent} tests complete !")
 
 initialize_screen(mains_filename)

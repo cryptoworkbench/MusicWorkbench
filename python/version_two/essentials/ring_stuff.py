@@ -55,32 +55,22 @@ class _ring:
         print(      f"{indent} The melody '{name_for_new_melody}' has been saved, access it like:");
         print(f"{empty_indent} {indent} {name_for_new_melody}.content()");
     def _loop_search(self, starting_position: _LL_node) -> _LL_node:
-        LL_node_to_match_against = starting_position.deepest_permutation_layer()
+        LL_node_to_match_against = starting_position._travel_downward()
         original_ring_LL_cursor = self.access
         for iterator in range(self.cardinality):
-            if original_ring_LL_cursor.deepest_permutation_layer() == LL_node_to_match_against:
+            if original_ring_LL_cursor._travel_downward() == LL_node_to_match_against:
                 return original_ring_LL_cursor
             original_ring_LL_cursor = original_ring_LL_cursor.next
         raise ValueError(f"Error, object  '{starting_position}' is not in this ring ! (and neither is a different object containing the same exact value!)");
-    def show_from(self, orientation = "horizontally", starting_position: _LL_node = None) -> None:
+    def _show_from(self, starting_position: _LL_node = None, orientation = "horizontally") -> None:
         """Display the content of the ring by cycling through it once."""
         cursor = starting_position;
-        if starting_position == None:
+        if starting_position is None:
             starting_position = self.access
         else:
             cursor = self.search_through_CLL(starting_position);
         if cursor == None:
             starting_position = self._loop_search(starting_position);
-        # ChatGPT suggested alternative to the above:
-        # if starting_position is None:
-        #     print("message from 'show_from': starting_position == None!")
-        #     starting_position = self.access
-        #     cursor = self.access
-        # else:
-        #     cursor = self.search_through_CLL(starting_position)
-        #     if cursor is None:
-        #         startiing_position = self._loop_search(starting_position)
-        #         cursor = starting_position
         indent_to_use = ""
         end = ""
         if orientation == "horizontally":
@@ -99,35 +89,35 @@ class _ring:
             output_str = output_str[:-1];
         print(output_str);
     def show(self) -> None:
-        """wrapper method for 'show_from'"""
+        """wrapper method for '_show_from'"""
         self.show_horizontally(self.access)
     def show_vertically(self, starting_position: _LL_node = None) -> None:
-        """wrapper method for method 'show_from'"""
-        self.show_from("vertically", starting_position)
+        """wrapper method for method '_show_from'"""
+        self._show_from(starting_position, "vertically")
     def show_horizontally(self, starting_position: _LL_node = None) -> None:
-        """wrapper method for method 'show_from'"""
-        self.show_from("horizontally", starting_position)
-    def loop(self, orientation="horizontally", complete_cycles=10, frequency=0.8) -> None:
-        """Calls 'self.show_from()' iteratively in combination with 'clear_screen()' in order to give 'self.show_from()' a dynamic touch."""
+        """wrapper method for method '_show_from'"""
+        self._show_from(starting_position, "horizontally")
+    def _loop(self, complete_cycles=10, frequency=0.8, orientation="horizontally") -> None:
+        """Calls 'self._show_from()' iteratively in combination with 'clear_screen()' in order to give 'self._show_from()' a dynamic touch."""
         cursor = self.access; 
         for i in range(complete_cycles):
             for j in range(self.cardinality):
                 clear_screen()
                 print(f"Currently looping: {self.name}\n")
-                self.show_from(orientation, cursor)
+                self._show_from(cursor, orientation)
                 cursor = cursor.next
                 remaining_cycles = complete_cycles - i
                 print(f'\nOffset from starting element: {j}');
                 print(  f'Remaining cycles            : {remaining_cycles}');
                 print(  f'Current speed               : {frequency}s');
-                print("\n'<ctrl> + c' to exit");
+                print(f"\n{keyboard_interrupt_hint} to exit");
                 time.sleep(frequency);
     def loop_vertically(self, complete_cycles=10, frequency=0.7) -> None:
-        """Calls 'self.autoloop()' with the orientation set to 'vertical'."""
-        self.loop("vertically", complete_cycles, frequency);
+        """Calls 'self._loop()' with the orientation set to 'vertical'."""
+        self._loop(complete_cycles, frequency, "vertically");
     def loop_horizontally(self, complete_cycles=10, frequency=0.7) -> None:
-        """Calls 'self.autoloop()' with the orientation set to 'horizontal'."""
-        self.loop("horizontally", complete_cycles, frequency);
+        """Calls 'self._loop()' with the orientation set to 'horizontal'."""
+        self._loop(complete_cycles, frequency, "horizontally");
 def _ring_from_CLL(namespace: dict[str, object], name: str, CLL: _LL_node, source_pattern = None) -> _ring:
     """wrapper function for '_ring'."""
     return _ring(namespace, name, CLL, source_pattern);
@@ -194,13 +184,13 @@ class _melody(_ring):
         if (half_steps == None): half_steps = get_half_steps();
         transposed_melody = []
         for i, LL_node in enumerate(self):
-            original_note = LL_node.deepest_permutation_layer();
+            original_note = LL_node._travel_downward();
             new_note      = original_note.traverse_cLL(half_steps);
             transposed_melody.append(new_note);
         if (name == None): name = get_name()
         melody_from_list(self.original_namespace, transposed_melody, name, self.mode, self);
         print(      f"{indent} The transposition '{name}' has been saved, access it like:");
-        print(f"{empty_indent} {indent} {name}.show_from()");
+        print(f"{empty_indent} {indent} {name}._show_from()");
     def content(self):
         output_str = f"{empty_indent} {self.access.get_piano_note_str()}, "
         cursor = self.access.next

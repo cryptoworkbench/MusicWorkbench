@@ -9,27 +9,32 @@ class _LL_node:
         self.content = content
         self.next = next_node
         self.previous = previous_node
-    def read(self):
-        return self.content
-    def _return_first_extended_node_down_the_chain(self):
-        while isinstance(self, _LL_node) and not isinstance(self, _extended): self = self.content;
-        return self;
-    def bottom_layer(self, orientation: str = None):
-        """Returns the string from the bottom of the '_LL_node' layers (permutation layers)."""
-        self = self.deepest_permutation_layer();
-        if isinstance(self.content, _NOTE): return self.content.return_NOTE_name();
+    def _last_unwrap(self, orientation: str = "horizontally"):
+        if isinstance(self.content, _NOTE): return self.content.return_NOTE_name()
         elif isinstance(self.content, _INTERVAL):
             if orientation == "horizontally":
                 return self.content.return_INTERVAL_abbreviation()
-            elif orientation == "vertically": return self.content.return_INTERVAL_name()
-        else: print("neither note nor interval!");
-    def deepest_permutation_layer(self):
-        while isinstance(self.content, _LL_node):
+            elif orientation == "vertically":
+                return self.content.return_INTERVAL_name()
+            else:
+                raise ValueError("orientation setting not recognized!")
+        else: raise ValueError("neither note nor interval!");
+    def _travel_downward(self):
+        while isinstance(self.content, _LL_node) and not isinstance(self.content, _extended):
             self = self.content
         return self;
+    def bottom_layer(self, orientation: str = None):
+        """Returns the string from the bottom of the '_LL_node' layers (permutation layers)."""
+        cursor = self._travel_downward()
+        output_str = ""
+        if isinstance(cursor.content, _extended):
+            cursor = cursor.content
+            output_str += f"{cursor.extension()}"
+        output_str = f"{cursor._travel_downward()._last_unwrap(orientation)}{output_str}"
+        return output_str
     def get_piano_note_str(self):
         if self == None: print("Error, argument is None.")
-        accessed_element = self._return_first_extended_node_down_the_chain()
+        accessed_element = self._firsty_extended_node_down_the_chain()
         name = f"{accessed_element.bottom_layer()}"
         if isinstance(accessed_element, _extended):
             name += f"{accessed_element.extension()}"
