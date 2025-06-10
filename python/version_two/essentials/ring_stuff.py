@@ -102,23 +102,26 @@ class _ring(_LL_node):
         """Calls 'self._show_from()' iteratively in combination with 'clear_screen()' in order to give 'self._show_from()' a dynamic touch."""
         if orientation != "horizontally" and orientation != "vertically": raise ValueError(f"'{orientation}' is neither 'horizontally' or 'vertically' !")
         if complete_cycles == 0: raise ValueError("The amount of cycles must be either negative or positive: not 0 !!!")
-        def print_with_info(cursor: _LL_node, current_offset: int, completed_cycles: int):
+        cursor = self.access; direction = _LL_node.get_next; direction_str = "forwards" # initialize variables
+        if complete_cycles < 0: # adjust variables in case of backwards traversal
+            direction = _LL_node.get_previous
+            complete_cycles *= -1
+            direction_str = "backwards"
+        def print_with_info(cursor: _LL_node, current_offset: int, completed_cycles: int, direction_str: str): # the function which will be used in the for loop below
             clear_screen()
             print(f"Currently looping: {self.name}\n")
             print(_empty_indent(self._show_from(cursor, orientation)))
-            print(f'\nOffset from starting element: {current_offset}')
+            print(f'\nCurrent direction           : {direction_str}')
+            print(  f'Offset from starting element: {current_offset}')
+            print(  f'complete cycles             : {complete_cycles}')
             print(  f'Remaining cycles            : {complete_cycles - completed_cycles}')
             print(  f'Current speed               : {frequency}s')
             print(f"\n{keyboard_interrupt_hint} to exit")
-        cursor = self.access
-        next_function = cursor.get_next
-        if complete_cycles < 0:
-            next_function = cursor.get_previous
-        for current_offset in range(self.cardinality):
-            for completed_cycles in range(complete_cycles):
-                print_with_info(cursor, current_offset, completed_cycles)
-                cursor = cursor.next_function
-            time.sleep(frequency)
+            return direction(cursor)
+        for completed_cycles in range(complete_cycles): # for every cycle
+            for current_offset in range(self.cardinality): # execute '_show_from' with every offset
+                cursor = print_with_info(cursor, current_offset, completed_cycles, direction_str)
+                time.sleep(frequency)
     def loop_vertically(self) -> None:
         """Calls 'self._loop()' with the orientation set to 'vertical'."""
         self._loop(  "vertically");
