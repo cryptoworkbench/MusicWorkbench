@@ -73,8 +73,8 @@ def __initialize_piano_octave(namespace: dict[str, object], current_octave: int,
         namespace[var_name_zero] = namespace[var_name_one] = created_octave_nodes[i];
         __link_unlinked_LL_nodes(created_octave_nodes);
     if continuation_point != None:
-        continuation_point.next = created_octave_nodes[0]
-        created_octave_nodes[0].previous = continuation_point
+        continuation_point.forward = created_octave_nodes[0]
+        created_octave_nodes[0].backward = continuation_point
     return created_octave_nodes[len(LIST_OF_NOTE_NAMES) - 1] # return the last element
 def _initialize_piano(namespace) -> None:
     '''initializes a piano model'''

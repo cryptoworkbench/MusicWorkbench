@@ -7,8 +7,8 @@ class _LL_node:
     """ Typedef for the datatype that will be used as the basic linked list structure. """
     def __init__(self, content, next_node=None, previous_node=None):
         self.content = content
-        self.next = next_node
-        self.previous = previous_node
+        self.forward = next_node
+        self.backward = previous_node
     def _last_unwrap(self, orientation: str = "horizontally"):
         if isinstance(self.content, _NOTE): return self.content.return_NOTE_name()
         elif isinstance(self.content, _INTERVAL):
@@ -32,19 +32,15 @@ class _LL_node:
             output_str += f"{cursor.extension()}"
         output_str = f"{cursor._travel_downward()._last_unwrap(orientation)}{output_str}"
         return output_str
-    def get_next(self):
-        return self.next
-    def get_previous(self):
-        return self.previous
     def length(self) -> int:
         if not self:
             raise ValueError("non existing ll does not have a length!")
         else:
             ret_val = 1
             visited = [self]
-            cursor = self.next
+            cursor = self.forward
             while cursor != self:
-                cursor = cursor.next
+                cursor = cursor.forward
                 ret_val += 1
             return ret_val
     def traverse_cLL(self, distance: int):
@@ -55,20 +51,20 @@ class _LL_node:
         traversed_cLL = self
         if distance > 0:
             for _ in range(distance):
-                if traversed_cLL.next:
-                    traversed_cLL = traversed_cLL.next
+                if traversed_cLL.forward:
+                    traversed_cLL = traversed_cLL.forward
                 else: return None
         else:
             for _ in range(-distance):
-                if traversed_cLL.previous:
-                    traversed_cLL = traversed_cLL.previous;
+                if traversed_cLL.backward:
+                    traversed_cLL = traversed_cLL.backward;
                 else: return None
         return traversed_cLL;
     def find_node(self, mark_node, CLL_length: int):
         """ searches the linked list for node 'mark_node', returns it's position upon finding it. if not found returns None """
         cursor = self; i = 0;
         while cursor != mark_node and i < CLL_length:
-            i += 1; cursor = cursor.next;
+            i += 1; cursor = cursor.forward;
         if i == CLL_length: return None;
         return cursor;
 def _create_LL_node(content, next_node: _LL_node = None, previous_node: _LL_node = None) -> _LL_node:
@@ -91,14 +87,14 @@ def _create_extended_LL_node(content, extension: int, next_node: _extended = Non
 def __link_unlinked_LL_nodes(list_of_LL_nodes: list) -> _LL_node:
     """Links a list of LL nodes to each other. Intended to be used with a list of entirely unlinked LL nodes."""
     for i in range(1, len(list_of_LL_nodes)): # make the LL nodes linked
-        list_of_LL_nodes[i - 1].next = list_of_LL_nodes[i    ]
-        list_of_LL_nodes[i].previous = list_of_LL_nodes[i - 1]
+        list_of_LL_nodes[i - 1].forward = list_of_LL_nodes[i    ]
+        list_of_LL_nodes[i].backward = list_of_LL_nodes[i - 1]
     return list_of_LL_nodes[0]
 def _CLL_from_unlinked_LL_nodes(list_of_LL_nodes: list) -> _LL_node:
     """wrapper function for '_link_unlinked_LL_nodes' to automize the creation of circular linked lists."""
     __link_unlinked_LL_nodes(list_of_LL_nodes)
-    list_of_LL_nodes[0].previous = list_of_LL_nodes[-1] # make the LL circular
-    list_of_LL_nodes[-1].next = list_of_LL_nodes[0]
+    list_of_LL_nodes[0].backward = list_of_LL_nodes[-1] # make the LL circular
+    list_of_LL_nodes[-1].forward = list_of_LL_nodes[0]
     return list_of_LL_nodes[0];
 def _wrap_into_CLL(list_to_process: list) -> _LL_node: # this is the only function here which actually creates new '_LL_node' instances
     """ This function wraps the values contained in the list 'list_to_process' into a circular linked list. """

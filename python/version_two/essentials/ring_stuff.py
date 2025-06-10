@@ -15,11 +15,11 @@ class _ring(_LL_node):
         if name == None: name = get_name()
         if circular_LL == None: raise ValueError("LL must be provided.");
         self.name = name; self.access = circular_LL; self.source_pattern = source_pattern; self.cardinality = 1;
-        cursor = circular_LL; cursor = cursor.next;
-        while cursor != circular_LL: cursor = cursor.next; self.cardinality += 1;
+        cursor = circular_LL; cursor = cursor.forward;
+        while cursor != circular_LL: cursor = cursor.forward; self.cardinality += 1;
     def __iter__(self):
         current = self.access; count = 0;
-        while count < self.cardinality: yield current.content; current = current.next; count += 1;
+        while count < self.cardinality: yield current.content; current = current.forward; count += 1;
     def _info_header(self):
         header_str = f"{indent} INFO ABOUT "
         match(self):
@@ -52,7 +52,7 @@ class _ring(_LL_node):
         notes_in_melody = []
         for _ in range(relative_octave): # move to specified place on piano
             for x in range(cardinality_of_source_pattern):
-                piano_CLL = piano_CLL.next
+                piano_CLL = piano_CLL.forward
         for scale_degree in list_of_scale_degrees: # collect notes in 'notes_in_melody'
             notes_in_melody.append(piano_CLL.traverse_cLL(scale_degree))
         self.original_namespace[name_for_new_melody] = melody_from_list(self.original_namespace, notes_in_melody, name_for_new_melody, self.mode, self);
@@ -66,7 +66,7 @@ class _ring(_LL_node):
             """ ^ if a starting position was specified, but not found in the rings's attached CLL, then try to find a match using the lowest permutation layer:"""
             LL_node_to_find = starting_position._travel_downward(); cursor = self.access; iterator = 0;
             while cursor._travel_downward() != LL_node_to_find and iterator < self.cardinality:
-                cursor = cursor.next; iterator += 1;
+                cursor = cursor.forward; iterator += 1;
             """ ^ search in the lowest permutation layer"""
             if iterator == self.cardinality:
                 """ ^ if the specified LL_node was not found; complain and refuse ^^^ """
@@ -76,10 +76,10 @@ class _ring(_LL_node):
             case ("horizontally"): element_suffix = ", "
             case ("vertically"): element_prefix += f"{empty_indent} "
         output_str = f"{cursor._concatenate_strings_downstream(orientation)}{element_suffix}"
-        cursor = starting_position.next
+        cursor = starting_position.forward
         while cursor != starting_position:
             output_str += f"{element_prefix}{cursor._concatenate_strings_downstream(orientation)}{element_suffix}"
-            cursor = cursor.next;
+            cursor = cursor.forward;
         match (orientation): # finalize 'output_str'
             case ("horizontally"): output_str = f"<{output_str[:-2]}>"
             case ("vertically"): output_str = f"{output_str[:-1]}"
@@ -102,16 +102,15 @@ class _ring(_LL_node):
         """Calls 'self._show_from()' iteratively in combination with 'clear_screen()' in order to give 'self._show_from()' a dynamic touch."""
         if orientation != "horizontally" and orientation != "vertically": raise ValueError(f"'{orientation}' is neither 'horizontally' or 'vertically' !")
         if complete_cycles == 0: raise ValueError("The amount of cycles must be either negative or positive: not 0 !!!")
-        cursor = self.access; direction = 'next'; direction_str = "forwards" # initialize variables
+        cursor = self.access; direction = 'forward' # initialize variables
         if complete_cycles < 0: # adjust variables in case of backwards traversal
-            direction = 'previous'
+            direction = 'backward'
             complete_cycles *= -1
-            direction_str = "backwards"
-        def print_with_info(cursor: _LL_node, current_offset: int, completed_cycles: int, direction_str: str): # the function which will be used in the for loop below
+        def print_with_info(cursor: _LL_node, current_offset: int, completed_cycles: int): # the function which will be used in the for loop below
             clear_screen()
             print(f"Currently looping: {self.name}\n")
             print(_empty_indent(self._show_from(cursor, orientation)))
-            print(f'\nCurrent direction           : {direction_str}')
+            print(f'\nCurrent direction           : {direction}')
             print(  f'Offset from starting element: {current_offset}')
             print(  f'complete cycles             : {complete_cycles}')
             print(  f'Remaining cycles            : {complete_cycles - completed_cycles}')
@@ -120,7 +119,7 @@ class _ring(_LL_node):
             return getattr(cursor, direction)
         for completed_cycles in range(complete_cycles): # for every cycle
             for current_offset in range(self.cardinality): # execute '_show_from' with every offset
-                cursor = print_with_info(cursor, current_offset, completed_cycles, direction_str)
+                cursor = print_with_info(cursor, current_offset, completed_cycles)
                 time.sleep(frequency)
     def loop_vertically(self) -> None:
         """Calls 'self._loop()' with the orientation set to 'vertical'."""

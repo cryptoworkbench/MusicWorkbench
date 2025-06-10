@@ -20,12 +20,12 @@ def test_piano(namespace) -> None:
     cursor = first_piano_note = namespace["c1"]
     while cursor:
         print(f"{cursor._concatenate_strings_downstream()}");
-        cursor = cursor.next
+        cursor = cursor.forward
 def test_piano_backwards(namespace) -> None:
     cursor = first_piano_note = namespace["b7"]
     while cursor:
         print(f"{cursor._concatenate_strings_downstream()}");
-        cursor = cursor.previous
+        cursor = cursor.backward
 
 def initialize_melodies() -> None:
     melody_dictionary = interval_pattern({"ode_to_joy": [2, 2, 3, 4, 4, 3, 2, 1, 0, 0, 1, 2, 2, 1, 1]})
