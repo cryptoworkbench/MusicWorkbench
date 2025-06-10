@@ -4,7 +4,7 @@ from .config import LIST_OF_NOTE_NAMES, OCTAVE_AMOUNT, indent, empty_indent
 from .notes_and_intervals import _NOTE, _INTERVAL
 from .LL_node_stuff import _create_LL_node, _CLL_from_unlinked_LL_nodes, __link_unlinked_LL_nodes, _create_extended_LL_node, _extended, _LL_node, _wrap_into_LL_nodes
 from .ring_stuff import ring_from_list, ring_from_list_of_prepared_nodes, _ring_from_CLL, scale_ring_from_list
-from .musical_operations import _melody_from_interval_sequence, _permutation_from_interval_sequence, _list_of_intervals, __list_of_intervals
+from .musical_operations import _melody_from_interval_sequence, _list_of_intervals
 from .list_stuff import _multiply_list, methodized_dictionary
 
 modes = ["ionian", "dorian", "phrygian", "lydian", "mixolydian", "aeolian", "locrian"]
@@ -35,7 +35,7 @@ def _initialize_notes_and_chromatic_scale(namespace: dict[str, object]) -> None:
     var_name = "chromatic_scale"
     scale_name = "chromatic scale"
     mapping = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
-    namespace[var_name] = ring_from_list(namespace, scale_name, _permutation_from_interval_sequence(inner_nodes[0], _multiply_list([1], len(inner_nodes) - 1)), None)
+    namespace[var_name] = ring_from_list(namespace, scale_name, _melody_from_interval_sequence(inner_nodes[0], mapping), None)
     namespace[var_name].mode = None
     print(f"{indent} created the ring '{var_name}', which represents the notes within an octave (C, C#, D, etc).");
 def _initialize_modes_dictionary(namespace) -> None:
@@ -71,7 +71,7 @@ def _initialize_piano(namespace) -> None:
         """returns a list of newly-created nodes representing one specific octave"""
         created_octave_nodes = []
         for i, note_name in enumerate(LIST_OF_NOTE_NAMES):
-            created_octave_nodes.append(_create_extended_LL_node(namespace[note_name], current_octave)) # cannot use '_permutation_from_interval_sequence' here !
+            created_octave_nodes.append(_create_extended_LL_node(namespace[note_name], current_octave))
             var_name = f"{note_name}{current_octave}"
             namespace[var_name] = namespace[var_name.upper()] = created_octave_nodes[i];
         return created_octave_nodes
