@@ -111,12 +111,13 @@ class _ring(_LL_node):
             print(  f'Current speed               : {frequency}s')
             print(f"\n{keyboard_interrupt_hint} to exit")
         cursor = self.access
-        if complete_cycles < 0: complete_cycles = complete_cycles * -1
+        next_function = cursor.get_next
+        if complete_cycles < 0:
+            next_function = cursor.get_previous
         for current_offset in range(self.cardinality):
             for completed_cycles in range(complete_cycles):
                 print_with_info(cursor, current_offset, completed_cycles)
-                if complete_cycles > 0: cursor = cursor.next
-                else: cursor = cursor.previous
+                cursor = cursor.next_function
             time.sleep(frequency)
     def loop_vertically(self) -> None:
         """Calls 'self._loop()' with the orientation set to 'vertical'."""
