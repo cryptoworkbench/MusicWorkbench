@@ -5,7 +5,7 @@ from .notes_and_intervals import _NOTE, _INTERVAL
 from .LL_node_stuff import _create_LL_node, _CLL_from_unlinked_LL_nodes, __link_unlinked_LL_nodes, _create_extended_LL_node, _extended, _LL_node, _wrap_into_LL_nodes
 from .ring_stuff import ring_from_list, ring_from_list_of_prepared_nodes, _ring_from_CLL, scale_ring_from_list
 from .musical_operations import _permutation_from_interval_sequence, _list_of_intervals
-from .list_stuff import _multiply_list, methodized_dictionary
+from .list_and_dictionary_stuff import _multiply_list, methodized_dictionary
 
 modes = ["ionian", "dorian", "phrygian", "lydian", "mixolydian", "aeolian", "locrian"]
 
@@ -50,7 +50,7 @@ def _initialize_modes_dictionary(namespace) -> None:
 
     namespace["modes"] = methodized_dictionary(modes)
     print(f"{indent} initialized the dictionary 'modes' !")
-    print(f"{empty_indent} {indent} try 'modes.list()' !")
+    print(f"{empty_indent} {indent} try 'modes.list_elements()' !")
 def _initialize_scales_for_every_mode_key_combo(namespace) -> None: # requires the dictionary "modes" to be initialized !
     notes = [("c", namespace['c']), ("c_sharp", namespace['c_sharp']), ("d", namespace['d']), ("d_sharp", namespace['d_sharp']), ("e", namespace['e']), ("f", namespace['f']), ("f_sharp", namespace['f_sharp']), ("g", namespace['g']), ("g_sharp", namespace['g_sharp']), ("a", namespace['a']), ("a_sharp", namespace['a_sharp']), ("b", namespace['b']) ]
     modes = ["ionian", "dorian", "phrygian", "lydian", "mixolydian", "aeolian", "locrian"]
@@ -64,7 +64,7 @@ def _initialize_scales_for_every_mode_key_combo(namespace) -> None: # requires t
         namespace[f"{note_name}_major"] = namespace[f"{note_name}_ionian"];
         namespace[f"{note_name}_minor"] = namespace[f"{note_name}_aeolian"];
     print(f"{indent} created the 84 rings for all possible key-mode combinations, that's 7 modes * 12 keys = 84 scales in total !");
-    print(f"{empty_indent} {indent} access them like 'c_major.list()', 'g_dorian.list()', 'f_locrian.list()', etc ...");
+    print(f"{empty_indent} {indent} access them like 'c_major.list_elements()', 'g_dorian.list_elements()', 'f_locrian.list_elements()', etc ...");
 def _initialize_piano(namespace) -> None:
     '''initializes a piano model'''
     def list_of_piano_octave_nodes(namespace: dict[str, object], current_octave: int, continuation_point: _extended = None) -> list:
@@ -81,7 +81,8 @@ def _initialize_piano(namespace) -> None:
         current_octave_nodes = list_of_piano_octave_nodes(namespace, current_octave, last_note_of_current_octave);
         for current_node in current_octave_nodes: created_nodes.append(current_node)
     namespace["piano"] = _ring_from_CLL(namespace, "piano", _CLL_from_unlinked_LL_nodes(created_nodes), None)
-    print(f"{indent} created a piano computer model !");
+    print(f"{indent} created a piano model with {OCTAVE_AMOUNT} octaves !");
+    print(f"{empty_indent} {indent} access it like this: piano.list_elements() !");
 
 def _initialize_piano_scales(namespace) -> None:
     modes = [("ionian", namespace['ionian']), ("dorian", namespace['dorian']), ("phrygian", namespace['phrygian']), ("lydian", namespace['lydian']), ("mixolydian", namespace['mixolydian']), ("aeolian", namespace['aeolian']), ("locrian", namespace['locrian'])]
@@ -103,7 +104,7 @@ def _initialize_piano_scales(namespace) -> None:
                                                                   namespace[var_name_normal])
 
     print(f"{indent} created the 84 rings for all possible key-mode combinations, that's 7 modes * 12 keys = 84 scales in total !");
-    print(f"{empty_indent} {indent} access them like 'C_MAJOR.list()', 'G_DORIAN.list()', 'F_LOCRIAN.list()', etc ...");
+    print(f"{empty_indent} {indent} access them like 'C_MAJOR.list_elements()', 'G_DORIAN.list_elements()', 'F_LOCRIAN.list_elements()', etc ...");
 
 def initialize_data_structures(namespace: dict[str, object]) -> None:
     print("Initializing program:")
