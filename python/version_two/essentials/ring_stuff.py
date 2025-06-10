@@ -109,15 +109,15 @@ class _ring(_LL_node):
         def print_with_info(cursor: _LL_node, current_offset: int, completed_cycles: int): # the function which will be used in the for loop below
             clear_screen()
             print(_empty_indent(self._show_from(cursor, orientation)))
-            print(f'\nCurrently looping: {self.name}')
-            print(  f'Current direction           : {direction}')
-            print(  f'Offset from starting element: {current_offset}')
-            print(  f'complete cycles             : {complete_cycles}')
-            print(  f'Remaining cycles            : {complete_cycles - completed_cycles}')
-            print(  f'Current speed               : {frequency}s')
+            print(f'\nCurrently looping            :   {self.name}')
+            print(  f'Current direction            :   {direction}')
+            print(  f'Offset from starting element :   {current_offset}')
+            print(  f'complete cycles              :   {complete_cycles}')
+            print(  f'Remaining cycles             :   {complete_cycles - completed_cycles}')
+            print(  f'Current speed                :   {frequency}s')
             print(f"\n{keyboard_interrupt_hint} to exit")
             return getattr(cursor, direction)
-        for completed_cycles in range(complete_cycles): # for every cycle
+        for completed_cycles in range(complete_cycles): # loop through the different possible outputs of '_show_from' 'complete_cycles' amount of times
             for current_offset in range(self.cardinality): # execute '_show_from' with every offset
                 cursor = print_with_info(cursor, current_offset, completed_cycles)
                 time.sleep(frequency)
