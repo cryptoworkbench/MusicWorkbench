@@ -102,9 +102,9 @@ class _ring(_LL_node):
         """Calls 'self._show_from()' iteratively in combination with 'clear_screen()' in order to give 'self._show_from()' a dynamic touch."""
         if orientation != "horizontally" and orientation != "vertically": raise ValueError(f"'{orientation}' is neither 'horizontally' or 'vertically' !")
         if complete_cycles == 0: raise ValueError("The amount of cycles must be either negative or positive: not 0 !!!")
-        cursor = self.access; direction = _LL_node.get_next; direction_str = "forwards" # initialize variables
+        cursor = self.access; direction = 'next'; direction_str = "forwards" # initialize variables
         if complete_cycles < 0: # adjust variables in case of backwards traversal
-            direction = _LL_node.get_previous
+            direction = 'previous'
             complete_cycles *= -1
             direction_str = "backwards"
         def print_with_info(cursor: _LL_node, current_offset: int, completed_cycles: int, direction_str: str): # the function which will be used in the for loop below
@@ -117,7 +117,7 @@ class _ring(_LL_node):
             print(  f'Remaining cycles            : {complete_cycles - completed_cycles}')
             print(  f'Current speed               : {frequency}s')
             print(f"\n{keyboard_interrupt_hint} to exit")
-            return direction(cursor)
+            return getattr(cursor, direction)
         for completed_cycles in range(complete_cycles): # for every cycle
             for current_offset in range(self.cardinality): # execute '_show_from' with every offset
                 cursor = print_with_info(cursor, current_offset, completed_cycles, direction_str)
