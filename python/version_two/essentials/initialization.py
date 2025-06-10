@@ -4,7 +4,7 @@ from .config import LIST_OF_NOTE_NAMES, OCTAVE_AMOUNT, indent, empty_indent
 from .notes_and_intervals import _NOTE, _INTERVAL
 from .LL_node_stuff import _create_LL_node, _CLL_from_unlinked_LL_nodes, __link_unlinked_LL_nodes, _create_extended_LL_node, _extended, _LL_node, _wrap_into_LL_nodes
 from .ring_stuff import ring_from_list, ring_from_list_of_prepared_nodes, _ring_from_CLL, scale_ring_from_list
-from .musical_operations import _melody_from_interval_sequence, _list_of_intervals
+from .musical_operations import _permutation_from_interval_sequence, _list_of_intervals
 from .list_stuff import _multiply_list, methodized_dictionary
 
 modes = ["ionian", "dorian", "phrygian", "lydian", "mixolydian", "aeolian", "locrian"]
@@ -35,7 +35,7 @@ def _initialize_notes_and_chromatic_scale(namespace: dict[str, object]) -> None:
     var_name = "chromatic_scale"
     scale_name = "chromatic scale"
     mapping = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
-    namespace[var_name] = ring_from_list(namespace, scale_name, _melody_from_interval_sequence(inner_nodes[0], mapping), None)
+    namespace[var_name] = ring_from_list(namespace, scale_name, _permutation_from_interval_sequence(inner_nodes[0], mapping), None)
     namespace[var_name].mode = None
     print(f"{indent} created the ring '{var_name}', which represents the notes within an octave (C, C#, D, etc).");
 def _initialize_modes_dictionary(namespace) -> None:
@@ -59,7 +59,7 @@ def _initialize_scales_for_every_mode_key_combo(namespace) -> None: # requires t
         for mode_name in modes:
             var_name   = f"{note_name}_{mode_name}"
             scale_name = f"{note_name.upper()} {mode_name}"
-            namespace[var_name] = scale_ring_from_list(namespace, scale_name, namespace[note_name], mode_name, _melody_from_interval_sequence(note_node, modes[mode_name]), namespace["chromatic_scale"])
+            namespace[var_name] = scale_ring_from_list(namespace, scale_name, namespace[note_name], mode_name, _permutation_from_interval_sequence(note_node, modes[mode_name]), namespace["chromatic_scale"])
     for note_name, _ in notes:
         namespace[f"{note_name}_major"] = namespace[f"{note_name}_ionian"];
         namespace[f"{note_name}_minor"] = namespace[f"{note_name}_aeolian"];
@@ -91,7 +91,7 @@ def _initialize_piano_scales(namespace) -> None:
             name                   = f"{note_name} {modes[j][0]}"
             var_name_normal        = f"{note_name}_{modes[j][0]}"
             var_name_piano_case    = var_name_normal.upper()
-            list_of_notes_in_scale = _melody_from_interval_sequence(
+            list_of_notes_in_scale = _permutation_from_interval_sequence(
                                              namespace[SCALE_NAME],
                                              _list_of_intervals(modes[j][1], OCTAVE_AMOUNT)
                                              )

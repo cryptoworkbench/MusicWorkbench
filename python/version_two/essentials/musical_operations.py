@@ -17,7 +17,7 @@ def _list_of_intervals(mode_node: _LL_node, amount_of_times_to_apply_the_interva
             cursor = cursor.forward
     return list_of_intervals[:-1]
 
-def _melody_from_interval_sequence(mother_permutation_LL_node: _LL_node, interval_sequence: list) -> list:
+def _permutation_from_interval_sequence(mother_permutation_LL_node: _LL_node, interval_sequence: list) -> list:
     """creates a new layer of LL nodes by wrapping elements found using the interval sequence."""
     if not mother_permutation_LL_node:
         raise ValueError("Must provide a doubly linked LL to traverse upon!")
