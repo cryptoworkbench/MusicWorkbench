@@ -15,7 +15,7 @@ def _list_of_intervals(mode_node: _LL_node, amount_of_times_to_apply_the_interva
             incremental_interval += cursor._travel_downward().content.return_INTERVAL_halfsteps()
             list_of_intervals.append(incremental_interval)
             cursor = cursor.forward
-    return list_of_intervals
+    return list_of_intervals[:-1]
 
 def __list_of_intervals(mode_node: _LL_node) -> list:
     list_of_intervals = []

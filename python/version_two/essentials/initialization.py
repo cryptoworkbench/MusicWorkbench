@@ -59,7 +59,7 @@ def _initialize_scales_for_every_mode_key_combo(namespace) -> None: # requires t
         for mode_name in modes:
             var_name   = f"{note_name}_{mode_name}"
             scale_name = f"{note_name.upper()} {mode_name}"
-            namespace[var_name] = scale_ring_from_list(namespace, scale_name, namespace[note_name], mode_name, _melody_from_interval_sequence(note_node, modes[mode_name][:-1]), namespace["chromatic_scale"])
+            namespace[var_name] = scale_ring_from_list(namespace, scale_name, namespace[note_name], mode_name, _melody_from_interval_sequence(note_node, modes[mode_name]), namespace["chromatic_scale"])
     for note_name, _ in notes:
         namespace[f"{note_name}_major"] = namespace[f"{note_name}_ionian"];
         namespace[f"{note_name}_minor"] = namespace[f"{note_name}_aeolian"];
