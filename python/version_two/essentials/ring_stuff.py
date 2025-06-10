@@ -108,9 +108,9 @@ class _ring(_LL_node):
             complete_cycles *= -1
         def print_with_info(cursor: _LL_node, current_offset: int, completed_cycles: int): # the function which will be used in the for loop below
             clear_screen()
-            print(f"Currently looping: {self.name}\n")
             print(_empty_indent(self._show_from(cursor, orientation)))
-            print(f'\nCurrent direction           : {direction}')
+            print(f'\nCurrently looping: {self.name}')
+            print(  f'Current direction           : {direction}')
             print(  f'Offset from starting element: {current_offset}')
             print(  f'complete cycles             : {complete_cycles}')
             print(  f'Remaining cycles            : {complete_cycles - completed_cycles}')

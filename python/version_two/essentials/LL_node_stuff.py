@@ -25,8 +25,9 @@ class _LL_node:
         return self;
     def _concatenate_strings_downstream(self, orientation: str = None) -> str:
         """Returns the string from the bottom of the '_LL_node' layers (permutation layers)."""
-        cursor = self._travel_downward()
         output_str = ""
+        if isinstance(self, _extended): output_str += f"{self.extension()}"
+        cursor = self._travel_downward()
         if isinstance(cursor.content, _extended):
             cursor = cursor.content
             output_str += f"{cursor.extension()}"

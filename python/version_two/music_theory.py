@@ -16,17 +16,6 @@ class interval_pattern(dict):
         """for adding a melody (interval pattern) to the catalogue of melodies at the disposal of the user."""
         self[key] = value
 
-def test_piano(namespace) -> None:
-    cursor = first_piano_note = namespace["c1"]
-    while cursor:
-        print(f"{cursor._concatenate_strings_downstream()}");
-        cursor = cursor.forward
-def test_piano_backwards(namespace) -> None:
-    cursor = first_piano_note = namespace["b7"]
-    while cursor:
-        print(f"{cursor._concatenate_strings_downstream()}");
-        cursor = cursor.backward
-
 def initialize_melodies() -> None:
     melody_dictionary = interval_pattern({"ode_to_joy": [2, 2, 3, 4, 4, 3, 2, 1, 0, 0, 1, 2, 2, 1, 1]})
     C_IONIAN.apply_scale_degrees(melody_dictionary["ode_to_joy"], REFERENCE_OCTAVE, list(melody_dictionary.keys())[0]);
@@ -39,10 +28,8 @@ def flex():
     chromatic_scale._loop("horizontally", 0.05, -1)
     interval_scale._loop("vertically", 0.05, 1)
     interval_scale._loop("vertically", 0.05, -1)
-    test_piano(globals())
-    time.sleep(1)
-    test_piano_backwards(globals())
-    time.sleep(1)
+    piano._loop("vertically", 0.025,  1)
+    piano._loop("vertically", 0.025, -1)
     c_ionian._loop("horizontally", 0.05, 1)
     c_ionian._loop("horizontally", 0.05, -1)
     c_dorian._loop("horizontally", 0.05, 1)

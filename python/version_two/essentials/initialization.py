@@ -68,9 +68,9 @@ def __initialize_piano_octave(namespace: dict[str, object], current_octave: int,
     created_octave_nodes = []
     for i, note_name in enumerate(LIST_OF_NOTE_NAMES):
         created_octave_nodes.append(_create_extended_LL_node(namespace[note_name], current_octave))
-        var_name_zero = f"{note_name.upper()}{current_octave}"
-        var_name_one  = f"{note_name}{current_octave}"
-        namespace[var_name_zero] = namespace[var_name_one] = created_octave_nodes[i];
+        lower_case_var_name = f"{note_name.upper()}{current_octave}"
+        upper_case_var_name  = f"{note_name}{current_octave}"
+        namespace[lower_case_var_name] = namespace[upper_case_var_name] = created_octave_nodes[i];
         __link_unlinked_LL_nodes(created_octave_nodes);
     if continuation_point != None:
         continuation_point.forward = created_octave_nodes[0]
@@ -81,6 +81,9 @@ def _initialize_piano(namespace) -> None:
     last_note_of_current_octave = None;
     for current_octave in range(OCTAVE_AMOUNT):
         last_note_of_current_octave = __initialize_piano_octave(namespace, current_octave, last_note_of_current_octave);
+    last_note_of_current_octave.forward = namespace["c0"]
+    namespace["c0"].backward = last_note_of_current_octave
+    namespace["piano"] = _ring_from_CLL(namespace, "piano", namespace["C0"], None)
     print(f"{indent} created a piano computer model !");
 
 def _initialize_piano_scales(namespace) -> None:
