@@ -35,19 +35,19 @@ def initialize_melodies() -> None:
     C_IONIAN.apply_scale_degrees(melody_dictionary["frere_jackques"], REFERENCE_OCTAVE, list(melody_dictionary.keys())[1]);
 
 def flex():
-    chromatic_scale.loop_horizontally(1, 0.1)
-    interval_scale.loop_vertically(1, 0.1)
+    chromatic_scale._loop("horizontally", 0.1, 1)
+    interval_scale._loop("vertically", 0.1, 1)
     test_piano(globals())
     time.sleep(1)
     test_piano_backwards(globals())
     time.sleep(1)
-    c_ionian.loop_horizontally(1, 0.1)
-    c_dorian.loop_horizontally(1, 0.1)
-    c_phrygian.loop_horizontally(1, 0.1)
-    c_lydian.loop_horizontally(1, 0.1)
-    c_mixolydian.loop_horizontally(1, 0.1)
-    c_aeolian.loop_horizontally(1, 0.1)
-    c_locrian.loop_horizontally(1, 0.1)
+    c_ionian._loop("horizontally", 0.1, 1)
+    c_dorian._loop("horizontally", 0.1, 1)
+    c_phrygian._loop("horizontally", 0.1, 1)
+    c_lydian._loop("horizontally", 0.1, 1)
+    c_mixolydian._loop("horizontally", 0.1, 1)
+    c_aeolian._loop("horizontally", 0.1, 1)
+    c_locrian._loop("horizontally", 0.1, 1)
 
 def count_down(counts: int) -> None:
     print(f"\nSTARTING TESTS IN {counts}       ({keyboard_interrupt_hint} to prevent).")
@@ -59,7 +59,7 @@ def test_everything():
     count_down(3)
     flex()
     print(f"{indent} frere_jackques.content()")
-    frere_jackques.content()
+    frere_jackques.list()
     print(f"{indent} tests complete !")
 
 initialize_screen(mains_filename)

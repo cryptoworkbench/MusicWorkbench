@@ -32,6 +32,21 @@ class _LL_node:
             output_str += f"{cursor.extension()}"
         output_str = f"{cursor._travel_downward()._last_unwrap(orientation)}{output_str}"
         return output_str
+    def get_next(self):
+        return self.next
+    def get_previous(self):
+        return self.previous
+    def length(self) -> int:
+        if not self:
+            raise ValueError("non existing ll does not have a length!")
+        else:
+            ret_val = 1
+            visited = [self]
+            cursor = self.next
+            while cursor != self:
+                cursor = cursor.next
+                ret_val += 1
+            return ret_val
     def traverse_cLL(self, distance: int):
         """Traverses a (cyclical) linked list and returns the node at the Nth chain."""
         if isinstance(distance, int) == False: print("didn't get the as distance as an int!")
@@ -49,24 +64,13 @@ class _LL_node:
                     traversed_cLL = traversed_cLL.previous;
                 else: return None
         return traversed_cLL;
-    def search_CLL(self, mark_node, CLL_length: int):
+    def find_node(self, mark_node, CLL_length: int):
         """ searches the linked list for node 'mark_node', returns it's position upon finding it. if not found returns None """
         cursor = self; i = 0;
         while cursor != mark_node and i < CLL_length:
             i += 1; cursor = cursor.next;
         if i == CLL_length: return None;
         return cursor;
-    def length(self) -> int:
-        if not self:
-            raise ValueError("non existing ll does not have a length!")
-        else:
-            ret_val = 1
-            visited = [self]
-            cursor = self.next
-            while cursor != self:
-                cursor = cursor.next
-                ret_val += 1
-            return ret_val
 def _create_LL_node(content, next_node: _LL_node = None, previous_node: _LL_node = None) -> _LL_node:
     """Returns an instance of the class _LL_node."""
     return _LL_node(content, next_node, previous_node);

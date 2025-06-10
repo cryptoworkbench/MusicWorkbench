@@ -8,7 +8,7 @@ from .input_methods import *
 from .programmer_utilities import *
 from .musical_operations import *
 
-class _ring:
+class _ring(_LL_node):
     """a class to work with cyclical linked lists"""
     def __init__(self, namespace: dict[str, object], name: str, circular_LL: _LL_node, source_pattern = None):
         self.original_namespace = namespace;
@@ -38,8 +38,8 @@ class _ring:
         else:
             print("         :  program initialization")
     def _search_through_CLL(self, mark_node):
-        """a wrapper method for the '_LL_node' method 'search_CLL'"""
-        return self.access.search_CLL(mark_node, self.cardinality)
+        """a wrapper method for the '_LL_node' method 'find_node'"""
+        return self.access.find_node(mark_node, self.cardinality)
     def apply_scale_degrees(self, list_of_scale_degrees: list, relative_octave: int = 4, name_for_new_melody: str = None) -> None:
         """Creates a _melody ring containing the melody specified by the scale degrees. The instance is not returned but updated."""
         if self.name == "chromatic scale":
@@ -58,40 +58,31 @@ class _ring:
         self.original_namespace[name_for_new_melody] = melody_from_list(self.original_namespace, notes_in_melody, name_for_new_melody, self.mode, self);
         print(      f"{indent} The melody '{name_for_new_melody}' has been saved, access it like:");
         print(f"{empty_indent} {indent} {name_for_new_melody}.content()");
-    def __bottom_layer_search(self, starting_position: _LL_node) -> _LL_node:
-        if not isinstance(starting_position, _LL_node):
-            raise ValueError(f"Error, {starting_position} is not a linked list node !")
-        LL_node_to_match_against = starting_position._travel_downward()
-        original_ring_LL_cursor = self.access
-        for iterator in range(self.cardinality):
-            if original_ring_LL_cursor._travel_downward() == LL_node_to_match_against:
-                return original_ring_LL_cursor
-            original_ring_LL_cursor = original_ring_LL_cursor.next
-        raise ValueError(f"Error, object  '{starting_position}' is not in this ring ! (and neither is a different object containing the same exact value!)");
     def _show_from(self, starting_position: _LL_node = None, orientation = "horizontally") -> str:
         """Display the content of the ring by cycling through it once."""
-        if not starting_position:
-            """complain and refuse when no starting position was specified"""
-            raise ValueError("starting position must be supplied with this function.")
+        if not starting_position: raise ValueError("Error, starting position must be supplied with this function !")
+        elif not isinstance(starting_position, _LL_node): raise ValueError(f"Error, '{starting_position}' is not a linked list node !")
         elif not (cursor := self._search_through_CLL(starting_position)):
-            """if a starting position was specified, but not found in the rings's attached CLL, then search in the bottom layer."""
-            cursor = starting_position = self.__bottom_layer_search(starting_position)
-        element_prefix = ""
-        element_suffix = ""
-        if orientation == "horizontally":
-            element_suffix += ", "
-        if orientation == "vertically":
-            element_prefix += f"{empty_indent} "
-            element_suffix += "\n"
+            """ ^ if a starting position was specified, but not found in the rings's attached CLL, then try to find a match using the lowest permutation layer:"""
+            LL_node_to_find = starting_position._travel_downward(); cursor = self.access; iterator = 0;
+            while cursor._travel_downward() != LL_node_to_find and iterator < self.cardinality:
+                cursor = cursor.next; iterator += 1;
+            """ ^ search in the lowest permutation layer"""
+            if iterator == self.cardinality:
+                """ ^ if the specified LL_node was not found; complain and refuse ^^^ """
+                raise ValueError(f"Error, _LL_node '{starting_position}' is not in this ring !")
+        element_prefix = ""; element_suffix = "\n"
+        match (orientation): # change either one of the above in order to make sure both are set correctly
+            case ("horizontally"): element_suffix = ", "
+            case ("vertically"): element_prefix += f"{empty_indent} "
         output_str = f"{cursor._concatenate_strings_downstream(orientation)}{element_suffix}"
         cursor = starting_position.next
         while cursor != starting_position:
             output_str += f"{element_prefix}{cursor._concatenate_strings_downstream(orientation)}{element_suffix}"
             cursor = cursor.next;
-        if orientation == "horizontally":
-            output_str = f"<{output_str[:-2]}>"
-        elif orientation == "vertically":
-            output_str = f"{output_str[:-1]}"
+        match (orientation): # finalize 'output_str'
+            case ("horizontally"): output_str = f"<{output_str[:-2]}>"
+            case ("vertically"): output_str = f"{output_str[:-1]}"
         return output_str
     def _show_vertically_from(self, starting_position: _LL_node = None) -> str:
         """wrapper method for method '_show_from'"""
@@ -107,27 +98,32 @@ class _ring:
         print(_empty_indent(self._show_horizontally_from(self.access)))
     def list(self) -> None:
         print(_empty_indent(self._show_horizontally_from(self.access)[1:-1]))
-    def _loop(self, complete_cycles=10, frequency=0.8, orientation="horizontally") -> None:
+    def _loop(self, orientation="horizontally", frequency=0.8, complete_cycles=1) -> None:
         """Calls 'self._show_from()' iteratively in combination with 'clear_screen()' in order to give 'self._show_from()' a dynamic touch."""
-        cursor = self.access; 
-        for i in range(complete_cycles):
-            for j in range(self.cardinality):
-                clear_screen()
-                print(f"Currently looping: {self.name}\n")
-                print(_empty_indent(self._show_from(cursor, orientation)))
-                cursor = cursor.next
-                remaining_cycles = complete_cycles - i
-                print(f'\nOffset from starting element: {j}');
-                print(  f'Remaining cycles            : {remaining_cycles}');
-                print(  f'Current speed               : {frequency}s');
-                print(f"\n{keyboard_interrupt_hint} to exit");
-                time.sleep(frequency);
-    def loop_vertically(self, complete_cycles=10, frequency=0.7) -> None:
+        if orientation != "horizontally" and orientation != "vertically": raise ValueError(f"'{orientation}' is neither 'horizontally' or 'vertically' !")
+        if complete_cycles == 0: raise ValueError("The amount of cycles must be either negative or positive: not 0 !!!")
+        def print_with_info(cursor: _LL_node, current_offset: int, completed_cycles: int):
+            clear_screen()
+            print(f"Currently looping: {self.name}\n")
+            print(_empty_indent(self._show_from(cursor, orientation)))
+            print(f'\nOffset from starting element: {current_offset}')
+            print(  f'Remaining cycles            : {complete_cycles - completed_cycles}')
+            print(  f'Current speed               : {frequency}s')
+            print(f"\n{keyboard_interrupt_hint} to exit")
+        cursor = self.access
+        if complete_cycles < 0: complete_cycles = complete_cycles * -1
+        for current_offset in range(self.cardinality):
+            for completed_cycles in range(complete_cycles):
+                print_with_info(cursor, current_offset, completed_cycles)
+                if complete_cycles > 0: cursor = cursor.next
+                else: cursor = cursor.previous
+            time.sleep(frequency)
+    def loop_vertically(self) -> None:
         """Calls 'self._loop()' with the orientation set to 'vertical'."""
-        self._loop(complete_cycles, frequency, "vertically");
-    def loop_horizontally(self, complete_cycles=10, frequency=0.7) -> None:
+        self._loop(  "vertically");
+    def loop_horizontally(self) -> None:
         """Calls 'self._loop()' with the orientation set to 'horizontal'."""
-        self._loop(complete_cycles, frequency, "horizontally");
+        self._loop("horizontally");
 def _ring_from_CLL(namespace: dict[str, object], name: str, CLL: _LL_node, source_pattern = None) -> _ring:
     """wrapper function for '_ring'."""
     return _ring(namespace, name, CLL, source_pattern);
