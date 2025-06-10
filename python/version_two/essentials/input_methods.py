@@ -4,7 +4,12 @@ def get_name(structure_type: str = "structure") -> str:
         if not name: print("Name cannot be empty.\n")
         elif ' ' in name: print("Name cannot contain spaces.\n")
         else: return name;
-
+def get_yes_or_no(prompt: str = "Please enter yes or no: ") -> bool:
+    while True:
+        response = input(prompt).strip().lower()
+        if response in ['yes', 'y']: return True
+        elif response in ['no', 'n']: return False
+        else: print("Invalid input. Please type 'yes' or 'no'.")
 def get_half_steps():
     while True:
         user_input = input("Enter amount of half steps: ");
