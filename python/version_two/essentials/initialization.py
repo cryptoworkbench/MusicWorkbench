@@ -64,26 +64,22 @@ def _initialize_scales_for_every_mode_key_combo(namespace) -> None: # requires t
         namespace[f"{note_name}_minor"] = namespace[f"{note_name}_aeolian"];
     print(f"{indent} created the 84 rings for all possible key-mode combinations, that's 7 modes * 12 keys = 84 scales in total !");
     print(f"{empty_indent} {indent} access them like 'c_major.list()', 'g_dorian.list()', 'f_locrian.list()', etc ...");
-def __initialize_piano_octave(namespace: dict[str, object], current_octave: int, continuation_point: _extended = None) -> _extended:
-    created_octave_nodes = []
-    for i, note_name in enumerate(LIST_OF_NOTE_NAMES):
-        created_octave_nodes.append(_create_extended_LL_node(namespace[note_name], current_octave))
-        lower_case_var_name = f"{note_name.upper()}{current_octave}"
-        upper_case_var_name  = f"{note_name}{current_octave}"
-        namespace[lower_case_var_name] = namespace[upper_case_var_name] = created_octave_nodes[i];
-        __link_unlinked_LL_nodes(created_octave_nodes);
-    if continuation_point != None:
-        continuation_point.forward = created_octave_nodes[0]
-        created_octave_nodes[0].backward = continuation_point
-    return created_octave_nodes[len(LIST_OF_NOTE_NAMES) - 1] # return the last element
 def _initialize_piano(namespace) -> None:
+    def list_of_piano_octave_nodes(namespace: dict[str, object], current_octave: int, continuation_point: _extended = None) -> list:
+        created_octave_nodes = []
+        for i, note_name in enumerate(LIST_OF_NOTE_NAMES):
+            created_octave_nodes.append(_create_extended_LL_node(namespace[note_name], current_octave))
+            lower_case_var_name = f"{note_name.upper()}{current_octave}"
+            upper_case_var_name  = f"{note_name}{current_octave}"
+            namespace[lower_case_var_name] = namespace[upper_case_var_name] = created_octave_nodes[i];
+        return created_octave_nodes
     '''initializes a piano model'''
     last_note_of_current_octave = None;
+    created_nodes = []
     for current_octave in range(OCTAVE_AMOUNT):
-        last_note_of_current_octave = __initialize_piano_octave(namespace, current_octave, last_note_of_current_octave);
-    last_note_of_current_octave.forward = namespace["c0"]
-    namespace["c0"].backward = last_note_of_current_octave
-    namespace["piano"] = _ring_from_CLL(namespace, "piano", namespace["C0"], None)
+        current_octave_nodes = list_of_piano_octave_nodes(namespace, current_octave, last_note_of_current_octave);
+        for current_node in current_octave_nodes: created_nodes.append(current_node)
+    namespace["piano"] = _ring_from_CLL(namespace, "piano", _CLL_from_unlinked_LL_nodes(created_nodes), None)
     print(f"{indent} created a piano computer model !");
 
 def _initialize_piano_scales(namespace) -> None:
