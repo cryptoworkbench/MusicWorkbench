@@ -1,7 +1,7 @@
 """ This module is supposed to only contain functions like 'clear_screen' (cls/clear), and shortcuts like 'hor', 'horizontal', 'ver', and 'vertical'. """
 import os # not needed for filename but needed for access to OS tools like 'cls' (on Windows) and 'clear' (on Linux)
 from .LL_node_stuff import _extended, _LL_node
-from .programmer_utilities import empty_indent
+from .config import empty_indent
 
 def clear_screen() -> None:
     """Clears the screen using the OS's clear function ('cls' for windows, 'clear' for linux)."""

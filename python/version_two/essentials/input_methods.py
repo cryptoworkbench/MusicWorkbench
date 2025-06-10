@@ -1,4 +1,4 @@
-def get_name(structure_type: str = "structure"):
+def get_name(structure_type: str = "structure") -> str:
     while True:
         name = input(f"Enter name for the new {structure_type}: ")
         if not name: print("Name cannot be empty.\n")

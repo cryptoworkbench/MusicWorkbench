@@ -5,7 +5,7 @@ from .notes_and_intervals import _NOTE, _INTERVAL
 from .user_utilities import *
 from .LL_node_stuff import _LL_node, _extended, _wrap_into_CLL, _CLL_from_unlinked_LL_nodes
 from .input_methods import *
-from .programmer_utilities import *
+from .config import *
 from .musical_operations import *
 
 class _ring(_LL_node):
@@ -40,21 +40,28 @@ class _ring(_LL_node):
     def _search_through_CLL(self, mark_node):
         """a wrapper method for the '_LL_node' method 'find_node'"""
         return self.access.find_node(mark_node, self.cardinality)
-    def apply_scale_degrees(self, list_of_scale_degrees: list, relative_octave: int = 4, name_for_new_melody: str = None) -> None:
+    def apply_scale_degrees(self, list_of_scale_degrees: list, relative_octave: int = REFERENCE_OCTAVE, name_for_new_melody: str = None) -> None:
         """Creates a _melody ring containing the melody specified by the scale degrees. The instance is not returned but updated."""
+        print(f"message from 'apply_scale_degrees': hello")
         if self.name == "chromatic scale":
-            source_scale = "chromatic_scale"
+            scale_we_gonna_access = source_scale = "chromatic_scale"
             piano_CLL = self.original_namespace["C0"]
+            print(f"message from 'apply_scale_degrees': piano_CLL = {piano_CLL._concatenate_strings_downstream()}")
         else:
             source_scale = f"{((self.key._concatenate_strings_downstream()).lower())}_{self.mode}"
-            piano_CLL = self.original_namespace[source_scale.upper()].access
+            scale_we_gonna_access = source_scale.upper()
+            piano_CLL = self.original_namespace[scale_we_gonna_access].access
+            print(f"message from 'apply_scale_degrees': piano_CLL = {piano_CLL._concatenate_strings_downstream()}")
+        print(f"message from 'apply_scale_degrees': accessed scale = {scale_we_gonna_access}")
         cardinality_of_source_pattern = self.original_namespace[source_scale].cardinality
-        notes_in_melody = []
+        print(f"message from 'apply_scale_degrees': cardinality_of_source_pattern = {cardinality_of_source_pattern}")
+        print(f"message from 'apply_scale_degrees': relative octave = {relative_octave}")
         for _ in range(relative_octave): # move to specified place on piano
             for x in range(cardinality_of_source_pattern):
                 piano_CLL = piano_CLL.forward
-        for scale_degree in list_of_scale_degrees: # collect notes in 'notes_in_melody'
-            notes_in_melody.append(piano_CLL.traverse_cLL(scale_degree))
+        print(f"message from 'apply_scale_degrees': starting on {piano_CLL._concatenate_strings_downstream()}")
+        if name_for_new_melody is None: name_for_new_melody = get_name()
+        notes_in_melody = _melody_from_interval_sequence(piano_CLL, list_of_scale_degrees)
         self.original_namespace[name_for_new_melody] = melody_from_list(self.original_namespace, notes_in_melody, name_for_new_melody, self.mode, self);
         print(      f"{indent} The melody '{name_for_new_melody}' has been saved, access it like:");
         print(f"{empty_indent} {indent} {name_for_new_melody}.content()");
