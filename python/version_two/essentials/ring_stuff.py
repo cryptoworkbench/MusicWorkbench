@@ -46,13 +46,12 @@ class _ring(_LL_node):
         if self.name == "chromatic scale":
             scale_we_gonna_access = source_scale = "chromatic_scale"
             piano_CLL = self.original_namespace["C0"]
-            print(f"message from 'apply_scale_degrees': piano_CLL = {piano_CLL._concatenate_strings_downstream()}")
         else:
             source_scale = f"{((self.key._concatenate_strings_downstream()).lower())}_{self.mode}"
             scale_we_gonna_access = source_scale.upper()
             piano_CLL = self.original_namespace[scale_we_gonna_access].access
-            print(f"message from 'apply_scale_degrees': piano_CLL = {piano_CLL._concatenate_strings_downstream()}")
         print(f"message from 'apply_scale_degrees': accessed scale = {scale_we_gonna_access}")
+        print(f"message from 'apply_scale_degrees': piano_CLL = {piano_CLL._concatenate_strings_downstream()}")
         cardinality_of_source_pattern = self.original_namespace[source_scale].cardinality
         print(f"message from 'apply_scale_degrees': cardinality_of_source_pattern = {cardinality_of_source_pattern}")
         print(f"message from 'apply_scale_degrees': relative octave = {relative_octave}")

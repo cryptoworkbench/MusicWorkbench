@@ -11,7 +11,7 @@ def _list_of_intervals(mode_node: _LL_node, amount_of_times_to_apply_the_interva
 
     for _ in range(amount_of_times_to_apply_the_interval_scale):
         cursor = mode_node
-        while cursor.forward != mode_node:
+        for _ in range(7):
             incremental_interval += cursor._travel_downward().content.return_INTERVAL_halfsteps()
             list_of_intervals.append(incremental_interval)
             cursor = cursor.forward
