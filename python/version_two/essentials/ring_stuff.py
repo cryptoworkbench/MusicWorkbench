@@ -4,7 +4,8 @@ _self = importlib.import_module(__name__)
 from .notes_and_intervals import _NOTE, _INTERVAL
 from .user_utilities import *
 from .LL_node_stuff import _LL_node, _extended, _wrap_into_CLL, _CLL_from_unlinked_LL_nodes
-from .input_processing import *
+from .input_methods import *
+from .text_processing import underscore
 from .config import *
 from .musical_operations import *
 
@@ -54,9 +55,9 @@ class _ring(_LL_node):
                 piano_CLL = piano_CLL.forward
         if name_for_new_melody is None: name_for_new_melody = get_name()
         notes_in_melody = _permutation_from_interval_sequence(piano_CLL, list_of_scale_degrees)
-        self.original_namespace[make_with_underscores(name_for_new_melody)] = melody_from_list(self.original_namespace, notes_in_melody, name_for_new_melody, self.mode, self);
+        self.original_namespace[underscore(name_for_new_melody)] = melody_from_list(self.original_namespace, notes_in_melody, name_for_new_melody, self.mode, self);
         print(      f"{indent} The melody '{name_for_new_melody}' has been saved, access it like:");
-        print(f"{empty_indent} {indent} {name_for_new_melody}.content()");
+        print(f"{empty_indent} {indent} {name_for_new_melody}.list_of_elements()");
     def _show_from(self, starting_position: _LL_node = None, orientation = "horizontally") -> str:
         """Display the content of the ring by cycling through it once."""
         if not starting_position: raise ValueError("Error, starting position must be supplied with this function !")

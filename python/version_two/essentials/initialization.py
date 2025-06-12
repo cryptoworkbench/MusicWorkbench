@@ -3,6 +3,7 @@ from .user_utilities import clear_screen
 from .config import LIST_OF_NOTE_NAMES, OCTAVE_AMOUNT, indent, empty_indent
 from .notes_and_intervals import _NOTE, _INTERVAL
 from .LL_node_stuff import _create_LL_node, _CLL_from_unlinked_LL_nodes, __link_unlinked_LL_nodes, _create_extended_LL_node, _extended, _LL_node, _wrap_into_LL_nodes
+from .text_processing import underscore
 from .ring_stuff import ring_from_list, ring_from_list_of_prepared_nodes, _ring_from_CLL, scale_ring_from_list
 from .musical_operations import _permutation_from_interval_sequence, _list_of_intervals
 from .list_and_dictionary_stuff import _multiply_list, methodized_dictionary
@@ -65,6 +66,14 @@ def _initialize_scales_for_every_mode_key_combo(namespace) -> None: # requires t
         namespace[f"{note_name}_minor"] = namespace[f"{note_name}_aeolian"];
     print(f"{indent} created the 84 rings for all possible key-mode combinations, that's 7 modes * 12 keys = 84 scales in total !");
     print(f"{empty_indent} {indent} access them like 'c_major.list_elements()', 'g_dorian.list_elements()', 'f_locrian.list_elements()', etc ...");
+def _initialize_circle_of_fifths(namespace) -> _LL_node:
+    """initializes a ciclical structure to be used/to represent, the circle of fifths. Update 'namespace', instead of returning a value."""
+    source_pattern = namespace["chromatic_scale"]
+    mapping = [0, 7, 14, 21, 28, 35, 42, 49, 56, 63]
+    name = "circle of fifths"
+    namespace[underscore(name)] = ring_from_list(namespace, name, _permutation_from_interval_sequence(source_pattern.access, mapping), None)
+    print(f"{indent} The circle of fifths has been created !");
+    print(f"{empty_indent} {indent} access it as 'circle_of_fifths.list_elements()' or 'circle_of_fifths.show_vertically()', etc ...");
 def _initialize_piano(namespace) -> None:
     '''initializes a piano model'''
     def list_of_piano_octave_nodes(namespace: dict[str, object], current_octave: int, continuation_point: _extended = None) -> list:
@@ -114,6 +123,7 @@ def initialize_data_structures(namespace: dict[str, object]) -> None:
     _initialize_scales_for_every_mode_key_combo(namespace)
     _initialize_piano(namespace)
     _initialize_piano_scales(namespace)
+    _initialize_circle_of_fifths(namespace)
     print(f"{indent} setup complete!")
 
 __all__ = ["initialize_data_structures"]

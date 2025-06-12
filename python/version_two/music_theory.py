@@ -1,6 +1,7 @@
 import os; mains_filename = os.path.basename(__file__);
 from essentials.user_utilities import *
-from essentials.input_processing import get_yes_or_no, make_with_underscores
+from essentials.input_methods import get_yes_or_no
+from essentials.text_processing import underscore
 from essentials.config import indent, python_indent, keyboard_interrupt_hint
 from essentials.initialization import initialize_screen, initialize_data_structures # initialize_data_structures, _collect_piano_notes_for_mode
 from essentials.musical_operations import * # list_of_notes, _list_of_intervals
@@ -18,9 +19,9 @@ class interval_pattern(dict):
 
 def initialize_melodies() -> None:
     melody_dictionary = interval_pattern({"ode to joy": [2, 2, 3, 4, 4, 3, 2, 1, 0, 0, 1, 2, 2, 1, 1]})
-    C_IONIAN.apply_scale_degrees(melody_dictionary["ode to joy"], REFERENCE_OCTAVE, make_with_underscores(list(melody_dictionary.keys())[0]))
+    C_IONIAN.apply_scale_degrees(melody_dictionary["ode to joy"], REFERENCE_OCTAVE, underscore(list(melody_dictionary.keys())[0]))
     melody_dictionary.install("frere jackques", [0, 1, 2, 0, 0, 1, 2, 0, 2, 3, 4, 2, 3, 4, 4, 5, 4, 3, 2, 0, 4, 5, 4, 3, 2, 0, 0, -3, 0, 0, -3, 0])
-    C_IONIAN.apply_scale_degrees(melody_dictionary["frere jackques"], REFERENCE_OCTAVE, make_with_underscores(list(melody_dictionary.keys())[1]))
+    C_IONIAN.apply_scale_degrees(melody_dictionary["frere jackques"], REFERENCE_OCTAVE, underscore(list(melody_dictionary.keys())[1]))
     return melody_dictionary
 
 def flex_piano():
