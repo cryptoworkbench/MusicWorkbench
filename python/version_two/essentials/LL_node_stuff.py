@@ -74,16 +74,7 @@ def _create_LL_node(content, next_node: _LL_node = None, previous_node: _LL_node
 def _wrap_into_LL_nodes(values_to_wrap: list) -> list:
     """wraps the values contained in 'values_to_wrap' into '_LL_node' classes, and returns a list of all the '_LL_node' classes it created."""
     return [_create_LL_node(value) for value in values_to_wrap]
-class _extended(_LL_node):
-    def __init__(self, content, extension: int, next_node: _LL_node = None, previous_node: _LL_node = None):
-        super().__init__(content, next_node, previous_node)
-        self.added_attribute = extension
-    def extension(self):
-        return self.added_attribute
-def _create_extended_LL_node(content, extension: int, next_node: _extended = None, previous_node: _extended = None) -> _extended:
-    """Returns an instance of the class _extended(_LL_node)."""
-    return _extended(content, extension, next_node)
-# ^^^ MAIN DATATYPES ^^^
+# ^^^ MAIN DATATYPE ^^^
 
 def __link_unlinked_LL_nodes(list_of_LL_nodes: list) -> _LL_node:
     """Links a list of LL nodes to each other. Intended to be used with a list of entirely unlinked LL nodes."""
@@ -103,5 +94,16 @@ def _wrap_into_CLL(list_to_process: list) -> _LL_node: # this is the only functi
         raise ValueError("Cannot create a cyclical linked list (or any linked list for that matter), from a list with no items inside of it");
     return _CLL_from_unlinked_LL_nodes(_wrap_into_LL_nodes(list_to_process))
 # ^^^ FUNCTIONS TO WORK WITH listS OF THAT DATATYPE ^^^
+
+class _extended(_LL_node):
+    def __init__(self, content, extension: int, next_node: _LL_node = None, previous_node: _LL_node = None):
+        super().__init__(content, next_node, previous_node)
+        self.added_attribute = extension
+    def extension(self):
+        return self.added_attribute
+def _create_extended_LL_node(content, extension: int, next_node: _extended = None, previous_node: _extended = None) -> _extended:
+    """Returns an instance of the class _extended(_LL_node)."""
+    return _extended(content, extension, next_node)
+# ^^^ EXTRA DATAYTYPE FOR STORING EXTRA INFORMATION IN A PERMUTATION LAYER. ^^^
 
 __all__ = [name for name in globals()]

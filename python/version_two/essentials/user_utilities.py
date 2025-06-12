@@ -19,7 +19,7 @@ def show_help() -> None:
     print("##    Returns the list 'list' as a ring. The list is first turned into a cyclical linked list, and then this cLL is attached to a ring.");
     print("##    So a ring is basically just a cyclic linked list with methods.");
     print("##");
-    print("## ring.list_of_elements()");
+    print("## ring.list_elements()");
     print("##    Returns a list containing all the elements that are in the ring (with intact order).");
     print("##    list[0] = ring.access");
     print("##");
@@ -38,7 +38,7 @@ def show_help() -> None:
     print("##    'modeless_melody = chromatic_scale.melody([0, 2, 4, 6])'       (since there is no mode with contains four consecutive wholesteps).");
     print("##");
 # ^^^ FUNCTIONS FOR USER CONVENIENCE ^^^
-
+ 
 h = H = hor = horizontal = horizontally = "horizontally"; v = V = ver = vert = vertical   = vertically   = "vertically"; # for _ring.show_from()
 # ^^^ SHORTCUTS FOR USER CONVENIENCE ^^^
 

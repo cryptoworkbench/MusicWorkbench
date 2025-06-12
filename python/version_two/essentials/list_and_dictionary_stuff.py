@@ -9,6 +9,6 @@ def _multiply_list(list_to_multiply: list, multiplier: int) -> list:
     return ret_val
 
 class methodized_dictionary(dict):
-    def list_of_elements(self):
+    def list_elements(self):
         for key, value in self.items():
             print(f"{key}: {value}")

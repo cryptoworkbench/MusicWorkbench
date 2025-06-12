@@ -37,25 +37,24 @@ class _ring(_LL_node):
             print(f" pattern :  {self.source_pattern.name}")
         else:
             print("         :  program initialization")
-    def _search_through_CLL(self, mark_node):
+    def _search_through_CLL(self, mark_node) -> _LL_node:
         """a wrapper method for the '_LL_node' method 'find_node'"""
         return self.access.find_node(mark_node, self.cardinality)
     def apply_scale_degrees(self, list_of_scale_degrees: list, relative_octave: int = REFERENCE_OCTAVE, name_for_new_melody: str = None) -> None:
         """Creates a _melody ring containing the melody specified by the scale degrees. The instance is not returned but updated."""
         if self.name == "chromatic scale":
-            scale_we_gonna_access = source_scale = "chromatic_scale"
+            source_scale = "chromatic_scale"
             piano_CLL = self.original_namespace["C0"]
         else:
             source_scale = f"{((self.key._concatenate_strings_downstream()).lower())}_{self.mode}"
-            scale_we_gonna_access = source_scale.upper()
-            piano_CLL = self.original_namespace[scale_we_gonna_access].access
+            piano_CLL = self.original_namespace[source_scale.upper()].access
         cardinality_of_source_pattern = self.original_namespace[source_scale].cardinality
         for _ in range(relative_octave): # move to specified place on piano
             for x in range(cardinality_of_source_pattern):
                 piano_CLL = piano_CLL.forward
         if name_for_new_melody is None: name_for_new_melody = get_name()
         notes_in_melody = _permutation_from_interval_sequence(piano_CLL, list_of_scale_degrees)
-        self.original_namespace[name_for_new_melody] = melody_from_list(self.original_namespace, notes_in_melody, name_for_new_melody, self.mode, self);
+        self.original_namespace[make_with_underscores(name_for_new_melody)] = melody_from_list(self.original_namespace, notes_in_melody, name_for_new_melody, self.mode, self);
         print(      f"{indent} The melody '{name_for_new_melody}' has been saved, access it like:");
         print(f"{empty_indent} {indent} {name_for_new_melody}.content()");
     def _show_from(self, starting_position: _LL_node = None, orientation = "horizontally") -> str:
@@ -96,7 +95,8 @@ class _ring(_LL_node):
     def show_horizontally(self) -> None:
         """wrapper method for method '_show_horizontally'"""
         print(_empty_indent(self._show_horizontally_from(self.access)))
-    def list_of_elements(self) -> None:
+    def list_elements(self) -> None:
+        """prints a horizontal list of the things in the cLL."""
         print(_empty_indent(self._show_horizontally_from(self.access)[1:-1]))
     def _loop(self, orientation="horizontally", frequency=0.8, complete_cycles=1) -> None:
         """Calls 'self._show_from()' iteratively in combination with 'clear_screen()' in order to give 'self._show_from()' a dynamic touch."""
@@ -110,7 +110,7 @@ class _ring(_LL_node):
             clear_screen()
             print(_empty_indent(self._show_from(cursor, orientation)))
             print(f'\nCurrently looping            :   {self.name}')
-            print(  f'Current direction            :   {direction}')
+            print(  f'Current direction            :   {direction}s')
             print(  f'Offset from starting element :   {current_offset}')
             print(  f'complete cycles              :   {complete_cycles}')
             print(  f'Remaining cycles             :   {complete_cycles - completed_cycles}')
