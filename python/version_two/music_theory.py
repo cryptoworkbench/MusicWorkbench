@@ -1,6 +1,6 @@
 import os; mains_filename = os.path.basename(__file__);
 from essentials.user_utilities import *
-from essentials.input_methods import get_yes_or_no, make_with_underscores
+from essentials.input_processing import get_yes_or_no, make_with_underscores
 from essentials.config import indent, python_indent, keyboard_interrupt_hint
 from essentials.initialization import initialize_screen, initialize_data_structures # initialize_data_structures, _collect_piano_notes_for_mode
 from essentials.musical_operations import * # list_of_notes, _list_of_intervals

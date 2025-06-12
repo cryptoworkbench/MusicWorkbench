@@ -4,7 +4,7 @@ _self = importlib.import_module(__name__)
 from .notes_and_intervals import _NOTE, _INTERVAL
 from .user_utilities import *
 from .LL_node_stuff import _LL_node, _extended, _wrap_into_CLL, _CLL_from_unlinked_LL_nodes
-from .input_methods import *
+from .input_processing import *
 from .config import *
 from .musical_operations import *
 
