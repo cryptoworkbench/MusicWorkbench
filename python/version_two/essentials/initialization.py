@@ -72,7 +72,7 @@ def _initialize_circle_of_fifths(namespace) -> _LL_node:
     source_pattern = namespace["chromatic_scale"]
     mapping = [0, 7, 14, 21, 28, 35, 42, 49, 56, 63]
     name = "circle of fifths"
-    namespace[prepare_varname(name)] = ring_from_list(namespace, name, _permutation_from_interval_sequence(source_pattern.access, mapping), None)
+    namespace[prepare_varname(name)] = ring_from_list_of_prepared_nodes(namespace, name, _permutation_from_interval_sequence(source_pattern.access, mapping), None)
     print(f"{indent} The circle of fifths has been created !");
     print(f"{empty_indent} {indent} access it as 'circle_of_fifths.list_elements()' or 'circle_of_fifths.show_vertically()', etc ...");
 def _initialize_piano(namespace) -> None:

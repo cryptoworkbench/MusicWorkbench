@@ -5,7 +5,7 @@ from .notes_and_intervals import _NOTE, _INTERVAL
 from .user_utilities import *
 from .LL_node_stuff import _LL_node, _extended, _wrap_into_CLL, _CLL_from_unlinked_LL_nodes
 from .input_methods import *
-from .text_processing import underscore
+from .text_processing import underscore, prepare_varname
 from .config import *
 from .musical_operations import *
 
@@ -171,6 +171,15 @@ class _scale(_ring):
             for j in range(0, len(current_chord)):
                 current_string += f"{current_chord[j]._concatenate_strings_downstream()}, "
             print(f"{current_string[:-2]}>");
+    def circle_of_thirds(self):
+        if not hasattr(self, "circle_of_thirds_ring"):
+            name = f"circle of thirds for {self.name}"
+            mapping = [0, 2, 4, 6, 8, 10, 12]
+            self.circle_of_thirds_ring = ring_from_list_of_prepared_nodes(self.original_namespace, name, _permutation_from_interval_sequence(self.access, mapping), self)
+        # print(f"{indent} This function returns the circle of thirds for {self.name}, so either store the return value into a new variable or access the circle of thirds the following way:")
+        # print(f"{empty_indent} {indent} {prepare_varname(self.name)}.circle_of_thirds().list_elements()")
+        self.circle_of_thirds_ring.show_horizontally()
+
 def _scale_ring_from_CLL(namespace, name: str, key: _LL_node, mode: str, CLL: _LL_node, source_pattern = None) -> _scale:
     """wrapper function for '_scale'"""
     return _scale(namespace, name, key, mode, CLL, source_pattern);
